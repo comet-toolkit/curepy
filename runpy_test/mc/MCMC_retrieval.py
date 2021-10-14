@@ -38,6 +38,7 @@ class MCMCRetrieval:
         u_b=None,
         Sb=None,
         b_iter=0,
+        initial_guess=None
     ):
         self.measurement_function = measurement_function
         self.b = tuple(b)
@@ -54,7 +55,7 @@ class MCMCRetrieval:
         self.uplims = np.array(uplims)
         self.downlims = np.array(downlims)
         self.parallel_cores = parallel_cores
-        self.initial_guess=None
+        self.initial_guess=initial_guess
 
     def measurement_function_x(self,theta):
         x=self.make_x_tuple(theta)
