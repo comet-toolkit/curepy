@@ -140,6 +140,7 @@ class MCMCRetrieval:
 
     def find_chisum(self, theta):
         model = self.measurement_function_x(theta)
+        print(model.shape,self.observed.shape)
         diff = model - self.observed
         if np.isfinite(np.sum(diff)):
             if self.invcov is None:
