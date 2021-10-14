@@ -152,7 +152,7 @@ class MCMCRetrieval:
         return -0.5 * (self.find_chisum(theta))
 
     def lnprior(self, theta):
-        if all(self.downlims < theta[1::]) and all(self.uplims > theta[1::]):
+        if all(self.downlims < theta) and all(self.uplims > theta):
             # if self.syst_uncertainty[0] is None:
             return 0
         # else:
