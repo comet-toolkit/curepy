@@ -104,6 +104,8 @@ class MCMCRetrieval:
             for i in range(nwalkers)
         ]
 
+        self.measurement_function_x(theta_0)
+
         if self.parallel_cores > 1:
             p = Pool(self.parallel_cores)
         else:
