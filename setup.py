@@ -17,7 +17,7 @@ def read(filename):
 setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    name="runpy",
+    name="runpy_test",
     url="https://gitlab.npl.co.uk/eco/tools/runpy",
     license="None",
     author="Pieter De Vis",

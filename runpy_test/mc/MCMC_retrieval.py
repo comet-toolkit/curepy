@@ -52,6 +52,7 @@ class MCMCRetrieval:
         self.uplims = np.array(uplims)
         self.downlims = np.array(downlims)
         self.parallel_cores = parallel_cores
+        self.initial_guess=None
 
     def measurement_function_x(self,theta):
         x=self.make_x_tuple(theta)
@@ -60,7 +61,7 @@ class MCMCRetrieval:
         else:
             xb=x
         print(xb)
-        self.measurement_function(xb)
+        self.measurement_function(*xb)
 
     def make_x_tuple(self,theta):
         x=tuple(self.initial_guess[:])
@@ -71,7 +72,9 @@ class MCMCRetrieval:
                 j+=1
         return x
 
-    def run_retrieval(self, theta_0, nwalkers, steps, burn_in, return_samples=True, return_corr=False):
+    def run_retrieval(self, x_0, nwalkers, steps, burn_in, return_samples=True, return_corr=False):
+        self.initial_guess=x_0
+        theta_0=np.concatenate(x_0).flatten()
         samples=self.run_MCMC(theta_0,nwalkers,steps,burn_in,return_samples=True,
                                     return_corr=False)
         if self.b:
@@ -83,6 +86,7 @@ class MCMCRetrieval:
                                         return_corr=False))
 
             self.b = b[:]
+
         return self.analyse_samples(samples,return_samples,return_corr)
 
     def run_MCMC(
