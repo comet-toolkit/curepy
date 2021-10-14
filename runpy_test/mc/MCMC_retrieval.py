@@ -31,7 +31,7 @@ class MCMCRetrieval:
         syst_uncertainty=None,
         rand_uncertainty=None,
         cov=None,
-        parallel_cores=4,
+        parallel_cores=1,
         uplims=+np.inf,
         downlims=-np.inf,
         b=None,
