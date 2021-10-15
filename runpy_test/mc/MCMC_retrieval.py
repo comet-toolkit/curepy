@@ -92,10 +92,7 @@ class MCMCRetrieval:
         return self.analyse_samples(samples,return_samples,return_corr)
 
     def run_MCMC(
-        self, theta_0, nwalkers, steps, burn_in, return_samples=True, return_corr=False
-    ):
-        # if self.syst_uncertainty is not None:
-        #     theta_0=np.append([0.],theta_0)
+        self, theta_0, nwalkers, steps, burn_in):
         ndimw = len(theta_0)
         pos = [
             theta_0 * np.random.normal(1.0, 0.1, theta_0.shape)
