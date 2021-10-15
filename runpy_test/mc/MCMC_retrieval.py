@@ -77,15 +77,13 @@ class MCMCRetrieval:
     def run_retrieval(self, x_0, nwalkers, steps, burn_in, return_samples=True, return_corr=False):
         self.initial_guess=x_0
         theta_0=np.concatenate(x_0).flatten()
-        samples=self.run_MCMC(theta_0,nwalkers,steps,burn_in,return_samples=True,
-                                    return_corr=False)
+        samples=self.run_MCMC(theta_0,nwalkers,steps,burn_in)
         if self.b:
             b=self.b[:]
             for i in range(self.b_iter):
                 for ii in range(len(self.b)):
                     self.b[i] = np.random.normal() * self.u_b[i] + self.b[i]
-                samples = np.vstack(self.run_MCMC(theta_0,nwalkers,steps,burn_in,return_samples=True,
-                                        return_corr=False))
+                samples = np.vstack(self.run_MCMC(theta_0,nwalkers,steps,burn_in)
 
             self.b = b[:]
 
