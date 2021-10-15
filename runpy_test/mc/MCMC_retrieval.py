@@ -63,8 +63,7 @@ class MCMCRetrieval:
             xb=x+self.b
         else:
             xb=x
-        print(xb)
-        self.measurement_function(*xb)
+        return self.measurement_function(*xb)
 
     def make_x_tuple(self,theta):
         x=tuple(self.initial_guess[:])
@@ -108,9 +107,11 @@ class MCMCRetrieval:
 
         if self.parallel_cores > 1:
             p = Pool(self.parallel_cores)
+            sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob)
+
         else:
             p = None
-        sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob, pool=p)
+            sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob)
         sampler.run_mcmc(pos, steps, progress=False)
 
         samples = sampler.chain[:, :, :].reshape((-1, ndimw))[burn_in::]
@@ -140,7 +141,6 @@ class MCMCRetrieval:
 
     def find_chisum(self, theta):
         model = self.measurement_function_x(theta)
-        print(model,self.observed.shape)
         diff = model - self.observed
         if np.isfinite(np.sum(diff)):
             if self.invcov is None:
@@ -152,7 +152,7 @@ class MCMCRetrieval:
             return np.inf
 
     def lnlike(self, theta):
-        # print(theta,self.find_chisum(theta))
+        print(theta,self.find_chisum(theta))
         return -0.5 * (self.find_chisum(theta))
 
     def lnprior(self, theta):
