@@ -63,6 +63,7 @@ class MCMCRetrieval:
             xb=x+self.b
         else:
             xb=x
+        print(xb)
         return self.measurement_function(*xb)
 
     def make_x_tuple(self,theta):
