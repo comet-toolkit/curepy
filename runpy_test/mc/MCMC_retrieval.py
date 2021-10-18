@@ -41,7 +41,7 @@ class MCMCRetrieval:
         initial_guess=None
     ):
         self.measurement_function = measurement_function
-        self.b = tuple(b)
+        self.b = np.array(b)
         self.Sb = Sb
         self.u_b = u_b
         self.b_iter = b_iter
@@ -60,7 +60,7 @@ class MCMCRetrieval:
     def measurement_function_x(self,theta):
         x=self.make_x_tuple(theta)
         if self.b:
-            xb=x+self.b
+            xb=x+tuple(self.b)
         else:
             xb=x
         return self.measurement_function(*xb)
@@ -94,7 +94,7 @@ class MCMCRetrieval:
             b=self.b[:]
             for i in range(self.b_iter):
                 for ii in range(len(self.b)):
-                    self.b[i] = np.random.normal() * np.array(self.u_b)[i] + np.array(self.b)[i]
+                    self.b[i] = np.random.normal() * self.u_b[i] + self.b[i]
                 samples = np.vstack(self.run_MCMC(theta_0,nwalkers,steps,burn_in))
                 print(i,len(samples))
             self.b = b[:]
