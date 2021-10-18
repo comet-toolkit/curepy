@@ -71,6 +71,7 @@ class MCMCRetrieval:
         j=0
         for xi in x:
             for mi in np.ndindex(xi):
+                print("this")
                 xi[mi]=theta[j]
                 j+=1
         print(theta,x)
