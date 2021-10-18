@@ -63,16 +63,28 @@ class MCMCRetrieval:
             xb=x+self.b
         else:
             xb=x
-        print(xb)
         return self.measurement_function(*xb)
 
     def make_x_tuple(self,theta):
         x=tuple(self.initial_guess[:])
         j=0
-        for xi in x:
-            for xii in np.nditer(xi):
-                xii=theta[j]
-                j+=1
+        for i in range(len(x)):
+            if isinstance(x[i],float):
+                x[i][ii] = theta[j]
+                j += 1
+            else:
+                for ii in range(len(x[i])):
+                    if isinstance(x[i][ii],float):
+                        x[i][ii] = theta[j]
+                        j += 1
+                    else:
+                        for iii in range(len(x[i][ii])):
+                            if isinstance(x[i][ii][iii],float):
+                                x[i][ii][iii] = theta[j]
+                                j += 1
+                            else:
+                                raise ValueError("The initial guess has too high dimensionality.")
+
         print(theta,x)
         return x
 
