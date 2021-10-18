@@ -114,10 +114,8 @@ class MCMCRetrieval:
 
         if self.parallel_cores > 1:
             p = Pool(self.parallel_cores)
-            sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob)
-
+            sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob,pool=p)
         else:
-            p = None
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob)
         sampler.run_mcmc(pos, steps, progress=False)
 
