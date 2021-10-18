@@ -70,9 +70,10 @@ class MCMCRetrieval:
         x=tuple(self.initial_guess[:])
         j=0
         for xi in x:
-            for xii in np.nditer(xi):
-                xii=theta[j]
+            for mi in np.ndindex(xi):
+                xi[mi]=theta[j]
                 j+=1
+        print(theta,x)
         return x
 
     def run_retrieval(self, x_0, nwalkers, steps, burn_in, return_samples=True, return_corr=False):
