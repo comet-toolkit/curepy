@@ -84,8 +84,6 @@ class MCMCRetrieval:
                                 j += 1
                             else:
                                 raise ValueError("The initial guess has too high dimensionality.")
-
-        print(theta,x)
         return x
 
     def run_retrieval(self, x_0, nwalkers, steps, burn_in, return_samples=True, return_corr=False):
@@ -161,7 +159,7 @@ class MCMCRetrieval:
             return np.inf
 
     def lnlike(self, theta):
-        print(theta,self.find_chisum(theta))
+        #print(theta,self.find_chisum(theta))
         return -0.5 * (self.find_chisum(theta))
 
     def lnprior(self, theta):
