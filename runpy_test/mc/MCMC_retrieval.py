@@ -70,10 +70,8 @@ class MCMCRetrieval:
         x=tuple(self.initial_guess[:])
         j=0
         for xi in x:
-            print(xi)
-            for mi in np.ndindex(np.asarray(xi)):
-                print("this")
-                xi[mi]=theta[j]
+            for xii in np.nditer(xi):
+                xii=theta[j]
                 j+=1
         print(theta,x)
         return x
