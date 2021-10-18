@@ -96,7 +96,7 @@ class MCMCRetrieval:
                 for ii in range(len(self.b)):
                     self.b[i] = np.random.normal() * self.u_b[i] + self.b[i]
                 samples = np.vstack(self.run_MCMC(theta_0,nwalkers,steps,burn_in))
-
+                print(i,len(samples))
             self.b = b[:]
 
         return self.analyse_samples(samples,return_samples,return_corr)
