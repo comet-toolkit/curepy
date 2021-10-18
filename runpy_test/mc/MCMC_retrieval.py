@@ -59,7 +59,7 @@ class MCMCRetrieval:
 
     def measurement_function_x(self,theta):
         x=self.make_x_tuple(theta)
-        if self.b:
+        if self.b is not None:
             xb=x+tuple(self.b)
         else:
             xb=x
@@ -90,7 +90,7 @@ class MCMCRetrieval:
         self.initial_guess=x_0
         theta_0=np.concatenate(x_0).flatten()
         samples=self.run_MCMC(theta_0,nwalkers,steps,burn_in)
-        if self.b:
+        if self.b is not None:
             b=self.b[:]
             for i in range(self.b_iter):
                 for ii in range(len(self.b)):
