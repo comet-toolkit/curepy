@@ -41,9 +41,15 @@ class MCMCRetrieval:
         initial_guess=None
     ):
         self.measurement_function = measurement_function
-        self.b = np.array(b)
-        self.Sb = np.array(Sb)
-        self.u_b = np.array(u_b)
+        self.b=None
+        self.Sb=None
+        self.u_b=None
+        if b:
+            self.b = np.array(b)
+        if Sb:
+            self.Sb = np.array(Sb)
+        if u_b:
+            self.u_b = np.array(u_b)
         self.b_iter = b_iter
         self.observed = observed
         self.rand_uncertainty = np.array([rand_uncertainty])
