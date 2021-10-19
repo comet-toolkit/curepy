@@ -42,8 +42,8 @@ class MCMCRetrieval:
     ):
         self.measurement_function = measurement_function
         self.b = np.array(b)
-        self.Sb = Sb
-        self.u_b = u_b
+        self.Sb = np.array(Sb)
+        self.u_b = np.array(u_b)
         self.b_iter = b_iter
         self.observed = observed
         self.rand_uncertainty = np.array([rand_uncertainty])
@@ -94,7 +94,7 @@ class MCMCRetrieval:
             b=self.b[:]
             for i in range(self.b_iter):
                 for ii in range(len(self.b)):
-                    self.b[i] = np.random.normal() * self.u_b[i] + self.b[i]
+                    self.b[ii] = np.random.normal() * self.u_b[ii] + b[ii]
                 samples = np.vstack(self.run_MCMC(theta_0,nwalkers,steps,burn_in))
                 print(i,len(samples))
             self.b = b[:]
