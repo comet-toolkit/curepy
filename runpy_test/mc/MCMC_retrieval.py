@@ -28,7 +28,6 @@ class MCMCRetrieval:
         self,
         measurement_function,
         observed,
-        syst_uncertainty=None,
         rand_uncertainty=None,
         cov=None,
         parallel_cores=1,
@@ -52,10 +51,9 @@ class MCMCRetrieval:
             self.u_b = np.array(u_b)
         self.b_iter = b_iter
         self.observed = observed
-        self.rand_uncertainty = np.array([rand_uncertainty])
-        self.syst_uncertainty = np.array([syst_uncertainty])
+        self.rand_uncertainty = np.array(rand_uncertainty)
         if cov is None:
-            self.invcov = cov
+            self.invcov = None
         else:
             self.invcov = np.linalg.inv(np.ascontiguousarray(cov))
         self.uplims = np.array(uplims)
@@ -75,17 +73,17 @@ class MCMCRetrieval:
         x=self.initial_guess[:]
         j=0
         for i in range(len(x)):
-            if isinstance(x[i],float):
+            if isinstance(x[i],float) or isinstance(x[i],int):
                 x[i][ii] = theta[j]
                 j += 1
             else:
                 for ii in range(len(x[i])):
-                    if isinstance(x[i][ii],float):
+                    if isinstance(x[i][ii],float) or isinstance(x[i][ii],int):
                         x[i][ii] = theta[j]
                         j += 1
                     else:
                         for iii in range(len(x[i][ii])):
-                            if isinstance(x[i][ii][iii],float):
+                            if isinstance(x[i][ii][iii],float) or isinstance(x[i][ii][iii],int):
                                 x[i][ii][iii] = theta[j]
                                 j += 1
                             else:
