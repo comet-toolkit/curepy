@@ -318,10 +318,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 ax.set_yticks([])
                 continue
             elif j == i:
-                ax.set_xticks(ticks[j])
-                if j==K-1:
-                    ax.set_xticklabels(ticklabels[j],fontsize=10)
-                    [l.set_rotation(90) for l in ax.get_xticklabels()]
+                if ticks:
+                    ax.set_xticks(ticks[j])
+                    if j==K-1:
+                        ax.set_xticklabels(ticklabels[j],fontsize=10)
+                        [l.set_rotation(90) for l in ax.get_xticklabels()]
                 continue
             
             # Deal with masked arrays.
@@ -346,17 +347,19 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             if i < K - 1:
                 ax.set_xticklabels([])
             else:
-                ax.set_xticks(ticks[j])
-                ax.set_xticklabels(ticklabels[j],fontsize=10)
-                [l.set_rotation(90) for l in ax.get_xticklabels()]
+                if ticks:
+                    ax.set_xticks(ticks[j])
+                    ax.set_xticklabels(ticklabels[j],fontsize=10)
+                    [l.set_rotation(90) for l in ax.get_xticklabels()]
                 ax.set_xlabel(labels[j],fontsize=18, **label_kwargs)
                 ax.xaxis.set_label_coords(0.5, -0.3)
             
             if j > 0:
                 ax.set_yticklabels([])
             else:
-                ax.set_yticks(ticks[i])
-                ax.set_yticklabels(ticklabels[i],fontsize=10) 
+                if ticks:
+                    ax.set_yticks(ticks[i])
+                    ax.set_yticklabels(ticklabels[i],fontsize=10)
                 ax.set_ylabel(labels[i],fontsize=18, **label_kwargs)
                 ax.yaxis.set_label_coords(-0.3,0.5)   
     pl.tight_layout()

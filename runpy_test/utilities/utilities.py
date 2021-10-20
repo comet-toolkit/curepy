@@ -4,7 +4,7 @@ import warnings
 
 import numdifftools as nd
 import numpy as np
-from runpy_test.utilities.corner_edited import corner
+from runpy_test.utilities import corner_edited
 
 """___Authorship___"""
 __author__ = "Pieter De Vis"
@@ -13,8 +13,12 @@ __maintainer__ = "Pieter De Vis"
 __email__ = "pieter.de.vis@npl.co.uk"
 __status__ = "Development"
 
-def plot_corner(samples,filename):
-    fig = corner(samples,plot_contours=False)
+def plot_corner(samples,filename,labels=None,ticks=None,ticklabels=None):
+    if labels is None:
+        labels=["input_qty %s"%(i+1) for i in range(len(samples))]
+    fig = corner_edited.corner(samples,labels=labels,
+                               ticks=ticks,
+                               ticklabels=ticklabels,plot_contours=False)
     fig.savefig(filename)
 
 def calculate_Jacobian(fun, x, Jx_diag=False, step=None):
