@@ -73,17 +73,17 @@ class MCMCRetrieval:
         x=self.initial_guess[:]
         j=0
         for i in range(len(x)):
-            if isinstance(x[i],float) or isinstance(x[i],int):
+            if not hasattr(x[i],'__len__'):
                 x[i][ii] = theta[j]
                 j += 1
             else:
-                for ii in range(len(x[i])):
-                    if isinstance(x[i][ii],float) or isinstance(x[i][ii],int):
+                for ii in range(len(x[i][ii])):
+                    if not hasattr(x[i],'__len__'):
                         x[i][ii] = theta[j]
                         j += 1
                     else:
                         for iii in range(len(x[i][ii])):
-                            if isinstance(x[i][ii][iii],float) or isinstance(x[i][ii][iii],int):
+                            if not hasattr(x[i][ii][iii],'__len__'):
                                 x[i][ii][iii] = theta[j]
                                 j += 1
                             else:
