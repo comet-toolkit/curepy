@@ -88,6 +88,7 @@ class MCMCRetrieval:
                                 j += 1
                             else:
                                 raise ValueError("The initial guess has too high dimensionality.")
+        print(x)
         return tuple(x)
 
     def run_retrieval(self, x_0, nwalkers, steps, burn_in, return_samples=True, return_corr=False):
