@@ -62,12 +62,26 @@ class MCMCRetrieval:
         self.parallel_cores = parallel_cores
         self.ninput=n_input
 
-        if hasattr(initial_guess,'__len__'):
-            self.initial_guess = np.array(len(initial_guess),dtype=object)
-            for i in range(len(initial_guess)):
-                self.initial_guess[i]=np.array(initial_guess[i],dtype=float)
+        if n_input:
+            self.initial_guess = np.empty(n_input,dtype=object)
+        elif hasattr(initial_guess,'__len__'):
+            self.initial_guess = np.empty(len(initial_guess),dtype=object)
         else:
             self.initial_guess = np.array([initial_guess],dtype=float)
+
+        if hasattr(initial_guess,'__len__'):
+            if hasattr(initial_guess[0],'__len__'):
+                self.initial_guess = np.empty(len(initial_guess),dtype=object)
+                for i in range(len(initial_guess)):
+                    self.initial_guess[i]=np.array(initial_guess[i],dtype=float)
+            else:
+                if n_input == len(initial_guess):
+                    for i in range(n_input):
+                        self.initial_guess[i] = float(initial_guess[i])
+                elif n_input==1:
+                    self.initial_guess = np.array(initial_guess,dtype=float)[None,:]
+                else:
+                    raise ValueError("your initial guess requires to specify the n_input quantity to indicate if these are multiple measurements for the same input qty (n_input=1) or a single measurement for different input_qty (n_input=len(initial_guess)). ")
 
     def measurement_function_x(self,theta):
         x=self.make_x_tuple(theta)
@@ -99,12 +113,17 @@ class MCMCRetrieval:
         return tuple(x)
 
     def run_retrieval(self, nwalkers, steps, burn_in, x_0=None, return_samples=True, return_corr=False):
-        if not x_0:
+        if x_0 is None:
             x_0=self.initial_guess
+
         if hasattr(x_0,'__len__'):
-            theta_0=np.concatenate(x_0).flatten()
+            if hasattr(x_0[0],'__len__'):
+                theta_0=np.concatenate(x_0).flatten()
+            else:
+                theta_0=np.array(x_0).flatten()
         else:
             theta_0=np.array([x_0])
+
         samples=self.run_MCMC(theta_0,nwalkers,steps,burn_in)
         if self.b is not None:
             b=self.b[:]
