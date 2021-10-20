@@ -15,7 +15,7 @@ __status__ = "Development"
 
 def plot_corner(samples,filename):
     fig = corner(samples,plot_contours=False)
-    fig.savefig(f'{filename}.png')
+    fig.savefig(filename)
 
 def calculate_Jacobian(fun, x, Jx_diag=False, step=None):
     """
