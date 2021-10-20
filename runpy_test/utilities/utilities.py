@@ -29,7 +29,7 @@ def plot_trace(samples,labels=None):
         if labels:
             label=labels[i]
         else:
-            label="input_gty %s"(i+1)
+            label="input_gty %s"%(i+1)
         plt.savefig("trace_%s.png"%label)
 
 def calculate_Jacobian(fun, x, Jx_diag=False, step=None):

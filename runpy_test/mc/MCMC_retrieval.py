@@ -92,7 +92,10 @@ class MCMCRetrieval:
 
     def run_retrieval(self, x_0, nwalkers, steps, burn_in, return_samples=True, return_corr=False):
         self.initial_guess=x_0
-        theta_0=np.concatenate(x_0).flatten()
+        if hasattr(x_0,'__len__'):
+            theta_0=np.concatenate(x_0).flatten()
+        else:
+            theta_0=np.array(x_0)
         samples=self.run_MCMC(theta_0,nwalkers,steps,burn_in)
         if self.b is not None:
             b=self.b[:]
