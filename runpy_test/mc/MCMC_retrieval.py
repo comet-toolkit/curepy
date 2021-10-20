@@ -77,8 +77,8 @@ class MCMCRetrieval:
                 x[i][ii] = theta[j]
                 j += 1
             else:
-                for ii in range(len(x[i][ii])):
-                    if not hasattr(x[i],'__len__'):
+                for ii in range(len(x[i])):
+                    if not hasattr(x[i][ii],'__len__'):
                         x[i][ii] = theta[j]
                         j += 1
                     else:
