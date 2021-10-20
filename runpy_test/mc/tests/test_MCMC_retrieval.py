@@ -109,11 +109,22 @@ class TestMCMCRetrieval(unittest.TestCase):
     """
 
     def test_single_inputqty(self):
-        retr = MCMCRetrieval(function_1,y_1,rand_uncertainty=y_1err,parallel_cores=20,initial_guess=200)
-        medians,unc,samples=retr.run_retrieval(200 , 800, 200, return_samples=True, return_corr=False)
+        retr = MCMCRetrieval(function_1,y_1[0],rand_uncertainty=y_1err[0],parallel_cores=20,
+                             initial_guess=y_1[0])
+        medians,unc,samples = retr.run_retrieval(200,8000,2000,return_samples=True,
+                                                 return_corr=False,x_0=y_1[0])
+        print(samples)
+
+        npt.assert_allclose(medians[0],x_1[0],rtol=0.01)
+        npt.assert_allclose(unc[0],x_1err[0],rtol=0.01)
+
+    def test_single_inputqty_1D(self):
+        retr = MCMCRetrieval(function_1,y_1,rand_uncertainty=y_1err,parallel_cores=20,initial_guess=y_1)
+        medians,unc,samples=retr.run_retrieval(200 , 800, 200, return_samples=True, return_corr=False, x_0=y_1)
+        print(samples)
+
         npt.assert_allclose(medians[0],x_1,rtol=0.01)
         npt.assert_allclose(unc[0],x_1err,rtol=0.01)
-
 
 
 if __name__ == "__main__":

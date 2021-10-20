@@ -37,7 +37,8 @@ class MCMCRetrieval:
         u_b=None,
         Sb=None,
         b_iter=0,
-        initial_guess=None
+        initial_guess=None,
+        n_input=None
     ):
         self.measurement_function = measurement_function
         self.b=None
@@ -59,6 +60,7 @@ class MCMCRetrieval:
         self.uplims = np.array(uplims)
         self.downlims = np.array(downlims)
         self.parallel_cores = parallel_cores
+        self.ninput=n_input
 
         if hasattr(initial_guess,'__len__'):
             self.initial_guess = np.array(len(initial_guess),dtype=object)
@@ -170,7 +172,7 @@ class MCMCRetrieval:
             return np.inf
 
     def lnlike(self, theta):
-        #print(theta,self.find_chisum(theta))
+        print(theta,self.find_chisum(theta))
         return -0.5 * (self.find_chisum(theta))
 
     def lnprior(self, theta):

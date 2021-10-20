@@ -24,12 +24,13 @@ def plot_corner(samples,filename,labels=None,ticks=None,ticklabels=None):
     fig.savefig(filename)
 
 def plot_trace(samples,labels=None):
+    plt.clf()
     for i in range(len(samples[0])):
         plt.plot(samples)
         if labels:
             label=labels[i]
         else:
-            label="input_gty %s"%(i+1)
+            label="input_qty%s"%(i+1)
         plt.savefig("trace_%s.png"%label)
 
 def calculate_Jacobian(fun, x, Jx_diag=False, step=None):
