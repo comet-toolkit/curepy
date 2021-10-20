@@ -59,7 +59,13 @@ class MCMCRetrieval:
         self.uplims = np.array(uplims)
         self.downlims = np.array(downlims)
         self.parallel_cores = parallel_cores
-        self.initial_guess=initial_guess
+
+        if hasattr(initial_guess,'__len__'):
+            self.initial_guess = np.array(len(initial_guess),dtype=object)
+            for i in range(len(initial_guess)):
+                self.initial_guess[i]=np.array(initial_guess[i],dtype=float)
+        else:
+            self.initial_guess = np.array([initial_guess],dtype=float)
 
     def measurement_function_x(self,theta):
         x=self.make_x_tuple(theta)
@@ -70,11 +76,11 @@ class MCMCRetrieval:
         return self.measurement_function(*xb)
 
     def make_x_tuple(self,theta):
-        x=[guess.astype(float) for guess in self.initial_guess]
+        x=self.initial_guess
         j=0
         for i in range(len(x)):
             if not hasattr(x[i],'__len__'):
-                x[i][ii] = theta[j]
+                x[i] = theta[j]
                 j += 1
             else:
                 for ii in range(len(x[i])):
@@ -90,12 +96,13 @@ class MCMCRetrieval:
                                 raise ValueError("The initial guess has too high dimensionality.")
         return tuple(x)
 
-    def run_retrieval(self, x_0, nwalkers, steps, burn_in, return_samples=True, return_corr=False):
-        self.initial_guess=x_0
+    def run_retrieval(self, nwalkers, steps, burn_in, x_0=None, return_samples=True, return_corr=False):
+        if not x_0:
+            x_0=self.initial_guess
         if hasattr(x_0,'__len__'):
             theta_0=np.concatenate(x_0).flatten()
         else:
-            theta_0=np.array(x_0)
+            theta_0=np.array([x_0])
         samples=self.run_MCMC(theta_0,nwalkers,steps,burn_in)
         if self.b is not None:
             b=self.b[:]
