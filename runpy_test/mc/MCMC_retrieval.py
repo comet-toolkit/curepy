@@ -72,7 +72,7 @@ class MCMCRetrieval:
         return self.measurement_function(*xb)
 
     def make_x_tuple(self,theta):
-        x=tuple(self.initial_guess[:])
+        x=self.initial_guess[:]
         j=0
         for i in range(len(x)):
             if isinstance(x[i],float):
@@ -90,7 +90,7 @@ class MCMCRetrieval:
                                 j += 1
                             else:
                                 raise ValueError("The initial guess has too high dimensionality.")
-        return x
+        return tuple(x)
 
     def run_retrieval(self, x_0, nwalkers, steps, burn_in, return_samples=True, return_corr=False):
         self.initial_guess=x_0
@@ -134,7 +134,7 @@ class MCMCRetrieval:
         unc_down = -(np.percentile(samples, 16, axis=0) - medians)
         unc_avg = (unc_up + unc_down) / 2.0
         corr = np.corrcoef(samples.T)
-
+        print(medians)
         medians = self.make_x_tuple(medians)
         unc_avg = self.make_x_tuple(unc_avg)
 
