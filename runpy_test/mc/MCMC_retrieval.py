@@ -80,7 +80,6 @@ class MCMCRetrieval:
                 for ii in range(len(x[i])):
                     if not hasattr(x[i][ii],'__len__'):
                         x[i][ii] = theta[j]
-                        print(x[i][ii],theta[j])
                         j += 1
                     else:
                         for iii in range(len(x[i][ii])):
@@ -101,7 +100,7 @@ class MCMCRetrieval:
                 for ii in range(len(self.b)):
                     self.b[ii] = np.random.normal() * self.u_b[ii] + b[ii]
                 samples = np.vstack(self.run_MCMC(theta_0,nwalkers,steps,burn_in))
-                print(i,len(samples))
+                print(i,samples.shape)
             self.b = b[:]
 
         return self.analyse_samples(samples,return_samples,return_corr)
