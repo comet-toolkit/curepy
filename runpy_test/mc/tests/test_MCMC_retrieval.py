@@ -53,7 +53,7 @@ class TestMCMCRetrieval(unittest.TestCase):
         retr = MCMCRetrieval(function,y[0],rand_uncertainty=y_err[0],parallel_cores=20,
                              initial_guess=x[0]+1,downlims=0.)
         medians,unc,samples = retr.run_retrieval(150,300,20,return_samples=True,
-                                                 return_corr=False,x_0=x[0])
+                                                 return_corr=False)#,x_0=x[0])
 
         npt.assert_allclose(medians[0],x[0],rtol=0.01)
         npt.assert_allclose(unc[0],x_err[0],rtol=0.05)
@@ -62,7 +62,7 @@ class TestMCMCRetrieval(unittest.TestCase):
         retr = MCMCRetrieval(function,y,rand_uncertainty=y_err,parallel_cores=20,
                              initial_guess=x,n_input=1)
         medians,unc,samples = retr.run_retrieval(200,800,200,return_samples=True,
-                                                 return_corr=False,x_0=x)
+                                                 return_corr=False)#,x_0=x)
         print(medians,unc)
 
         # npt.assert_allclose(medians[0],x,rtol=0.01)
@@ -72,7 +72,7 @@ class TestMCMCRetrieval(unittest.TestCase):
         retr = MCMCRetrieval(function_b,y_b[0],rand_uncertainty=yerr_b_uncorr[0],
                              parallel_cores=20,initial_guess=[x1_b[0],x2_b[0]],n_input=2)
         medians,unc,samples = retr.run_retrieval(200,800,200,return_samples=True,
-                                                 return_corr=False,x_0=[x1_b[0],x2_b[0]])
+                                                 return_corr=False)#,x_0=[x1_b[0],x2_b[0]])
         print(medians,unc)
 
         # npt.assert_allclose(medians[0],x1_b[0],rtol=0.01)

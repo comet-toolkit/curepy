@@ -76,8 +76,8 @@ class MCMCRetrieval:
                     self.initial_guess[i]=np.array(initial_guess[i],dtype=float)
             else:
                 if n_input == len(initial_guess):
-                    for i in range(n_input):
-                        self.initial_guess[i] = float(initial_guess[i])
+
+                    self.initial_guess = np.array(initial_guess,dtype=float)
                 elif n_input==1:
                     self.initial_guess = np.array(initial_guess,dtype=float)[None,:]
                 else:
