@@ -6,6 +6,8 @@ import numdifftools as nd
 import numpy as np
 from runpy_test.utilities import corner_edited
 
+import matplotlib.pyplot as plt
+
 """___Authorship___"""
 __author__ = "Pieter De Vis"
 __created__ = "30/03/2019"
@@ -20,6 +22,15 @@ def plot_corner(samples,filename,labels=None,ticks=None,ticklabels=None):
                                ticks=ticks,
                                ticklabels=ticklabels,plot_contours=False)
     fig.savefig(filename)
+
+def plot_trace(samples,labels=None):
+    for i in range(len(samples[0])):
+        plt.plot(samples)
+        if labels:
+            label=labels[i]
+        else:
+            label="input_gty %s"(i+1)
+        plt.savefig("trace_%s.png"%label)
 
 def calculate_Jacobian(fun, x, Jx_diag=False, step=None):
     """

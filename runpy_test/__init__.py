@@ -2,6 +2,7 @@ from runpy_test.mc.MCMC_retrieval import MCMCRetrieval
 from runpy_test.lpu.lpu_retrieval import LPURetrieval
 from runpy_test.utilities.utilities import (
     plot_corner,
+    plot_trace,
     calculate_Jacobian,
     calculate_flattened_corr,
     separate_flattened_corr,
