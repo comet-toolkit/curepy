@@ -70,7 +70,7 @@ class MCMCRetrieval:
         return self.measurement_function(*xb)
 
     def make_x_tuple(self,theta):
-        x=self.initial_guess[:]
+        x=self.initial_guess[:].asfloats()
         j=0
         for i in range(len(x)):
             if not hasattr(x[i],'__len__'):
