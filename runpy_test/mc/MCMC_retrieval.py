@@ -5,6 +5,7 @@
 """___Third-Party Modules___"""
 import os
 from multiprocessing import Pool
+import copy
 
 import emcee
 import numpy as np
@@ -91,7 +92,7 @@ class MCMCRetrieval:
         return self.measurement_function(*xb)
 
     def make_x_tuple(self,theta):
-        x=np.zeros_like(self.initial_guess)
+        x=copy.deepcopy(self.initial_guess)
         j=0
         for i in range(len(x)):
             if not hasattr(x[i],'__len__'):
@@ -162,7 +163,7 @@ class MCMCRetrieval:
         unc_down = -(np.percentile(samples, 16, axis=0) - medians)
         unc_avg = (unc_up + unc_down) / 2.0
         corr = np.corrcoef(samples.T)
-        print(medians,self.make_x_tuple(medians))
+
         medians = self.make_x_tuple(medians)
         unc_avg = self.make_x_tuple(unc_avg)
 
