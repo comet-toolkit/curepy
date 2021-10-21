@@ -5,7 +5,8 @@ import warnings
 import numdifftools as nd
 import numpy as np
 from runpy_test.utilities import corner_edited
-
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 """___Authorship___"""
