@@ -70,16 +70,12 @@ class MCMCRetrieval:
             self.initial_guess = np.array([initial_guess],dtype=float)
 
         if hasattr(initial_guess,'__len__'):
-            print("here1")
             if hasattr(initial_guess[0],'__len__'):
-                print("here2")
                 self.initial_guess = np.empty(len(initial_guess),dtype=object)
                 for i in range(len(initial_guess)):
                     self.initial_guess[i]=np.array(initial_guess[i],dtype=float)
             else:
                 if n_input == len(initial_guess):
-                    print("here3")
-
                     self.initial_guess = np.array(initial_guess,dtype=float)
                 elif n_input==1:
                     self.initial_guess = np.array(initial_guess,dtype=float)[None,:]
