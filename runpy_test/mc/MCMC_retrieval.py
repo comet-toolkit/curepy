@@ -128,14 +128,14 @@ class MCMCRetrieval:
             samples=self.run_MCMC(theta_0,nwalkers,steps,burn_in)
 
         else:
-            samples = np.zeros((nwalkers*(steps-burn_in)*self.b_iter,len(theta_0)))
-            b_samples = np.zeros((nwalkers*(steps-burn_in)*self.b_iter,len(self.b)))
+            samples = np.zeros(((nwalkers*steps-burn_in)*self.b_iter,len(theta_0)))
+            b_samples = np.zeros(((nwalkers*steps-burn_in)*self.b_iter,len(self.b)))
             b=self.b[:]
             for i in range(self.b_iter):
                 for ii in range(len(self.b)):
                     self.b[ii] = np.random.normal() * self.u_b[ii] + b[ii]
-                    b_samples[i*nwalkers*(steps-burn_in):(i+1)*nwalkers*(steps-burn_in),ii]=self.b[ii]
-                samples[i*nwalkers*(steps-burn_in):(i+1)*nwalkers*(steps-burn_in),:] = self.run_MCMC(theta_0,nwalkers,steps,burn_in)
+                    b_samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),ii]=self.b[ii]
+                samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),:] = self.run_MCMC(theta_0,nwalkers,steps,burn_in)
                 print(i)
             self.b = b[:]
             if include_b_results:
