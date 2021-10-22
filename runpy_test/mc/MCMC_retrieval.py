@@ -141,7 +141,7 @@ class MCMCRetrieval:
             if include_b_results:
                 samples=np.hstack(samples,b_samples)
 
-        return self.analyse_samples(samples,return_samples,return_corr)
+        return self.analyse_samples(samples,return_samples,return_corr,include_b_results)
 
     def run_MCMC(
         self, theta_0, nwalkers, steps, burn_in):
@@ -164,14 +164,14 @@ class MCMCRetrieval:
         samples = sampler.chain[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
 
-    def analyse_samples(self,samples,return_samples,return_corr):
+    def analyse_samples(self,samples,return_samples,return_corr,include_b_results):
         medians = np.median(samples, axis=0)
         unc_up = np.percentile(samples, 84, axis=0) - medians
         unc_down = -(np.percentile(samples, 16, axis=0) - medians)
         unc_avg = (unc_up + unc_down) / 2.0
         corr = np.corrcoef(samples.T)
 
-        if self.b is None:
+        if (self.b is None) or (not include_b_results):
             medians = self.make_x_tuple(medians)
             unc_avg = self.make_x_tuple(unc_avg)
         else:
