@@ -112,7 +112,7 @@ class MCMCRetrieval:
                                 raise ValueError("The initial guess has too high dimensionality.")
         return tuple(x)
 
-    def run_retrieval(self, nwalkers, steps, burn_in, x_0=None, return_samples=True, return_corr=False):
+    def run_retrieval(self, nwalkers, steps, burn_in, x_0=None, return_samples=True, return_corr=False, include_b_results=False):
         if x_0 is None:
             x_0=self.initial_guess
 
@@ -125,14 +125,19 @@ class MCMCRetrieval:
             theta_0=np.array([x_0])
 
         samples=self.run_MCMC(theta_0,nwalkers,steps,burn_in)
+
         if self.b is not None:
+            b_samples = np.zeros((nwalkers*(steps-burn_in)*self.b_iter,len(self.b)))
             b=self.b[:]
             for i in range(self.b_iter):
                 for ii in range(len(self.b)):
                     self.b[ii] = np.random.normal() * self.u_b[ii] + b[ii]
+                    b_samples[i*nwalkers*(steps-burn_in):(i+1)*nwalkers*(steps-burn_in),ii]=self.b[ii]
                 samples = np.vstack(self.run_MCMC(theta_0,nwalkers,steps,burn_in))
                 print(i,samples.shape)
             self.b = b[:]
+            if include_b_results:
+                samples=np.hstack(samples,b_samples)
 
         return self.analyse_samples(samples,return_samples,return_corr)
 
