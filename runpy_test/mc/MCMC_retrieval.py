@@ -139,7 +139,7 @@ class MCMCRetrieval:
                 print(i)
             self.b = b[:]
             if include_b_results:
-                samples=np.hstack(samples,b_samples)
+                samples=np.hstack((samples,b_samples))
 
         return self.analyse_samples(samples,return_samples,return_corr,include_b_results)
 
