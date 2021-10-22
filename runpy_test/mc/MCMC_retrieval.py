@@ -171,8 +171,12 @@ class MCMCRetrieval:
         unc_avg = (unc_up + unc_down) / 2.0
         corr = np.corrcoef(samples.T)
 
-        medians = self.make_x_tuple(medians)
-        unc_avg = self.make_x_tuple(unc_avg)
+        if self.b is None:
+            medians = self.make_x_tuple(medians)
+            unc_avg = self.make_x_tuple(unc_avg)
+        else:
+            medians = self.make_x_tuple(medians)+tuple(medians[-len(self.b)::])
+            unc_avg = self.make_x_tuple(unc_avg)+tuple(unc_avg[-len(self.b)::])
 
         if return_samples:
             if return_corr:
