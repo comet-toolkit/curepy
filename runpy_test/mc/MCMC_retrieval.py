@@ -203,7 +203,7 @@ class MCMCRetrieval:
             return np.inf
 
     def lnlike(self, theta):
-        # print(theta,self.find_chisum(theta))
+        print(theta,self.find_chisum(theta))
         return -0.5 * (self.find_chisum(theta))
 
     def lnprior(self, theta):
