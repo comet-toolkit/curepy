@@ -159,7 +159,7 @@ class MCMCRetrieval:
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob,pool=p)
         else:
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob)
-        sampler.run_mcmc(pos, steps, progress=False)
+        sampler.run_mcmc(pos, steps, progress=True)
 
         samples = sampler.chain[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
