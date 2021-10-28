@@ -154,6 +154,7 @@ class MCMCRetrieval:
 
         self.measurement_function_x(theta_0)
 
+        print(nwalkers,ndimw,steps)
         if self.parallel_cores > 1:
             p = Pool(self.parallel_cores)
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob,pool=p)
