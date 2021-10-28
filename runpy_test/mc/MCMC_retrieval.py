@@ -148,7 +148,7 @@ class MCMCRetrieval:
         ndimw = len(theta_0)
         pos = [
             theta_0 * np.random.normal(1.0, 0.1, theta_0.shape)
-            + np.random.normal(0.0, 0.001, theta_0.shape)
+            + np.random.normal(0.0, 0.000001, theta_0.shape)
             for i in range(nwalkers)
         ]
 
