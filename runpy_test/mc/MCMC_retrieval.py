@@ -195,19 +195,20 @@ class MCMCRetrieval:
     def find_chisum(self, theta):
         model = self.measurement_function_x(theta)
         diff = model - self.observed
-        print("here",diff.shape)
         if np.isfinite(np.sum(diff)):
             if self.invcov is None:
                 return np.sum((diff) ** 2 / self.rand_uncertainty ** 2)
             else:
-                print("here2",diff.shape,self.repeat_dims)
+                print("here2",diff.shape,self.repeat_dims,diff.shape[self.repeat_dims])
                 # print(diff,np.linalg.inv(self.cov),np.dot(np.dot(diff.T,self.invcov),diff))
                 if len(self.repeat_dims) == 0:
                     return np.dot(np.dot(diff.T,self.invcov),diff)
                 elif len(self.repeat_dims)==1:
                     sum=0
                     for i in range(diff.shape[self.repeat_dims]):
+                        print("here",i)
                         diffi=np.take_along_axis(diff,i,self.repeat_dims)
+                        print("here2",diffi.shape)
                         print(diffi.shape,self.invcov.shape)
                         sum+= np.dot(np.dot(diffi.T,self.invcov),diffi)
                     print(sum)
