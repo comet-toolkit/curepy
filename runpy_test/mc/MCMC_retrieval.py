@@ -39,7 +39,9 @@ class MCMCRetrieval:
         Sb=None,
         b_iter=0,
         initial_guess=None,
-        n_input=None
+        n_input=None,
+        progress=True,
+        repeat_dims=[]
     ):
         self.measurement_function = measurement_function
         self.b=None
@@ -62,7 +64,8 @@ class MCMCRetrieval:
         self.downlims = np.array(downlims)
         self.parallel_cores = parallel_cores
         self.ninput=n_input
-
+        self.repeat_dims=np.array(repeat_dims)
+        self.progress=progress
         if n_input:
             self.initial_guess = np.empty(n_input,dtype=object)
         elif hasattr(initial_guess,'__len__'):
@@ -158,7 +161,7 @@ class MCMCRetrieval:
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob,pool=p)
         else:
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob)
-        sampler.run_mcmc(pos, steps, progress=True)
+        sampler.run_mcmc(pos, steps, progress=self.progress)
 
         samples = sampler.chain[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
@@ -197,7 +200,16 @@ class MCMCRetrieval:
                 return np.sum((diff) ** 2 / self.rand_uncertainty ** 2)
             else:
                 # print(diff,np.linalg.inv(self.cov),np.dot(np.dot(diff.T,self.invcov),diff))
-                return np.dot(np.dot(diff.T, self.invcov), diff)
+                if len(self.repeat_dims) == 0:
+                    return np.dot(np.dot(diff.T,self.invcov),diff)
+                elif len(self.repeat_dims)==1:
+                    sum=0
+                    for i in range(diff.shape[self.repeat_dims]):
+                        diffi=np.take_along_axis(diff,i,self.repeat_dims)
+                        sum+= np.dot(np.dot(diff.T,self.invcov),diff)
+                    return sum
+                else:
+                    raise ValueError("Methods for multiple repeat dimensions are not yet implemented,")
         else:
             return np.inf
 
