@@ -200,6 +200,7 @@ class MCMCRetrieval:
             if self.invcov is None:
                 return np.sum((diff) ** 2 / self.rand_uncertainty ** 2)
             else:
+                print("here2",diff.shape,self.repeat_dims)
                 # print(diff,np.linalg.inv(self.cov),np.dot(np.dot(diff.T,self.invcov),diff))
                 if len(self.repeat_dims) == 0:
                     return np.dot(np.dot(diff.T,self.invcov),diff)
