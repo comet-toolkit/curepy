@@ -205,8 +205,7 @@ class MCMCRetrieval:
                 elif len(self.repeat_dims)==1:
                     sum=0
                     for i in range(diff.shape[self.repeat_dims[0]]):
-                        print("here",i)
-                        diffi=np.take_along_axis(diff,i,self.repeat_dims[0])
+                        diffi=np.take_along_axis(diff,np.array(i),self.repeat_dims[0])
                         print("here2",diffi.shape)
                         print(diffi.shape,self.invcov.shape)
                         sum+= np.dot(np.dot(diffi.T,self.invcov),diffi)
