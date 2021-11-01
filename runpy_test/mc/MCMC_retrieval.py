@@ -206,7 +206,7 @@ class MCMCRetrieval:
                     sum=0
                     for i in range(diff.shape[self.repeat_dims]):
                         diffi=np.take_along_axis(diff,i,self.repeat_dims)
-                        sum+= np.dot(np.dot(diff.T,self.invcov),diff)
+                        sum+= np.dot(np.dot(diffi.T,self.invcov),diffi)
                     return sum
                 else:
                     raise ValueError("Methods for multiple repeat dimensions are not yet implemented,")
