@@ -13,6 +13,7 @@ import numpy as np
 os.environ["OMP_NUM_THREADS"] = "1"
 
 """___NPL Modules___"""
+import punpy
 
 """___Authorship___"""
 __author__ = "Pieter De Vis"
@@ -36,7 +37,8 @@ class MCMCRetrieval:
         downlims=-np.inf,
         b=None,
         u_b=None,
-        Sb=None,
+        corr_b=None,
+        b_corr_between=None,
         b_iter=0,
         initial_guess=None,
         n_input=None,
@@ -45,14 +47,17 @@ class MCMCRetrieval:
     ):
         self.measurement_function = measurement_function
         self.b=None
-        self.Sb=None
         self.u_b=None
+        self.corr_b=None
+        self.b_corr_between=None
         if b:
             self.b = np.array(b)
-        if Sb:
-            self.Sb = np.array(Sb)
         if u_b:
             self.u_b = np.array(u_b)
+        if corr_b:
+            self.corr_b = np.array(corr_b)
+        if b_corr_between:
+            self.b_corr_between = np.array(b_corr_between)
         self.b_iter = b_iter
         self.observed = observed
         self.rand_uncertainty = np.array(rand_uncertainty)
@@ -132,14 +137,22 @@ class MCMCRetrieval:
 
         else:
             samples = np.zeros(((nwalkers*steps-burn_in)*self.b_iter,len(theta_0)))
-            b_samples = np.zeros(((nwalkers*steps-burn_in)*self.b_iter,len(self.b)))
             b=self.b[:]
-            for i in range(self.b_iter):
-                for ii in range(len(self.b)):
-                    self.b[ii] = np.random.normal() * self.u_b[ii] + b[ii]
-                    b_samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),ii]=self.b[ii]
+            prop = punpy.MCPropagation(self.b_iter)
+            b_samples = np.empty(len(b),dtype=np.ndarray)
+            for i in range(len(b)):
+                b_samples[i] = prop.generate_sample(b,self.u_b,self.corr_b,i)
+
+            if self.b_corr_between is not None:
+                b_samples = prop.correlate_samples_corr(b_samples,self.b_corr_between)
+
+            for i in range(len(self.b_iter)):
+                for ii in range(len(b)):
+                    self.b[ii] = b_samples[ii][i]
+                b_samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),ii]=self.b[ii]
                 samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),:] = self.run_MCMC(theta_0,nwalkers,steps,burn_in)
                 print(i)
+
             self.b = b[:]
             if include_b_results:
                 samples=np.hstack((samples,b_samples))
