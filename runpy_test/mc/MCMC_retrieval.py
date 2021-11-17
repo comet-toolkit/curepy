@@ -149,7 +149,6 @@ class MCMCRetrieval:
             for i in range(self.b_iter):
                 for ii in range(len(b)):
                     self.b[ii] = b_samples[ii][i]
-                b_samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),ii]=self.b[ii]
                 samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),:] = self.run_MCMC(theta_0,nwalkers,steps,burn_in)
                 print(i)
 
