@@ -146,7 +146,7 @@ class MCMCRetrieval:
             if self.b_corr_between is not None:
                 b_samples = prop.correlate_samples_corr(b_samples,self.b_corr_between)
 
-            for i in range(len(self.b_iter)):
+            for i in range(self.b_iter):
                 for ii in range(len(b)):
                     self.b[ii] = b_samples[ii][i]
                 b_samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),ii]=self.b[ii]
