@@ -40,6 +40,7 @@ class MCMCRetrieval:
         corr_b=None,
         b_corr_between=None,
         b_iter=0,
+        b_samples=None,
         initial_guess=None,
         n_input=None,
         progress=True,
@@ -59,6 +60,7 @@ class MCMCRetrieval:
         if b_corr_between:
             self.b_corr_between = np.array(b_corr_between)
         self.b_iter = b_iter
+        self.b_samples=b_samples
         self.observed = observed
         self.rand_uncertainty = np.array(rand_uncertainty)
         if cov is None:
@@ -136,21 +138,24 @@ class MCMCRetrieval:
             samples=self.run_MCMC(theta_0,nwalkers,steps,burn_in)
 
         else:
-            samples = np.zeros(((nwalkers*steps-burn_in)*self.b_iter,len(theta_0)))
+            samples = np.zeros(((nwalkers*steps-burn_in)*self.b_iter,len(theta_0)),dtype=np.ndarray)
             b=self.b[:]
             prop = punpy.MCPropagation(self.b_iter)
-            b_samples = np.empty(len(b),dtype=np.ndarray)
-            for i in range(len(b)):
-                b_samples[i] = prop.generate_sample(b,self.u_b,self.corr_b,i)
+            if self.b_samples is None:
+                b_samples = np.empty(len(b),dtype=np.ndarray)
+                for i in range(len(b)):
+                    b_samples[i] = prop.generate_sample(b,self.u_b,self.corr_b,i)
 
-            if self.b_corr_between is not None:
-                b_samples = prop.correlate_samples_corr(b_samples,self.b_corr_between)
+                if self.b_corr_between is not None:
+                    b_samples = prop.correlate_samples_corr(b_samples,self.b_corr_between)
+            else:
+                b_samples=self.b_samples
+                self.b=b_samples[:,0]
 
-            for i in range(self.b_iter):
-                for ii in range(len(b)):
+            for i in range(len(b_samples[0])):
+                for ii in range(len(b_samples)):
                     self.b[ii] = b_samples[ii][i]
                 samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),:] = self.run_MCMC(theta_0,nwalkers,steps,burn_in)
-                print(i)
 
             self.b = b[:]
             if include_b_results:
