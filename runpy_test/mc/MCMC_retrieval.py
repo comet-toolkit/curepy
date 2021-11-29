@@ -9,7 +9,6 @@ import copy
 
 import emcee
 import numpy as np
-import pickle
 
 os.environ["OMP_NUM_THREADS"] = "1"
 
@@ -44,12 +43,8 @@ class MCMCRetrieval:
         initial_guess=None,
         n_input=None,
         progress=True,
-        repeat_dims=[],
-        k = None,
-        all_samples = None
+        repeat_dims=[]
     ):
-        self.k = 0
-        self.all_samples ={}
         self.measurement_function = measurement_function
         self.b=None
         self.u_b=None
@@ -100,8 +95,6 @@ class MCMCRetrieval:
         x=self.make_x_tuple(theta)
         if self.b is not None:
             xb=x+tuple(self.b)
-            self.k = self.k + 1
-            self.all_samples['{}'.format(self.k)] = xb
         else:
             xb=x
         return self.measurement_function(*xb)
@@ -149,28 +142,20 @@ class MCMCRetrieval:
             b_samples = np.empty(len(b),dtype=np.ndarray)
             for i in range(len(b)):
                 b_samples[i] = prop.generate_sample(b,self.u_b,self.corr_b,i)
+
             if self.b_corr_between is not None:
                 b_samples = prop.correlate_samples_corr(b_samples,self.b_corr_between)
-                
-                
+
             for i in range(self.b_iter):
                 for ii in range(len(b)):
-                    if len(b_samples[ii]) != self.b_iter:
-                        b_new = []
-                        for j in range(len(b_samples[ii])):
-                             b_new.append(b_samples[ii][j][i])
-                        self.b[ii] = np.array(b_new)
-                    else:
-                        self.b[ii] = b_samples[ii][i]
+                    self.b[ii] = b_samples[ii][i]
                 samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),:] = self.run_MCMC(theta_0,nwalkers,steps,burn_in)
-            
+                print(i)
 
             self.b = b[:]
             if include_b_results:
-                with open('./saved_dictionary.pkl', 'wb') as f:
-                    pickle.dump(self.all_samples, f)
-                #samples=np.hstack((samples,b_samples))
-                
+                samples=np.hstack((samples,b_samples))
+
         return self.analyse_samples(samples,return_samples,return_corr,include_b_results)
 
     def run_MCMC(
@@ -180,7 +165,7 @@ class MCMCRetrieval:
             theta_0 * np.random.normal(1.0, 0.1, theta_0.shape)
             for i in range(nwalkers)
         ]
-        
+
         self.measurement_function_x(theta_0)
 
         if self.parallel_cores > 1:
