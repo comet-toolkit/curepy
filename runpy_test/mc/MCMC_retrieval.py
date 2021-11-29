@@ -165,7 +165,7 @@ class MCMCRetrieval:
 
             self.b = b[:]
             if include_b_results:
-                samples_comb = np.empty(((nwalkers*steps-burn_in)*self.b_iter,len(theta_0))+len(self.b),
+                samples_comb = np.empty(((nwalkers*steps-burn_in)*self.b_iter,len(theta_0)+len(self.b)),
                                    dtype=np.ndarray)
                 samples_comb[:,::len(theta_0)] = samples
                 samples_comb[:,len(theta_0)::] = b_samples
