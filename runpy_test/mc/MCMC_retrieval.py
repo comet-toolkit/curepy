@@ -99,7 +99,6 @@ class MCMCRetrieval:
             xb=x+tuple(self.b)
         else:
             xb=x
-        print(self.b)
         return self.measurement_function(*xb)
 
     def make_x_tuple(self,theta):
@@ -155,14 +154,12 @@ class MCMCRetrieval:
 
             for i in range(len(b_samples[0])):
                 for ii in range(len(b_samples)):
-                    #self.b[ii] = b_samples[ii][i]
-                    if len(b_samples[ii]) != self.b_iter:
-                        b_new = []
-                        for j in range(len(b_samples[ii])):
-                            b_new.append(b_samples[ii][j][i])
-                        self.b[ii] = np.array(b_new)
-                    else:
+                    if b_samples[ii].ndim == 1:
                         self.b[ii] = b_samples[ii][i]
+                    elif b_samples[ii].ndim == 2:
+                        self.b[ii] = np.array([b_samples[ii][j][i] for j in range(len(b_samples[ii]))])
+                    else:
+                        raise ValueError("MCMC_retrieval: the dimensionality of one of the parameters in b is not supported (currently the ancillary parameters in b can only be floats or 1d arrays).")
 
                 samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),:] = self.run_MCMC(theta_0,nwalkers,steps,burn_in)
 
