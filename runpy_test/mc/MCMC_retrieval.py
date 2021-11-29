@@ -169,7 +169,7 @@ class MCMCRetrieval:
                                    dtype=np.ndarray)
                 samples_comb[:,::len(theta_0)] = samples
                 samples_comb[:,len(theta_0)::] = b_samples
-                samples=np.hstack((samples,b_samples))
+                samples=samples_comb
 
         return self.analyse_samples(samples,return_samples,return_corr,include_b_results)
 
