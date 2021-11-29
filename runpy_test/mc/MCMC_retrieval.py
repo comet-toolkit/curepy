@@ -165,6 +165,8 @@ class MCMCRetrieval:
 
             self.b = b[:]
             if include_b_results:
+                if samples.ndim==1:
+                    samples=samples[...,np.newaxis]
                 samples=np.hstack((samples,b_samples))
 
         return self.analyse_samples(samples,return_samples,return_corr,include_b_results)
