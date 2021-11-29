@@ -155,7 +155,15 @@ class MCMCRetrieval:
 
             for i in range(len(b_samples[0])):
                 for ii in range(len(b_samples)):
-                    self.b[ii] = b_samples[ii][i]
+                    #self.b[ii] = b_samples[ii][i]
+                    if len(b_samples[ii]) != self.b_iter:
+                        b_new = []
+                        for j in range(len(b_samples[ii])):
+                            b_new.append(b_samples[ii][j][i])
+                        self.b[ii] = np.array(b_new)
+                    else:
+                        self.b[ii] = b_samples[ii][i]
+
                 samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),:] = self.run_MCMC(theta_0,nwalkers,steps,burn_in)
 
             self.b = b[:]
