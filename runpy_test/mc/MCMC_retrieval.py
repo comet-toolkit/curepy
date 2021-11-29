@@ -99,6 +99,7 @@ class MCMCRetrieval:
             xb=x+tuple(self.b)
         else:
             xb=x
+        print(self.b)
         return self.measurement_function(*xb)
 
     def make_x_tuple(self,theta):
@@ -170,7 +171,7 @@ class MCMCRetrieval:
             theta_0 * np.random.normal(1.0, 0.1, theta_0.shape)
             for i in range(nwalkers)
         ]
-
+        theta_0
         self.measurement_function_x(theta_0)
 
         if self.parallel_cores > 1:
