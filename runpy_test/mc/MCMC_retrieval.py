@@ -193,8 +193,7 @@ class MCMCRetrieval:
         unc_down = -(np.percentile(samples, 16, axis=0) - medians)
         unc_avg = (unc_up + unc_down) / 2.0
 
-        print(samples.shape)
-        if samples.ndim>1:
+        if samples.shape[1]>1:
             corr = np.corrcoef(samples.T)
         else:
             corr=np.ones((1,))
