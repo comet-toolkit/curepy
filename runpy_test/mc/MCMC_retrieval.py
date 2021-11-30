@@ -150,7 +150,6 @@ class MCMCRetrieval:
                     b_samples = prop.correlate_samples_corr(b_samples,self.b_corr_between)
             else:
                 b_samples=self.b_samples
-                self.b=b_samples[:,0]
 
             for i in range(len(b_samples[0])):
                 for ii in range(len(b_samples)):
