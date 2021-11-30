@@ -136,7 +136,7 @@ class MCMCRetrieval:
 
         if self.b is None:
             samples=self.run_MCMC(theta_0,nwalkers,steps,burn_in)
-
+            b_samples = None
         else:
             samples = np.zeros(((nwalkers*steps-burn_in)*self.b_iter,len(theta_0)),dtype=np.ndarray)
             b=self.b[:]
@@ -164,14 +164,8 @@ class MCMCRetrieval:
                 samples[i*(nwalkers*steps-burn_in):(i+1)*(nwalkers*steps-burn_in),:] = self.run_MCMC(theta_0,nwalkers,steps,burn_in)
 
             self.b = b[:]
-            if include_b_results:
-                samples_comb = np.empty(((nwalkers*steps-burn_in)*self.b_iter,len(theta_0)+len(self.b)),
-                                   dtype=np.ndarray)
-                samples_comb[:,::len(theta_0)] = samples
-                samples_comb[:,len(theta_0)::] = b_samples
-                samples=samples_comb
 
-        return self.analyse_samples(samples,return_samples,return_corr,include_b_results)
+        return self.analyse_samples(samples,b_samples,return_samples,return_corr,include_b_results)
 
     def run_MCMC(
         self, theta_0, nwalkers, steps, burn_in):
@@ -193,31 +187,27 @@ class MCMCRetrieval:
         samples = sampler.chain[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
 
-    def analyse_samples(self,samples,return_samples,return_corr,include_b_results):
+    def analyse_samples(self,samples,b_samples,return_samples,return_corr,include_b_results):
         medians = np.median(samples, axis=0)
         unc_up = np.percentile(samples, 84, axis=0) - medians
         unc_down = -(np.percentile(samples, 16, axis=0) - medians)
         unc_avg = (unc_up + unc_down) / 2.0
         corr = np.corrcoef(samples.T)
 
-        if (self.b is None) or (not include_b_results):
-            medians = self.make_x_tuple(medians)
-            unc_avg = self.make_x_tuple(unc_avg)
-        else:
-            medians = self.make_x_tuple(medians)+tuple(medians[-len(self.b)::])
-            unc_avg = self.make_x_tuple(unc_avg)+tuple(unc_avg[-len(self.b)::])
+        medians = self.make_x_tuple(medians)
+        unc_avg = self.make_x_tuple(unc_avg)
+
+        outs = (medians,unc_avg)
+        if return_corr:
+            outs+=(corr,)
 
         if return_samples:
-            if return_corr:
-                return medians, unc_avg, corr, samples
-            else:
-                return medians, unc_avg, samples
+            outs+=(samples,)
 
-        else:
-            if return_corr:
-                return medians, unc_avg, corr
-            else:
-                return medians, unc_avg
+        if include_b_results:
+            outs+=(b_samples,)
+
+        return outs
 
     def find_chisum(self, theta):
         model = self.measurement_function_x(theta)
