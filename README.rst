@@ -1,4 +1,4 @@
-runpy
+curepy
 =====
 
 Retrievall UNcertainties in PYthon
@@ -48,4 +48,4 @@ Licence
 Authors
 -------
 
-`runpy` was written by `Pieter De Vis <pieter.de.vis@npl.co.uk>`_.
+`curepy` was written by `Pieter De Vis <pieter.de.vis@npl.co.uk>`_.

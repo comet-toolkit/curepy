@@ -1,4 +1,4 @@
-Welcome to runpy's documentation!
+Welcome to curepy's documentation!
 =========================================================
 
 .. toctree::
@@ -14,4 +14,4 @@ API Documentation
 .. toctree::
    :maxdepth: 3
 
-   content/api/runpy
+   content/api/curepy

@@ -7,8 +7,8 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
-import runpy_test.utilities.utilities as util
-from runpy_test.mc.MCMC_retrieval import MCMCRetrieval
+import curepy.utilities.utilities as util
+from curepy.mc.MCMC_retrieval import MCMCRetrieval
 
 """___Authorship___"""
 __author__ = "Pieter De Vis"

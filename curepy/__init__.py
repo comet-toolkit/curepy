@@ -1,6 +1,6 @@
-from runpy_test.mc.MCMC_retrieval import MCMCRetrieval
-from runpy_test.lpu.lpu_retrieval import LPURetrieval
-from runpy_test.utilities.utilities import (
+from curepy.mc.MCMC_retrieval import MCMCRetrieval
+from curepy.lpu.lpu_retrieval import LPURetrieval
+from curepy.utilities.utilities import (
     plot_corner,
     plot_trace,
     calculate_Jacobian,

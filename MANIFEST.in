@@ -1,2 +1,2 @@
 include versioneer.py
-include runpy/_version.py
+include curepy/_version.py
