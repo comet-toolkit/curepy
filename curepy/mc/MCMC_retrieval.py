@@ -170,10 +170,9 @@ class MCMCRetrieval:
         self, theta_0, nwalkers, steps, burn_in):
         ndimw = len(theta_0)
         pos = [
-            theta_0 * np.random.normal(1.0, 0.1, theta_0.shape)
+            self.generate_theta_i(theta_0)
             for i in range(nwalkers)
         ]
-        theta_0
         self.measurement_function_x(theta_0)
 
         if self.parallel_cores > 1:
@@ -185,6 +184,14 @@ class MCMCRetrieval:
 
         samples = sampler.chain[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
+
+    def generate_theta_i(self,theta_0,factor_std=0.1):
+        theta_i = theta_0 * np.random.normal(1.0, factor_std, theta_0.shape)
+        if all(self.downlims < theta_i) and all(self.uplims > theta_i):
+            return theta_i
+        else:
+            # print(theta_i)
+            return self.generate_theta_i(theta_0,factor_std=factor_std*0.9)
 
     def analyse_samples(self,samples,b_samples,return_samples,return_corr,include_b_results):
         medians = np.median(samples, axis=0)
@@ -232,6 +239,7 @@ class MCMCRetrieval:
                 else:
                     raise ValueError("Methods for multiple repeat dimensions are not yet implemented,")
         else:
+            print("curepy.MCMC_retrieval: the difference between model and observations is infinite")
             return np.inf
 
     def lnlike(self, theta):
