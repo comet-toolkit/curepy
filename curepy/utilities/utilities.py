@@ -6,7 +6,9 @@ import numdifftools as nd
 import numpy as np
 from curepy.utilities import corner_edited
 import matplotlib
-matplotlib.use('Agg')
+import os
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 """___Authorship___"""
@@ -16,23 +18,35 @@ __maintainer__ = "Pieter De Vis"
 __email__ = "pieter.de.vis@npl.co.uk"
 __status__ = "Development"
 
-def plot_corner(samples,filename,labels=None,ticks=None,ticklabels=None):
+
+def plot_corner(samples, filename, labels=None, ticks=None, ticklabels=None):
+    plt.clf()
     if labels is None:
-        labels=["input_qty %s"%(i+1) for i in range(len(samples))]
-    fig = corner_edited.corner(samples,labels=labels,
-                               ticks=ticks,
-                               ticklabels=ticklabels,plot_contours=False)
+        labels = ["input_qty %s" % (i + 1) for i in range(len(samples))]
+    fig = corner_edited.corner(
+        samples, labels=labels, ticks=ticks, ticklabels=ticklabels, plot_contours=False
+    )
     fig.savefig(filename)
 
-def plot_trace(samples,labels=None):
+
+def plot_trace(samples, labels=None, path=None, tag=None):
     plt.clf()
     for i in range(len(samples[0])):
         plt.plot(samples)
-        if labels:
-            label=labels[i]
+        if path is not None:
+            plotname=os.path.join(path,"trace")
         else:
-            label="input_qty%s"%(i+1)
-        plt.savefig("trace_%s.png"%label)
+            plotname="trace"
+        if tag is not None:
+            plotname+="_%s"%tag
+
+        if labels:
+            label = labels[i]
+        else:
+            label = "input_qty%s" % (i + 1)
+
+        plt.savefig("%s_%s.png" % (plotname,label))
+
 
 def calculate_Jacobian(fun, x, Jx_diag=False, step=None):
     """
@@ -290,7 +304,7 @@ def nearestPD_cholesky(A, diff=0.001, corr=False, return_cholesky=True):
     while not isPD(A3):
         mineig = np.min(np.real(np.linalg.eigvals(A3)))
         # print(k,spacing,mineig)
-        A3 += I * (-mineig * k ** 2 + spacing)
+        A3 += I * (-mineig * k**2 + spacing)
         k += 1
 
     if corr == True:

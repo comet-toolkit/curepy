@@ -78,30 +78,27 @@ class LPURetrieval:
         return tuple(res.x) + tuple(self.process_inverse_jacobian(Jx, return_corr))
 
     def process_inverse_jacobian(self, J, return_corr=True):
-        covx=self.calculate_measurand_covariance(J,self.invcov)
-        u_func = np.diag(covx)**0.5
-        corr_x = util.convert_cov_to_corr(covx,u_func)
+        covx = self.calculate_measurand_covariance(J, self.invcov)
+        u_func = np.diag(covx) ** 0.5
+        corr_x = util.convert_cov_to_corr(covx, u_func)
         if return_corr:
             return u_func, corr_x
         else:
             return u_func
 
-
-    def calculate_measurand_covariance(self, J, Sy_inv, Sa_inv=None, Sb_inv= None):
-        Se_inv=Sy_inv+Sb_inv
+    def calculate_measurand_covariance(self, J, Sy_inv, Sa_inv=None, Sb_inv=None):
+        Se_inv = Sy_inv + Sb_inv
         if Sa_inv:
-            return np.linalg.inv(np.dot(np.dot(J.T, Se_inv), J)+Sa_inv)
+            return np.linalg.inv(np.dot(np.dot(J.T, Se_inv), J) + Sa_inv)
         else:
             return np.linalg.inv(np.dot(np.dot(J.T, Se_inv), J))
-
-
 
     def find_chisum(self, theta):
         model = self.measurement_function(theta)
         diff = model - self.observed
         if np.isfinite(np.sum(diff)):
             if self.invcov is None:
-                return np.sum((diff) ** 2 / self.rand_uncertainty ** 2)
+                return np.sum((diff) ** 2 / self.rand_uncertainty**2)
             else:
                 return np.dot(np.dot(diff.T, self.invcov), diff)
         else:
