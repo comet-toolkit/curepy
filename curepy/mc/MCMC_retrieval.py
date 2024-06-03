@@ -68,7 +68,9 @@ class MCMCRetrieval:
         if cov is None:
             self.invcov = None
         elif syst_uncertainty is not None:
-            cov = np.ones(len(self.observed), len(self.observed)) * syst_uncertainty**2
+            cov = (
+                np.ones(len(self.observed), len(self.observed)) * syst_uncertainty**2
+            )
             if rand_uncertainty is not None:
                 cov += np.eye(len(self.observed)) * rand_uncertainty**2
             self.invcov = np.linalg.inv(np.ascontiguousarray(cov))
@@ -226,7 +228,7 @@ class MCMCRetrieval:
 
     def generate_theta_i(self, theta_0, factor_std=0.1):
         theta_i = theta_0 * np.random.normal(1.0, factor_std, theta_0.shape)
-        if all(self.downlims < theta_i) and all(self.uplims > theta_i):
+        if np.all(self.downlims < theta_i) and np.all(self.uplims > theta_i):
             return theta_i
         else:
             # print(theta_i)
@@ -292,7 +294,7 @@ class MCMCRetrieval:
         return -0.5 * (self.find_chisum(theta))
 
     def lnprior(self, theta):
-        if all(self.downlims < theta) and all(self.uplims > theta):
+        if np.all(self.downlims < theta) and np.all(self.uplims > theta):
             # if self.syst_uncertainty[0] is None:
             return 0
         # else:

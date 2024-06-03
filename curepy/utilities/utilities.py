@@ -34,18 +34,18 @@ def plot_trace(samples, labels=None, path=None, tag=None):
     for i in range(len(samples[0])):
         plt.plot(samples)
         if path is not None:
-            plotname=os.path.join(path,"trace")
+            plotname = os.path.join(path, "trace")
         else:
-            plotname="trace"
+            plotname = "trace"
         if tag is not None:
-            plotname+="_%s"%tag
+            plotname += "_%s" % tag
 
         if labels:
             label = labels[i]
         else:
             label = "input_qty%s" % (i + 1)
 
-        plt.savefig("%s_%s.png" % (plotname,label))
+        plt.savefig("%s_%s.png" % (plotname, label))
 
 
 def calculate_Jacobian(fun, x, Jx_diag=False, step=None):
