@@ -228,7 +228,7 @@ class MCMCRetrieval:
 
     def generate_theta_i(self, theta_0, factor_std=0.1):
         theta_i = theta_0 * np.random.normal(1.0, factor_std, theta_0.shape)
-        if np.all(self.downlims < theta_i) and np.all(self.uplims > theta_i):
+        if np.all(self.downlims.flatten() < theta_i) and np.all(self.uplims.flatten() > theta_i):
             return theta_i
         else:
             # print(theta_i)
@@ -268,7 +268,10 @@ class MCMCRetrieval:
         diff = model - self.observed
         if np.isfinite(np.sum(diff)):
             if self.invcov is None:
-                return np.sum((diff) ** 2 / self.rand_uncertainty**2)
+                if self.rand_uncertainty is None:
+                    return np.sum((diff) ** 2)
+                else:
+                    return np.sum((diff) ** 2 / self.rand_uncertainty**2)
             else:
                 # print(diff,np.linalg.inv(self.cov),np.dot(np.dot(diff.T,self.invcov),diff))
                 if len(self.repeat_dims) == 0:
@@ -294,7 +297,7 @@ class MCMCRetrieval:
         return -0.5 * (self.find_chisum(theta))
 
     def lnprior(self, theta):
-        if np.all(self.downlims < theta) and np.all(self.uplims > theta):
+        if np.all(self.downlims.flatten() < theta) and np.all(self.uplims.flatten() > theta):
             # if self.syst_uncertainty[0] is None:
             return 0
         # else:
