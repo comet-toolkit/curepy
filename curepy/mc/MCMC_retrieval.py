@@ -174,14 +174,8 @@ class MCMCRetrieval:
             b = self.b[:]
             prop = punpy.MCPropagation(self.b_iter)
             if self.b_samples is None:
-                b_samples = np.empty(len(b), dtype=np.ndarray)
-                for i in range(len(b)):
-                    b_samples[i] = prop.generate_MC_sample(b, self.u_b, self.corr_b, i)
+                b_samples = prop.generate_MC_sample(b, self.u_b, self.corr_b, self.b_corr_between)
 
-                if self.b_corr_between is not None:
-                    b_samples = cm.correlate_sample_corr(
-                        b_samples, self.b_corr_between
-                    )
             else:
                 b_samples = self.b_samples
 
