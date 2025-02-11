@@ -169,7 +169,7 @@ class MCMCRetrieval:
         else:
             prop = punpy.MCPropagation(self.b_iter)
             if self.b_samples is None:
-                b_samples = prop.generate_MC_sample(b, self.u_b, self.corr_b, self.b_corr_between)
+                b_samples = prop.generate_MC_sample(self.b, self.u_b, self.corr_b, self.b_corr_between)
 
             else:
                 b_samples = self.b_samples
