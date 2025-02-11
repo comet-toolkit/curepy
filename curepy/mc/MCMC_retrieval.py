@@ -167,11 +167,6 @@ class MCMCRetrieval:
             samples = self.run_MCMC(theta_0, nwalkers, steps, burn_in)
             b_samples = None
         else:
-            samples = np.zeros(
-                ((nwalkers * steps - burn_in) * self.b_iter, len(theta_0)),
-                dtype=np.ndarray,
-            )
-            b = self.b[:]
             prop = punpy.MCPropagation(self.b_iter)
             if self.b_samples is None:
                 b_samples = prop.generate_MC_sample(b, self.u_b, self.corr_b, self.b_corr_between)
@@ -179,27 +174,38 @@ class MCMCRetrieval:
             else:
                 b_samples = self.b_samples
 
-            for i in range(len(b_samples[0])):
-                for ii in range(len(b_samples)):
-                    if b_samples[ii].ndim == 1:
-                        self.b[ii] = b_samples[ii][i]
-                    elif b_samples[ii].ndim == 2:
-                        self.b[ii] = np.array(
-                            [b_samples[ii][j][i] for j in range(len(b_samples[ii]))]
-                        )
-                    else:
-                        raise ValueError(
-                            "MCMC_retrieval: the dimensionality of one of the parameters in b is not supported (currently the ancillary parameters in b can only be floats or 1d arrays)."
-                        )
+            if self.b_iter==1:
+                samples = self.run_MCMC(theta_0, nwalkers, steps, burn_in)
 
-                samples[
-                    i
-                    * (nwalkers * steps - burn_in) : (i + 1)
-                    * (nwalkers * steps - burn_in),
-                    :,
-                ] = self.run_MCMC(theta_0, nwalkers, steps, burn_in)
+            else:
+                samples = np.zeros(
+                    ((nwalkers * steps - burn_in) * self.b_iter, len(theta_0)),
+                    dtype=np.float32,
+                )
+                b = self.b[:]
 
-            self.b = b[:]
+
+                for i in range(len(b_samples[0])):
+                    for ii in range(len(b_samples)):
+                        if b_samples[ii].ndim == 1:
+                            self.b[ii] = b_samples[ii][i]
+                        elif b_samples[ii].ndim == 2:
+                            self.b[ii] = np.array(
+                                [b_samples[ii][j][i] for j in range(len(b_samples[ii]))]
+                            )
+                        else:
+                            raise ValueError(
+                                "MCMC_retrieval: the dimensionality of one of the parameters in b is not supported (currently the ancillary parameters in b can only be floats or 1d arrays)."
+                            )
+
+                    samples[
+                        i
+                        * (nwalkers * steps - burn_in) : (i + 1)
+                        * (nwalkers * steps - burn_in),
+                        :,
+                    ] = self.run_MCMC(theta_0, nwalkers, steps, burn_in)
+
+                self.b = b[:]
 
         return self.analyse_samples(
             samples, b_samples, return_samples, return_corr, include_b_results
