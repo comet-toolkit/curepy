@@ -14,7 +14,7 @@ os.environ["OMP_NUM_THREADS"] = "1"
 
 """___NPL Modules___"""
 import punpy
-
+import comet_maths as cm
 """___Authorship___"""
 __author__ = "Pieter De Vis"
 __created__ = "01/03/2020"
@@ -176,10 +176,10 @@ class MCMCRetrieval:
             if self.b_samples is None:
                 b_samples = np.empty(len(b), dtype=np.ndarray)
                 for i in range(len(b)):
-                    b_samples[i] = prop.generate_sample(b, self.u_b, self.corr_b, i)
+                    b_samples[i] = prop.generate_MC_sample(b, self.u_b, self.corr_b, i)
 
                 if self.b_corr_between is not None:
-                    b_samples = prop.correlate_samples_corr(
+                    b_samples = cm.correlate_sample_corr(
                         b_samples, self.b_corr_between
                     )
             else:
@@ -268,10 +268,7 @@ class MCMCRetrieval:
         diff = model - self.observed
         if np.isfinite(np.sum(diff)):
             if self.invcov is None:
-                if self.rand_uncertainty is None:
-                    return np.sum((diff) ** 2)
-                else:
-                    return np.sum((diff) ** 2 / self.rand_uncertainty**2)
+                return np.sum((diff) ** 2 / self.rand_uncertainty**2)
             else:
                 # print(diff,np.linalg.inv(self.cov),np.dot(np.dot(diff.T,self.invcov),diff))
                 if len(self.repeat_dims) == 0:
