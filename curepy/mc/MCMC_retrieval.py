@@ -47,14 +47,18 @@ class MCMCRetrieval:
         n_input=None,
         progress=True,
         repeat_dims=[],
+        circular = False
     ):
         self.measurement_function = measurement_function
         self.b = None
         self.u_b = None
         self.corr_b = None
         self.b_corr_between = None
-        if b:
+        self.circular = circular
+        try:
             self.b = np.array(b)
+        except:
+            self.b = np.array(b, dtype = object)
         if u_b:
             self.u_b = np.array(u_b)
         if corr_b:
@@ -237,6 +241,18 @@ class MCMCRetrieval:
     def analyse_samples(
         self, samples, b_samples, return_samples, return_corr, include_b_results
     ):
+        if self.circular:
+            for samp in samples:
+                if samp[0] < 0:
+                    samp[0] = - samp[0]
+                    samp[1] = samp[1] - 180
+
+                if samp[1] < -180:
+                    samp[1] += 360
+
+                if samp[1] > 180:
+                    samp[1] += -360
+
         medians = np.median(samples, axis=0)
         unc_up = np.percentile(samples, 84, axis=0) - medians
         unc_down = -(np.percentile(samples, 16, axis=0) - medians)
