@@ -15,6 +15,7 @@ os.environ["OMP_NUM_THREADS"] = "1"
 """___NPL Modules___"""
 import punpy
 import comet_maths as cm
+
 """___Authorship___"""
 __author__ = "Pieter De Vis"
 __created__ = "01/03/2020"
@@ -47,7 +48,7 @@ class MCMCRetrieval:
         n_input=None,
         progress=True,
         repeat_dims=[],
-        circular = False
+        circular=False,
     ):
         self.measurement_function = measurement_function
         self.b = None
@@ -58,7 +59,7 @@ class MCMCRetrieval:
         try:
             self.b = np.array(b)
         except:
-            self.b = np.array(b, dtype = object)
+            self.b = np.array(b, dtype=object)
         if u_b:
             self.u_b = np.array(u_b)
         if corr_b:
@@ -72,9 +73,7 @@ class MCMCRetrieval:
         if cov is None:
             self.invcov = None
         elif syst_uncertainty is not None:
-            cov = (
-                np.ones(len(self.observed), len(self.observed)) * syst_uncertainty**2
-            )
+            cov = np.ones(len(self.observed), len(self.observed)) * syst_uncertainty**2
             if rand_uncertainty is not None:
                 cov += np.eye(len(self.observed)) * rand_uncertainty**2
             self.invcov = np.linalg.inv(np.ascontiguousarray(cov))
@@ -107,7 +106,7 @@ class MCMCRetrieval:
                     raise ValueError(
                         "your initial guess requires to specify the n_input quantity to indicate if these are multiple measurements for the same input qty (n_input=1) or a single measurement for different input_qty (n_input=len(initial_guess)). "
                     )
-        self.circular=circular
+        self.circular = circular
 
     def measurement_function_x(self, theta):
         x = self.make_x_tuple(theta)
@@ -174,12 +173,14 @@ class MCMCRetrieval:
         else:
             prop = punpy.MCPropagation(self.b_iter)
             if self.b_samples is None:
-                b_samples = prop.generate_MC_sample(self.b, self.u_b, self.corr_b, self.b_corr_between)
+                b_samples = prop.generate_MC_sample(
+                    self.b, self.u_b, self.corr_b, self.b_corr_between
+                )
 
             else:
                 b_samples = self.b_samples
 
-            if self.b_iter==1:
+            if self.b_iter == 1:
                 samples = self.run_MCMC(theta_0, nwalkers, steps, burn_in)
 
             else:
@@ -188,7 +189,6 @@ class MCMCRetrieval:
                     dtype=np.float32,
                 )
                 b = self.b[:]
-
 
                 for i in range(len(b_samples[0])):
                     for ii in range(len(b_samples)):
@@ -215,7 +215,7 @@ class MCMCRetrieval:
         if self.circular:
             for samp in samples:
                 if samp[0] < 0:
-                    samp[0] = - samp[0]
+                    samp[0] = -samp[0]
                     samp[1] = samp[1] - 180
                 if samp[1] < -180:
                     samp[1] += 360
@@ -243,7 +243,9 @@ class MCMCRetrieval:
 
     def generate_theta_i(self, theta_0, factor_std=0.1):
         theta_i = theta_0 * np.random.normal(1.0, factor_std, theta_0.shape)
-        if np.all(self.downlims.flatten() < theta_i) and np.all(self.uplims.flatten() > theta_i):
+        if np.all(self.downlims.flatten() < theta_i) and np.all(
+            self.uplims.flatten() > theta_i
+        ):
             return theta_i
         else:
             # print(theta_i)
@@ -255,7 +257,7 @@ class MCMCRetrieval:
         if self.circular:
             for samp in samples:
                 if samp[0] < 0:
-                    samp[0] = - samp[0]
+                    samp[0] = -samp[0]
                     samp[1] = samp[1] - 180
 
                 if samp[1] < -180:
@@ -321,7 +323,9 @@ class MCMCRetrieval:
         return -0.5 * (self.find_chisum(theta))
 
     def lnprior(self, theta):
-        if np.all(self.downlims.flatten() < theta) and np.all(self.uplims.flatten() > theta):
+        if np.all(self.downlims.flatten() < theta) and np.all(
+            self.uplims.flatten() > theta
+        ):
             # if self.syst_uncertainty[0] is None:
             return 0
         # else:

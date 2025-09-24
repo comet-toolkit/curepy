@@ -1,6 +1,5 @@
-
 def make_template(
-        variables,
+    variables,
 ):
     """
     Make the digital effects table template for the case where uncertainties are combined and only the total uncertainty is returned.
@@ -22,7 +21,7 @@ def make_template(
             str_repeat_noncorr_dims=str_repeat_noncorr_dims,
             str_corr_dims=str_corr_dims[i],
             repeat_dim_err_corr=repeat_dim_err_corrs,
-            )
+        )
 
         if store_unc_percent:
             units = "%"
