@@ -56,10 +56,11 @@ class MCMCRetrieval:
         self.corr_b = None
         self.b_corr_between = None
         self.circular = circular
-        try:
-            self.b = np.array(b)
-        except:
-            self.b = np.array(b, dtype=object)
+        if b:
+            try:
+                self.b = np.array(b)
+            except:
+                self.b = np.array(b, dtype=object)
         if u_b:
             self.u_b = np.array(u_b)
         if corr_b:

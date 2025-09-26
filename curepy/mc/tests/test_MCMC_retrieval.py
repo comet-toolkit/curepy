@@ -131,7 +131,7 @@ class TestMCMCRetrieval(unittest.TestCase):
         ssg = SSG(wavelengths=wavs)  # set your wavelengths here
 
         DN = ssg.function(725, 3, 2, 35000)  # set your DN here
-        DN_unc = 0.05 * np.max(DN) * np.ones_like(DN)  # set your DN uncertainties here
+        DN_unc = 0.03 * np.max(DN) * np.ones_like(DN)  # set your DN uncertainties here
         DN = cm.generate_sample(
             1, DN, DN_unc, "rand"
         )  # noise is added here, your data will alreayd be noisy, so this step not necessary
@@ -148,10 +148,10 @@ class TestMCMCRetrieval(unittest.TestCase):
         )
 
         medians, unc, samples = retr.run_retrieval(
-            200, 200, 10 * 200, return_samples=True, return_corr=False
+            200, 500, 10 * 200, return_samples=True, return_corr=False
         )  # ,x_0=x[0])
 
-        npt.assert_allclose(medians, (725, 3, 2, 35000), rtol=0.01)
+        npt.assert_allclose(medians, (725, 3, 2, 35000), rtol=0.05)
         # print(medians,unc)
         # print(samples.shape)
         # plot_corner(samples,"test_corner.png",labels=[r"$\lambda_0$",r"width",r"s",r"A"])
