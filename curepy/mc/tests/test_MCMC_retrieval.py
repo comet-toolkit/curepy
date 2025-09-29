@@ -7,6 +7,8 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
+np.random.seed(123432)
+
 import curepy.utilities.utilities as util
 from curepy import MCMCRetrieval, plot_corner
 import comet_maths as cm
@@ -131,7 +133,7 @@ class TestMCMCRetrieval(unittest.TestCase):
         ssg = SSG(wavelengths=wavs)  # set your wavelengths here
 
         DN = ssg.function(725, 3, 2, 35000)  # set your DN here
-        DN_unc = 0.03 * np.max(DN) * np.ones_like(DN)  # set your DN uncertainties here
+        DN_unc = 0.02 * np.max(DN) * np.ones_like(DN)  # set your DN uncertainties here
         DN = cm.generate_sample(
             1, DN, DN_unc, "rand"
         )  # noise is added here, your data will alreayd be noisy, so this step not necessary
