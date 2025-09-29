@@ -42,7 +42,7 @@ def corner(
     top_ticks=False,
     use_math_text=False,
     hist_kwargs=None,
-    **hist2d_kwargs
+    **hist2d_kwargs,
 ):
     """
     Make a *sick* corner plot showing the projections of a data set in a
@@ -362,7 +362,7 @@ def corner(
                 color=color,
                 smooth=smooth,
                 bins=[bins[j], bins[i]],
-                **hist2d_kwargs
+                **hist2d_kwargs,
             )
 
             if truths is not None:
@@ -471,7 +471,7 @@ def hist2d(
     contour_kwargs=None,
     contourf_kwargs=None,
     data_kwargs=None,
-    **kwargs
+    **kwargs,
 ):
     """
     Plot a 2-D histogram of samples.
