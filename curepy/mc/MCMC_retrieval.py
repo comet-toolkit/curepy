@@ -10,6 +10,8 @@ import copy
 import emcee
 import numpy as np
 
+np.random.seed(42)
+
 os.environ["OMP_NUM_THREADS"] = "1"
 
 """___NPL Modules___"""
