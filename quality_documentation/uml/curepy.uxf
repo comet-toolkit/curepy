@@ -1,0 +1,88 @@
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLPackage</id><coordinates><x>30</x><y>0</y><w>1150</w><h>790</h></coordinates><panel_attributes>Curepy
+--
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>40</x><y>40</y><w>530</w><h>720</h></coordinates><panel_attributes>RetrievalMethods
+--
+bg=orange</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>890</x><y>40</y><w>270</w><h>720</h></coordinates><panel_attributes>DigitalEffectsTables
+--
+bg=green</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>320</x><y>330</y><w>210</w><h>250</h></coordinates><panel_attributes>_MCMC_
+--
+parallel_cores=1
+nwalkers
+steps
+burn_in
+--
+run_retrieval(measurement_function_obj, 
+measurement_obj,
+ancillary_obj = None, 
+prior = None,  
+return_samples=True,
+return_corr=False,
+include_b_results=False,)
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>60</x><y>330</y><w>210</w><h>120</h></coordinates><panel_attributes>_OptimalEstimation_
+--
+run_retrieval(measurement_function_obj, 
+measurement_obj,
+ancillary_obj = None, 
+prior = None)
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>60</x><y>470</y><w>210</w><h>120</h></coordinates><panel_attributes>_ForwardLeastSquares_
+--
+run_retrieval(measurement_function_obj, 
+measurement_obj,
+ancillary_obj = None, 
+prior = None)
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>60</x><y>600</y><w>210</w><h>130</h></coordinates><panel_attributes>_NonLinearConstrainedLeastSquares_
+--
+run_retrieval(measurement_function_obj, 
+measurement_obj,
+ancillary_obj = None, 
+prior = None)
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>910</x><y>80</y><w>210</w><h>70</h></coordinates><panel_attributes>_MeasurementFunction_
+--
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>310</x><y>80</y><w>210</w><h>70</h></coordinates><panel_attributes>_Factory_
+--
+make_retrieval_object()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>60</x><y>80</y><w>210</w><h>210</h></coordinates><panel_attributes>_base_
+--
+parallel_cores=1
+--
+run_retrieval(measurement_function, 
+y, u_y, err_corr_y, 
+x0, b=None, 
+prior = None,  
+return_corr=False,
+)
+--
+A_flat, shape = flatten_array(A)
+A = reshape_array(A_flat, shape)
+make_labels(A, shape, ...)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLPackage</id><coordinates><x>580</x><y>40</y><w>300</w><h>720</h></coordinates><panel_attributes>Containers
+--
+bg=pink</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>610</x><y>90</y><w>210</w><h>110</h></coordinates><panel_attributes>_Prior_
+--
+shape (e.g. rectangular)
+params (e.g. min, max)
+--
+return_Sa()
+return_cost()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>610</x><y>210</y><w>210</w><h>140</h></coordinates><panel_attributes>_Measurement_
+--
+y, 
+u_y, 
+err_corr_y,
+inv_cov
+random_error_correlation: Bool = False
+--
+calculate_inv_cov(y, u_y, err_corr_y)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>610</x><y>360</y><w>210</w><h>140</h></coordinates><panel_attributes>_AncillaryParameter_
+--
+b,
+u_b,
+err_corr_b,
+corr_between_b,
+b_samples
+--
+generate_samples(b, u_b, err_corr_b)
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>610</x><y>510</y><w>210</w><h>110</h></coordinates><panel_attributes>_MeasurementFunction_
+--
+meas_func
+intitial_guess
+measurand_name
+input_quantities_names</panel_attributes><additional_attributes></additional_attributes></element></diagram>
