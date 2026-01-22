@@ -1,7 +1,6 @@
 """Container for Measurement data"""
 
 import numpy as np
-import punpy
 import comet_maths as cm
 
 class Measurement:
@@ -10,6 +9,13 @@ class Measurement:
                  u_y = None,
                  corr_y = None,
                  ):
+        """
+        Container class for Measurement variable data
+
+        :param y: Measurement variable
+        :param u_y: Uncertainty of measurement variable, must be the same shape as y
+        :param corr_y: Error-correlation of measurement variable, str("rand" or "syst" or square matrix with side length equal to length of measurement variable input
+        """
         
         self.y = y
         self.u_y = u_y
@@ -23,6 +29,9 @@ class Measurement:
             self.invcov = None
         
     def _check_shapes(self):
+        """
+        Check shapes of measurement variable y, uncertainties, and error correlations are compatible.
+        """
         N = len(self.y)
         
         if self.u_y is not None and len(self.u_y) != N:
@@ -38,7 +47,13 @@ class Measurement:
             raise ValueError("Length of measured variable y must match side length of error correlation matrix")       
         
     def _format_correlation(self, corr):
+        """
+        Format correlation matrix from class inputs
 
+        :param corr: Correlation matrix input
+        :return: Formatted correlation matrix
+        """
+ 
         if corr is None:
             return None
         elif isinstance(corr, str):
@@ -50,15 +65,22 @@ class Measurement:
                 raise ValueError('Error correlation matrix must be defined as None, "rand", "syst", or a custom matrix')
         else:
             return corr
-        
-    def calculate_inv_cov(self, unc, corr):
+    
+    @staticmethod
+    def calculate_inv_cov(unc, corr):
+        """
+        Calculate inverse covariance matrix
+
+        :param unc: Uncertainty
+        :param corr: Correlation matrix
+        """
         
         cov = cm.convert_corr_to_cov(corr, unc)
         
         if np.array_equal(cov, np.diag(np.diag(cov))):
-            self.invcov = np.diag(1/np.diag(cov)) 
+            return np.diag(1/np.diag(cov)) 
         else:
             #might need a check for PD here
-            self.invcov = np.linalg.inv(cov)
+            return np.linalg.inv(cov)
             
               
