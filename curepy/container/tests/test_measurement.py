@@ -11,7 +11,7 @@ u_y = 0.04 * y
 
 class TestMeasurement(unittest.TestCase):
     
-    def test___init__no_corr(self):
+    def test___init__no_corr_none_invcov(self):
         
         meas = Measurement(y, u_y)
         
@@ -43,7 +43,7 @@ class TestMeasurement(unittest.TestCase):
         
         np.testing.assert_array_equal(meas.corr_y, corr)
         
-    def 
+        
         
         
         
