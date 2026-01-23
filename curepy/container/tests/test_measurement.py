@@ -19,29 +19,28 @@ class TestMeasurement(unittest.TestCase):
         
     def test__format_correlation_none(self):
         corr = None
-        meas = Measurement(y, u_y, corr)
+        formatted_corr = Measurement._format_correlation(y, corr)
         
-        self.assertIsNone(meas.corr_y)
+        self.assertIsNone(formatted_corr)
         
     def test__format_correlation_rand(self):
         corr = "rand"
-        meas = Measurement(y, u_y, corr)
+        formatted_corr = Measurement._format_correlation(y, corr)
         
-        np.testing.assert_array_equal(meas.corr_y, np.diag(np.diag(meas.corr_y)))
+        np.testing.assert_array_equal(formatted_corr, np.diag(np.diag(formatted_corr)))
         
     @patch.object(Measurement, "calculate_inv_cov")
     def test__format_correlation_syst(self, mock_calculate_inv_cov):
         corr = "syst"
-        meas = Measurement(y, u_y, corr)
+        formatted_corr = Measurement._format_correlation(y, corr)
         
-        np.testing.assert_array_equal(meas.corr_y, np.ones((len(y), len(y))))
+        np.testing.assert_array_equal(formatted_corr, np.ones((len(y), len(y))))
         
-    @patch.object(Measurement, "calculate_inv_cov")
-    def test__format_correlation_custom(self, mock_calculate_inv_cov):
+    def test__format_correlation_custom(self):
         corr = np.ones((len(y), len(y))) + np.eye(len(y))
-        meas = Measurement(y, u_y, corr)
+        formatted_corr = Measurement._format_correlation(y, corr)
         
-        np.testing.assert_array_equal(meas.corr_y, corr)
+        np.testing.assert_array_equal(formatted_corr, corr)
         
         
         

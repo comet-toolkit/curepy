@@ -19,34 +19,36 @@ class Measurement:
         
         self.y = y
         self.u_y = u_y
-        self.corr_y = self._format_correlation(corr_y)
+        self.corr_y = self._format_correlation(self.y, corr_y)
         
-        self._check_shapes()
+        self._check_shapes(self.y, self.u_y, self.corr_y)
         
         if corr_y is not None:
             self.inv_cov = self.calculate_inv_cov(self.u_y, self.corr_y)
         else:
             self.invcov = None
-        
-    def _check_shapes(self):
+    
+    @staticmethod
+    def _check_shapes(y, u_y, corr_y):
         """
         Check shapes of measurement variable y, uncertainties, and error correlations are compatible.
         """
-        N = len(self.y)
+        N = len(y)
         
-        if self.u_y is not None and len(self.u_y) != N:
+        if u_y is not None and len(u_y) != N:
             raise ValueError("Length of measured variable y must match length of uncertainty variable")
         
-        if self.u_y is None and self.corr_y is not None:
+        if u_y is None and corr_y is not None:
             raise ValueError("Uncertainties must be defined if error correlation matrix is defined")
         
-        if self.corr_y is not None and self.corr_y.shape[0] != self.corr_y.shape[1]:
+        if corr_y is not None and corr_y.shape[0] != corr_y.shape[1]:
             raise ValueError("Error correlation matrix must be a square matrix")
         
-        if self.corr_y is not None and self.corr_y.shape[0] != N:
+        if corr_y is not None and corr_y.shape[0] != N:
             raise ValueError("Length of measured variable y must match side length of error correlation matrix")       
-        
-    def _format_correlation(self, corr):
+    
+    @staticmethod
+    def _format_correlation(y, corr):
         """
         Format correlation matrix from class inputs
 
@@ -58,9 +60,9 @@ class Measurement:
             return None
         elif isinstance(corr, str):
             if corr == 'rand':
-                return np.eye(len(self.y))
+                return np.eye(len(y))
             elif corr == 'syst':
-                return np.ones((len(self.y), len(self.y)))
+                return np.ones((len(y), len(y)))
             else:
                 raise ValueError('Error correlation matrix must be defined as None, "rand", "syst", or a custom matrix')
         else:
