@@ -5,7 +5,6 @@ import numpy as np
 from unittest.mock import patch
 from curepy.container.measurement import Measurement
 
-
 y = np.linspace(0, 100, 47)
 u_y = 0.04 * y
 
@@ -41,9 +40,24 @@ class TestMeasurement(unittest.TestCase):
         
         np.testing.assert_array_equal(formatted_corr, corr)
         
+    @patch("comet_maths.convert_corr_to_cov")
+    def test_calculate_inv_cov_diag(self, mock_convert_corr_to_cov):
+           mock_convert_corr_to_cov.return_value = 0.5*np.eye(5)
+           
+           invcov = Measurement.calculate_inv_cov(y, np.ones_like((len(y), len(y))))
+           
+           np.testing.assert_array_equal(invcov, 2*np.eye(5))
         
-        
-        
+    @patch("comet_maths.convert_corr_to_cov")
+    @patch("numpy.linalg.inv")
+    def test_calculate_inv_cov(self, mock_convert_corr_to_cov, mock_inv):
+           mock_convert_corr_to_cov.return_value = 0.5*np.ones((5,5))
+           
+           invcov = Measurement.calculate_inv_cov(y, np.ones_like((len(y), len(y))))
+           
+           self.assertEqual(mock_inv.call_count, 1)
+    
+    #add tests for check shapes when finalised
         
         
 if __name__ == "__main__":
