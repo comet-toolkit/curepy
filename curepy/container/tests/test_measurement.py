@@ -29,8 +29,7 @@ class TestMeasurement(unittest.TestCase):
         
         np.testing.assert_array_equal(formatted_corr, np.diag(np.diag(formatted_corr)))
         
-    @patch.object(Measurement, "calculate_inv_cov")
-    def test__format_correlation_syst(self, mock_calculate_inv_cov):
+    def test__format_correlation_syst(self):
         corr = "syst"
         formatted_corr = Measurement._format_correlation(y, corr)
         
