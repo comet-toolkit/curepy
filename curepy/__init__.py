@@ -1,6 +1,6 @@
 from curepy.mc.MCMC_retrieval import MCMCRetrieval
 from curepy.lpu.lpu_retrieval import LPURetrieval
-from curepy.utilities.utilities import (
+from curepy.utilities_old.utilities_old import (
     plot_corner,
     plot_trace,
     calculate_Jacobian,

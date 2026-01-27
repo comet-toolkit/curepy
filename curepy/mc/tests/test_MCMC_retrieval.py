@@ -9,7 +9,7 @@ import numpy.testing as npt
 
 np.random.seed(123432)
 
-import curepy.utilities.utilities as util
+import curepy.utilities_old.utilities_old as util
 from curepy import MCMCRetrieval, plot_corner
 import comet_maths as cm
 

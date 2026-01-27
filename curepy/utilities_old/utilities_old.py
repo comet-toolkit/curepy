@@ -4,7 +4,7 @@ import warnings
 
 import numdifftools as nd
 import numpy as np
-from curepy.utilities import corner_edited
+from curepy.utilities_old import corner_edited
 import matplotlib
 import os
 
