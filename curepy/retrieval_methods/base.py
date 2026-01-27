@@ -8,4 +8,4 @@ class BaseRetrieval(ABC):
     def __init__(
         self,
     ):
-        raise NotImplementedError
+        pass
