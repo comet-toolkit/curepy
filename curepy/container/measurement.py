@@ -2,6 +2,7 @@
 
 import numpy as np
 import comet_maths as cm
+import utilities as util
 
 class Measurement:
     def __init__(self,
@@ -14,11 +15,13 @@ class Measurement:
 
         :param y: Measurement variable
         :param u_y: Uncertainty of measurement variable, must be the same shape as y
-        :param corr_y: Error-correlation of measurement variable, str("rand" or "syst" or square matrix with side length equal to length of measurement variable input
+        :param corr_y: Error-correlation of measurement variable, str("rand" or "syst") or square matrix with side length equal to length of measurement variable input
         """
         
         self.y = y
         self.u_y = u_y
+        self.y_flat, self.u_y_flat, self.y_shape = self._flatten_inputs(self.y, self.u_y)
+        
         self.corr_y = self._format_correlation(self.y, corr_y)
         
         self._check_shapes(self.y, self.u_y, self.corr_y)
@@ -28,6 +31,16 @@ class Measurement:
         else:
             self.invcov = None
     
+    @staticmethod
+    def _flatten_inputs(y, u_y):
+        y_flat, y_shape = util.flatten_array(y)
+        u_y_flat, u_y_shape = util.flatten_array(u_y)
+        if not y_shape == u_y_shape:
+            raise ValueError("Measurement variable, y, and related uncertainties, u_y, have different shapes:", y_shape, u_y_shape)
+        
+        return y_flat, u_y_flat, y_shape
+        
+        
     @staticmethod
     def _check_shapes(y, u_y, corr_y):
         """
