@@ -50,12 +50,7 @@ class MeasurementFunction:
             # Scalar
             return np.array([initial_guess], dtype=float)
 
-        # 1-D iterable (non-empty or empty)
-        try:
-            arr = np.array(initial_guess, dtype=float)
-        except Exception as e:
-            raise TypeError(f"initial_guess must be numeric or nested numeric sequences; got {type(initial_guess)}") from e
-
+        arr = np.array(initial_guess, dtype=float)
         # arr is 1-D
         if multiple_guess_measurements:
             return arr[None, :]
