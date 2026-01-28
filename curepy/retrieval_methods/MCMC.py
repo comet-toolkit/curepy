@@ -88,7 +88,7 @@ class MCMC(BaseRetrieval):
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob)
         sampler.run_mcmc(pos, steps, progress=self.progress)
 
-        samples = sampler.chain[:, :, :].reshape((-1, ndimw))[burn_in::]
+        samples = sampler.get_chain[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
     
     @staticmethod
