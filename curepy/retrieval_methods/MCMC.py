@@ -39,6 +39,7 @@ class MCMC(BaseRetrieval):
         self.ancilary_obj.generate_b_samples()
         b_samples = self.ancilary_obj.b_samples
         
+        #generate samples with MCMC
         if b_samples is None or self.ancillary_obj.b_iter == 1:
             samples = self.run_MCMC(theta_0, nwalkers, steps, burn_in)
         else:
