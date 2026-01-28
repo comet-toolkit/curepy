@@ -20,6 +20,10 @@ class MeasurementFunction:
     def _format_initial_guess(initial_guess):
         raise NotImplementedError
     
-    def measurement_function_x():
-        raise NotImplementedError
-    #is this general enough to be here?
+    def measurement_function_x(self, theta, b):
+        x = self.make_x_tuple(theta)
+        if b is not None:
+            xb = x + tuple(b)
+        else:
+            xb = x
+        return self.measurement_function(*xb)
