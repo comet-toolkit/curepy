@@ -1,6 +1,7 @@
 """Container for ancillary parameter information"""
 
 import numpy as np
+import punpy
 
 class AncillaryParameter():
     def __init__(self,
@@ -12,25 +13,35 @@ class AncillaryParameter():
                  b_iter = None,
                  ):
         
+        self.b = None
+        self.u_b = None
+        self.corr_b = None
+        self.corr_between_b = None
+        
         if b:
             try:
                 self.b = np.array(b)
             except:
                 self.b = np.array(b, dtype=object)
-        else:
-            self.b = None
-            
         if u_b:
             self.u_b = np.array(u_b)
-        else:
-            self.u_b = None
-            
         if corr_b:
             self.corr_b = np.array(corr_b)
-        else:
-            self.corr_b = None
-            
         if corr_between_b:
             self.corr_between_b = np.array(corr_between_b)
+            
+        self.b_iter = b_iter #todo rename to make functionality clearer
+        self.b_samples = b_samples
+        
+    def generate_b_samples(self):
+        if self.b is None:
+            self.b_samples = None
         else:
-            self.corr_between_b = None
+            prop = punpy.MCPropagation(self.b_iter)
+            if self.b_samples is None:
+                self.b_samples = prop.generate_MC_sample(
+                    self.b, self.u_b, self.corr_b, self.corr_between_b
+                )
+            else:
+                self.b_samples = self.b_samples
+        
