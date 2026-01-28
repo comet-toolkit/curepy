@@ -1,10 +1,8 @@
 """Markov Chain Monte Carlo (MCMC) retrieval class"""
 
 from curepy.retrieval_methods.base import BaseRetrieval
-from curepy.container.measurement_function import MeasurementFunction
-from curepy.container.ancillary_parameter import AncillaryParameter
-from curepy.container.prior import Prior
-from curepy.container.measurement import Measurement
+from curepy.container.retrieval_input import RetrievalInput
+from curepy.container.retrieval_result import RetrievalResult
 
 from multiprocessing import Pool
 import emcee
@@ -15,38 +13,42 @@ class MCMC(BaseRetrieval):
     
     def __init__(
         self,
-        measurement_function_obj: MeasurementFunction,
-        measurement_obj: Measurement,
-        ancillary_obj: AncillaryParameter = None,
-        prior_obj: Prior = None,
+        nwalkers, 
+        steps, 
+        burn_in,
         progress: bool = True,
     ):
-        self.measurement_function_obj = measurement_function_obj
-        self.measurement_obj = measurement_obj
-        self.ancilary_obj = ancillary_obj
-        self.prior_obj = prior_obj
+
+        self.nwalkers = nwalkers
+        self.steps = steps
+        self.burn_in = burn_in
+        
+        self.progress = progress
     
     def run_retrieval(self, 
-                      nwalkers, 
-                      steps, 
-                      burn_in,
-                      ):
+                      retrieval_input: RetrievalInput,
+                      return_samples = False,
+                      return_corr = False,
+                      return_b_samples = False):
         
         #define theta_0
-        theta_0 = self.generate_theta_0(self)
+        theta_0 = self.generate_theta_0(retrieval_input.measurement_function_obj.initial_guess)
         
         #generate b samples if ancillary data exists
-        self.ancilary_obj.generate_b_samples()
-        b_samples = self.ancilary_obj.b_samples
+        retrieval_input.ancilary_obj.generate_b_samples()
+        b_samples = retrieval_input.ancilary_obj.b_samples
         
         #generate samples with MCMC
-        if b_samples is None or self.ancillary_obj.b_iter == 1:
-            samples = self.run_MCMC(theta_0, nwalkers, steps, burn_in)
+        if b_samples is None or retrieval_input.ancillary_obj.b_iter == 1:
+            samples = self.run_MCMC(theta_0, self.nwalkers, self.steps, self.burn_in)
         else:
             samples = np.zeros(
-                    ((nwalkers * steps - burn_in) * self.b_iter, len(theta_0)),
+                    ((self.nwalkers * self.steps - self.burn_in) * retrieval_input.ancillary_obj.b_iter, len(theta_0)),
                     dtype=np.float32,
                 )
+            
+            
+            #not refactored yet 
             b = self.b[:]
 
             for i in range(len(b_samples[0])):
@@ -64,14 +66,17 @@ class MCMC(BaseRetrieval):
 
                 samples[
                     i
-                    * (nwalkers * steps - burn_in) : (i + 1)
-                    * (nwalkers * steps - burn_in),
+                    * (self.nwalkers * self.steps - self.burn_in) : (i + 1)
+                    * (self.nwalkers * self.steps - self.burn_in),
                     :,
-                ] = self.run_MCMC(theta_0, nwalkers, steps, burn_in)
+                ] = self.run_MCMC(theta_0, self.nwalkers, self.steps, self.burn_in)
 
             self.b = b[:]
-    
+            
+            #analyse samples, outputs into RetrievalResult
+                
     def run_MCMC(self, theta_0, nwalkers, steps, burn_in):
+        #not refactored yet
         ndimw = len(theta_0)
         pos = [self.generate_theta_i(theta_0) for i in range(nwalkers)]
         self.measurement_function_x(theta_0)
@@ -86,9 +91,8 @@ class MCMC(BaseRetrieval):
         samples = sampler.chain[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
     
-    def generate_theta_0(self):
-        
-        ig = self.measurement_function_obj.initial_guess
+    @staticmethod
+    def generate_theta_0(ig):
         
         if hasattr(ig, "__len__"):
             if hasattr(ig[0], "__len__"):
