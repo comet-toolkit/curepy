@@ -48,7 +48,7 @@ class MCMC(BaseRetrieval):
                 )
             
             
-            #todo not refactored yet 
+            #todo: not refactored yet 
             b = self.b[:]
 
             for i in range(len(b_samples[0])):
@@ -78,10 +78,10 @@ class MCMC(BaseRetrieval):
         )
                 
     def run_MCMC(self, theta_0, nwalkers, steps, burn_in):
-        #todo not refactored yet
+        #todo: not refactored yet
         ndimw = len(theta_0)
         pos = [self.generate_theta_i(theta_0) for i in range(nwalkers)]
-        #self.measurement_function_x(theta_0) ##todo commented out in refactor, delete if examples pass without using
+        #self.measurement_function_x(theta_0) ##todo: commented out in refactor, delete if examples pass without using
 
         if self.parallel_cores > 1:
             p = Pool(self.parallel_cores)
@@ -115,7 +115,7 @@ class MCMC(BaseRetrieval):
         
         medians = np.median(samples, axis=0)
         
-        #todo still need to refactor/finalise calculations
+        #todo: still need to refactor/finalise calculations
         unc_up = np.percentile(samples, 84, axis=0) - medians
         unc_down = -(np.percentile(samples, 16, axis=0) - medians)
         unc_avg = (unc_up + unc_down) / 2.0
