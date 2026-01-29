@@ -119,7 +119,7 @@ class MCMC(BaseRetrieval):
     def generate_theta_i(self, theta_0, factor_std=0.1):
         theta_i = theta_0 * np.random.normal(1.0, factor_std, theta_0.shape)
         if np.all(self.retrieval_input.prior_obj.prior_params["minimum"].flatten() < theta_i) and np.all(
-            self.retrieval_input.prior_obj.prior_params["maximum"].flatten() > theta_i
+            self.retrieval_input.prior_obj.prior_params["maximum"].flatten() > theta_i#todo: check what to do for non uniform priors
         ):
             return theta_i
         else:
