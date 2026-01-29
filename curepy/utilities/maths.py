@@ -2,8 +2,7 @@
 
 import numpy as np
 
-def find_chisum(self,
-                modelled_data,
+def find_chisum(modelled_data,
                 observed_data,
                 u_observed_data,
                 invcov,
@@ -30,3 +29,14 @@ def find_chisum(self,
             "curepy.MCMC_retrieval: the difference between model and observations is infinite"
         )
     return np.inf
+
+def lnlike(modelled_data,
+            observed_data,
+            u_observed_data,
+            invcov,
+            repeat_dims: int = 0):
+    return  -0.5 * (find_chisum(modelled_data, 
+                                observed_data, 
+                                u_observed_data, 
+                                invcov, 
+                                repeat_dims))
