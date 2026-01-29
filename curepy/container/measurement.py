@@ -27,7 +27,7 @@ class Measurement:
         self._check_shapes(self.y, self.u_y, self.corr_y)
         
         if corr_y is not None:
-            self.inv_cov = self.calculate_inv_cov(self.u_y, self.corr_y)
+            self.invcov = self.calculate_inv_cov(self.u_y, self.corr_y)
         else:
             self.invcov = None
     
