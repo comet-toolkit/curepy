@@ -28,30 +28,6 @@ class Prior:
             raise ValueError(
                 f"Prior shape ({shape}) requires the following inputs in param dictionary {implemented_prior_shapes[shape]}"
             )
-        
-        
-        
-    def lnlike(self, theta):
-        # print(theta,self.find_chisum(theta))
-        return -0.5 * (self.find_chisum(theta))
-
-    def lnprior(self, theta):
-        if np.all(self.downlims.flatten() < theta) and np.all(
-            self.uplims.flatten() > theta
-        ):
-            # if self.syst_uncertainty[0] is None:
-            return 0
-        # else:
-        #     return -0.5*(theta[0]**2/self.syst_uncertainty**2)
-        else:
-            return -np.inf
-
-    def lnprob(self, theta):
-        lp_prior = self.lnprior(theta)
-        if not np.isfinite(lp_prior):
-            return -np.inf
-        lp = self.lnlike(theta)
-        return lp_prior + lp
     
         
         
