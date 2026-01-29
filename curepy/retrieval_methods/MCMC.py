@@ -32,7 +32,7 @@ class MCMC(BaseRetrieval):
                       return_corr = False,
                       return_b_samples = False):
         
-        #define theta_0
+        #format and define retrieval input
         if retrieval_input.ancilary_obj is None:
             retrieval_input.build_ancillary()
         if retrieval_input.prior_obj is None:
@@ -40,6 +40,8 @@ class MCMC(BaseRetrieval):
                                         prior_params={"minimum": -np.inf,
                                                       "maximum": np.inf})    
         self.retrieval_input = retrieval_input
+        
+        #define theta_0
         theta_0 = self.generate_theta_0(self.retrieval_input.measurement_function_obj.initial_guess)
         
         #generate b samples if ancillary data exists
