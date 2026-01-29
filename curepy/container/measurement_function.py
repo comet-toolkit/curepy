@@ -58,6 +58,7 @@ class MeasurementFunction:
             return arr
 
     def measurement_function_x(self, theta, b):
+        #todo: where to define make_x_tuple
         x = self.make_x_tuple(theta)
         if b is not None:
             xb = x + tuple(b)
