@@ -3,6 +3,7 @@
 from curepy.retrieval_methods.base import BaseRetrieval
 from curepy.container.retrieval_input import RetrievalInput
 from curepy.container.retrieval_result import RetrievalResult
+from curepy.utilities.maths import lnlike
 
 from multiprocessing import Pool
 import emcee
@@ -32,18 +33,25 @@ class MCMC(BaseRetrieval):
                       return_b_samples = False):
         
         #define theta_0
-        theta_0 = self.generate_theta_0(retrieval_input.measurement_function_obj.initial_guess)
+        if retrieval_input.ancilary_obj is None:
+            retrieval_input.build_ancillary()
+        if retrieval_input.prior_obj is None:
+            retrieval_input.build_prior(prior_shape="uniform",
+                                        prior_params={"minimum": -np.inf,
+                                                      "maximum": np.inf})    
+        self.retrieval_input = retrieval_input
+        theta_0 = self.generate_theta_0(self.retrieval_input.measurement_function_obj.initial_guess)
         
         #generate b samples if ancillary data exists
-        retrieval_input.ancilary_obj.generate_b_samples()
-        b_samples = retrieval_input.ancilary_obj.b_samples
+        self.retrieval_input.ancilary_obj.generate_b_samples()
+        b_samples = self.retrieval_input.ancilary_obj.b_samples
         
         #generate samples with MCMC
-        if b_samples is None or retrieval_input.ancillary_obj.b_iter == 1:
+        if b_samples is None or self.retrieval_input.ancillary_obj.b_iter == 1:
             samples = self.run_MCMC(theta_0, self.nwalkers, self.steps, self.burn_in)
         else:
             samples = np.zeros(
-                    ((self.nwalkers * self.steps - self.burn_in) * retrieval_input.ancillary_obj.b_iter, len(theta_0)),
+                    ((self.nwalkers * self.steps - self.burn_in) * self.retrieval_input.ancillary_obj.b_iter, len(theta_0)),
                     dtype=np.float32,
                 )
             
@@ -137,5 +145,21 @@ class MCMC(BaseRetrieval):
                                )
 
         return outs
+    
+    def lnprob(self, theta):
+        lp_prior = self.retrieval_input.prior_obj.lnprior(
+            theta,
+            *self.retrieval_input.prior_obj.prior_params) #todo: sort out ordering of these inputs
+        if not np.isfinite(lp_prior):
+            return -np.inf
+        modelled_data = self.retrieval_input.measurement_function_obj.measurement_function_x(theta,
+                                                                                             self.retrieval_input.ancilary_obj.b)
+        lp = lnlike(modelled_data,
+                    self.retrieval_input.measurement_obj.y,
+                    self.retrieval_input.measurement_obj.u_y,
+                    self.retrieval_input.measurement_obj.invcov,
+                    repeat_dims=0)#todo: placeholder! figure out where to define
+        
+        return lp_prior + lp
     
     
