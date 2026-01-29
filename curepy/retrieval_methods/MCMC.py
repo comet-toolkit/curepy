@@ -116,8 +116,14 @@ class MCMC(BaseRetrieval):
             
         return theta_0
     
-    def generate_theta_i(self):
-        raise NotImplementedError
+    def generate_theta_i(self, theta_0, factor_std=0.1):
+        theta_i = theta_0 * np.random.normal(1.0, factor_std, theta_0.shape)
+        if np.all(self.retrieval_input.prior_obj.prior_params["minimum"].flatten() < theta_i) and np.all(
+            self.retrieval_input.prior_obj.prior_params["maximum"].flatten() > theta_i
+        ):
+            return theta_i
+        else:
+            return self.generate_theta_i(theta_0, factor_std=factor_std * 0.9)
     
     def analyse_samples(
         self, samples, b_samples, return_samples, return_corr, return_b_samples
