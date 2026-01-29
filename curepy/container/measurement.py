@@ -2,7 +2,7 @@
 
 import numpy as np
 import comet_maths as cm
-import curepy.utilities as util
+import curepy.utilities.utilities as util
 
 class Measurement:
     def __init__(self,
