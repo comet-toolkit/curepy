@@ -7,11 +7,11 @@ implemented_prior_shapes = {"uniform": [],#todo: populate dict
 
 class Prior:
     def __init__(self,
-        shape: str = None,
-        params: dict = {}
+        prior_shape: str = None,
+        prior_params: dict = {}
     ):
         
-        self._check_inputs(shape, params)
+        self._check_inputs(prior_shape, prior_params)
         #todo: add function to initialise prior function
             
     def _check_inputs(shape, params):
