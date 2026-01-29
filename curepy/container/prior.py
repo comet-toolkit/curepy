@@ -14,7 +14,7 @@ class Prior:
     ):
         
         self._check_inputs(prior_shape, prior_params)
-        self.ln_prior = implemented_prior_shapes[prior_shape]["function"]
+        self.lnprior = implemented_prior_shapes[prior_shape]["function"]
         self.prior_params = prior_params
             
     def _check_inputs(shape, params):
