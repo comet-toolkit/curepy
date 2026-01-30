@@ -146,13 +146,9 @@ class MCMC(BaseRetrieval):
             *self.retrieval_input.prior_obj.prior_params.values()) #todo: sort out ordering of these inputs
         if not np.isfinite(lp_prior):
             return -np.inf
-        modelled_data = self.retrieval_input.measurement_function_obj.measurement_function_x(theta,
-                                                                                             self.retrieval_input.ancillary_obj.b)
-        lp = lnlike(modelled_data,
-                    self.retrieval_input.measurement_obj.y,
-                    self.retrieval_input.measurement_obj.u_y,
-                    self.retrieval_input.measurement_obj.invcov,
-                    repeat_dims=0)#todo: placeholder! figure out where to define
+        
+        lp = lnlike(self.find_chisum(theta,
+                                     repeat_dims=[]))#todo: placeholder! figure out where to define
         
         return lp_prior + lp
     
