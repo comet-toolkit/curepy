@@ -29,7 +29,7 @@ class LPU(BaseRetrieval):
         res = minimize(self.find_chisum, theta_0)
         
         if self.Jx is None:
-            Jx = res.jac 
+            Jx = res.jac #todo: fix 
             #Jx = cm.calculate_Jacobian(self.retrieval_input.measurement_function_obj.measurement_function, 
              #                          res.x)
         else:
@@ -57,9 +57,10 @@ class LPU(BaseRetrieval):
             Se_inv = np.linalg.inv(cm.convert_corr_to_cov(
                 np.ones((len(self.retrieval_input.measurement_obj.u_y),
                          len(self.retrieval_input.measurement_obj.u_y))),
-                self.retrieval_input.measurement_obj.u_y)) 
+                self.retrieval_input.measurement_obj.u_y)) #todo: sort out definitions of invcov
             
         if Sa_inv:
             return np.linalg.inv(np.dot(np.dot(J.T, Se_inv), J) + Sa_inv)
         else:
             return np.linalg.inv(np.dot(np.dot(J.T, Se_inv), J))
+        #todo: sort out these calculations
