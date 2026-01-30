@@ -105,19 +105,6 @@ class MCMC(BaseRetrieval):
         samples = sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
     
-    @staticmethod
-    def generate_theta_0(ig):
-        
-        if hasattr(ig, "__len__"):
-            if hasattr(ig[0], "__len__"):
-                theta_0 = np.concatenate(ig).flatten()
-            else:
-                theta_0 = np.array(ig).flatten()
-        else:
-            theta_0 = np.array([ig])
-            
-        return theta_0
-    
     def generate_theta_i(self, theta_0, factor_std=0.1):
         theta_i = theta_0 * np.random.normal(1.0, factor_std, theta_0.shape)
         if np.all(self.retrieval_input.prior_obj.prior_params["minimum"] < theta_i) and np.all(
