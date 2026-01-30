@@ -18,14 +18,15 @@ class MCMC(BaseRetrieval):
         steps, 
         burn_in,
         progress: bool = True,
+        parallel_cores: int = 1,
     ):
 
-        super().__init__()#todo: add inputs here 
         self.nwalkers = nwalkers
         self.steps = steps
         self.burn_in = burn_in
         
         self.progress = progress
+        self.parallel_cores = parallel_cores
     
     def run_retrieval(self, 
                       retrieval_input: RetrievalInput,
