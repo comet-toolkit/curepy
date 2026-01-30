@@ -18,16 +18,16 @@ class AncillaryParameter():
         self.corr_b = None
         self.corr_between_b = None
         
-        if b:
+        if b is not None:
             try:
                 self.b = np.array(b)
             except:
                 self.b = np.array(b, dtype=object)
-        if u_b:
+        if u_b is not None:
             self.u_b = np.array(u_b)
-        if corr_b:
+        if corr_b is not None:
             self.corr_b = np.array(corr_b)
-        if corr_between_b:
+        if corr_between_b is not None:
             self.corr_between_b = np.array(corr_between_b)
             
         self.b_iter = b_iter #todo rename to make functionality clearer

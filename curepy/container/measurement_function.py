@@ -12,11 +12,11 @@ class MeasurementFunction:
                  input_quantities_names: Union[str, List[str]] = None,
                  ):
         
-        self.measurement_func = measurement_func
+        self.measurement_function = measurement_func
         self._measurand_name = measurand_name
         self._input_quantities_names = input_quantities_names
     
-        self.initial_guess = self.format_initial_guess(initial_guess, multiple_guess_measurements)
+        self.initial_guess = self._format_initial_guess(initial_guess, multiple_guess_measurements)
         
     @staticmethod
     def _format_initial_guess(
@@ -61,7 +61,10 @@ class MeasurementFunction:
         #todo: where to define make_x_tuple
         x = self.make_x_tuple(theta)
         if b is not None:
-            xb = x + tuple(b)
+            return self.measurement_function(*x, b) #todo: tests for edge cases
         else:
-            xb = x
-        return self.measurement_function(*xb)
+            return self.measurement_function(*x)
+        
+    
+    def make_x_tuple(self, theta):
+        return tuple(theta) #todo: definitely need to rewrite

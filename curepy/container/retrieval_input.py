@@ -18,7 +18,7 @@ class RetrievalInput:
         
         self.measurement_function_obj = measurement_function_obj
         self.measurement_obj = measurement_obj
-        self.ancilary_obj = ancillary_obj
+        self.ancillary_obj = ancillary_obj
         self.prior_obj = prior_obj
         
     def build_retrieval_inputs(self,
@@ -49,7 +49,7 @@ class RetrievalInput:
                                            u_y,
                                            corr_y)
         
-        self.ancilary_obj = AncillaryParameter(b,
+        self.ancillary_obj = AncillaryParameter(b,
                                                u_b,
                                                corr_b,
                                                corr_between_b,
@@ -96,7 +96,7 @@ class RetrievalInput:
                         b_iter = None,
                         ):
         
-        self.ancilary_obj = AncillaryParameter(b,
+        self.ancillary_obj = AncillaryParameter(b,
                                                u_b,
                                                corr_b,
                                                corr_between_b,

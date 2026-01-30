@@ -20,6 +20,7 @@ class MCMC(BaseRetrieval):
         progress: bool = True,
     ):
 
+        super().__init__()#todo: add inputs here 
         self.nwalkers = nwalkers
         self.steps = steps
         self.burn_in = burn_in
@@ -33,7 +34,7 @@ class MCMC(BaseRetrieval):
                       return_b_samples = False):
         
         #format and define retrieval input
-        if retrieval_input.ancilary_obj is None:
+        if retrieval_input.ancillary_obj is None:
             retrieval_input.build_ancillary()
         if retrieval_input.prior_obj is None:
             retrieval_input.build_prior(prior_shape="uniform",
@@ -45,8 +46,8 @@ class MCMC(BaseRetrieval):
         theta_0 = self.generate_theta_0(self.retrieval_input.measurement_function_obj.initial_guess)
         
         #generate b samples if ancillary data exists
-        self.retrieval_input.ancilary_obj.generate_b_samples()
-        b_samples = self.retrieval_input.ancilary_obj.b_samples
+        self.retrieval_input.ancillary_obj.generate_b_samples()
+        b_samples = self.retrieval_input.ancillary_obj.b_samples
         
         #generate samples with MCMC
         if b_samples is None or self.retrieval_input.ancillary_obj.b_iter == 1:
@@ -83,9 +84,9 @@ class MCMC(BaseRetrieval):
 
             self.b = b[:]
             
-            return self.analyse_samples(
-            samples, b_samples, return_samples, return_corr, return_b_samples
-        )
+        return self.analyse_samples(
+        samples, b_samples, return_samples, return_corr, return_b_samples
+    )
                 
     def run_MCMC(self, theta_0, nwalkers, steps, burn_in):
         #todo: not refactored yet
@@ -100,7 +101,7 @@ class MCMC(BaseRetrieval):
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob)
         sampler.run_mcmc(pos, steps, progress=self.progress)
 
-        samples = sampler.get_chain[:, :, :].reshape((-1, ndimw))[burn_in::]
+        samples = sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
     
     @staticmethod
@@ -118,8 +119,8 @@ class MCMC(BaseRetrieval):
     
     def generate_theta_i(self, theta_0, factor_std=0.1):
         theta_i = theta_0 * np.random.normal(1.0, factor_std, theta_0.shape)
-        if np.all(self.retrieval_input.prior_obj.prior_params["minimum"].flatten() < theta_i) and np.all(
-            self.retrieval_input.prior_obj.prior_params["maximum"].flatten() > theta_i#todo: check what to do for non uniform priors
+        if np.all(self.retrieval_input.prior_obj.prior_params["minimum"] < theta_i) and np.all(
+            self.retrieval_input.prior_obj.prior_params["maximum"] > theta_i#todo: check what to do for non uniform priors
         ):
             return theta_i
         else:
@@ -142,9 +143,6 @@ class MCMC(BaseRetrieval):
             else:
                 corr = np.ones((1,))
 
-        medians = self.make_x_tuple(medians)
-        unc_avg = self.make_x_tuple(unc_avg)
-
         outs = RetrievalResult(x = medians,
                                u_x = unc_avg,
                                corr_x = corr if return_corr else None,
@@ -157,11 +155,11 @@ class MCMC(BaseRetrieval):
     def lnprob(self, theta):
         lp_prior = self.retrieval_input.prior_obj.lnprior(
             theta,
-            *self.retrieval_input.prior_obj.prior_params) #todo: sort out ordering of these inputs
+            *self.retrieval_input.prior_obj.prior_params.values()) #todo: sort out ordering of these inputs
         if not np.isfinite(lp_prior):
             return -np.inf
         modelled_data = self.retrieval_input.measurement_function_obj.measurement_function_x(theta,
-                                                                                             self.retrieval_input.ancilary_obj.b)
+                                                                                             self.retrieval_input.ancillary_obj.b)
         lp = lnlike(modelled_data,
                     self.retrieval_input.measurement_obj.y,
                     self.retrieval_input.measurement_obj.u_y,

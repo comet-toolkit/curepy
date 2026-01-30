@@ -16,7 +16,8 @@ class Prior:
         self._check_inputs(prior_shape, prior_params)
         self.lnprior = implemented_prior_shapes[prior_shape]["function"]
         self.prior_params = prior_params
-            
+    
+    @staticmethod   
     def _check_inputs(shape, params):
         #check shape
         if shape.lower() not in implemented_prior_shapes:
@@ -24,7 +25,7 @@ class Prior:
                 f"The provided prior shape ({shape}) is not an implemented prior distribution shape {implemented_prior_shapes.keys()}"
             )
         #check required params exist 
-        if set(params.keys()) == set(implemented_prior_shapes[shape]["params"]):# todo: fix check and possibly add optional param check
+        if set(params.keys()) != set(implemented_prior_shapes[shape]["params"]):# todo: fix check and possibly add optional param check
             raise ValueError(
                 f"Prior shape ({shape}) requires the following inputs in param dictionary {implemented_prior_shapes[shape]}"
             )
