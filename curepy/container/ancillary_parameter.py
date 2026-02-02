@@ -30,7 +30,7 @@ class AncillaryParameter():
         if corr_between_b is not None:
             self.corr_between_b = np.array(corr_between_b)
             
-        self.b_iter = b_iter #todo rename to make functionality clearer
+        self.b_iter = b_iter #todo: rename to make functionality clearer
         self.b_samples = b_samples
         
     def generate_b_samples(self):
