@@ -25,7 +25,7 @@ class Prior:
                 f"The provided prior shape ({shape}) is not an implemented prior distribution shape {implemented_prior_shapes.keys()}"
             )
         #check required params exist 
-        if set(params.keys()) != set(implemented_prior_shapes[shape]["params"]):# todo: fix check and possibly add optional param check
+        if set(params.keys()) != set(implemented_prior_shapes[shape]["params"]):
             raise ValueError(
                 f"Prior shape ({shape}) requires the following inputs in param dictionary {implemented_prior_shapes[shape]}"
             )
