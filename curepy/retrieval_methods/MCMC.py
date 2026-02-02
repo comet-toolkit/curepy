@@ -90,11 +90,9 @@ class MCMC(BaseRetrieval):
     )
                 
     def run_MCMC(self, theta_0, nwalkers, steps, burn_in):
-        #todo: not refactored yet
         ndimw = len(theta_0)
         pos = [self.generate_theta_i(theta_0) for i in range(nwalkers)]
-        #self.measurement_function_x(theta_0) ##todo: commented out in refactor, delete if examples pass without using
-
+        
         if self.parallel_cores > 1:
             p = Pool(self.parallel_cores)
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob, pool=p)
