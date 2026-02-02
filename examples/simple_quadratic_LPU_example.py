@@ -9,6 +9,8 @@ from curepy.utilities.plotting import corner
 import numpy as np
 import matplotlib.pyplot as plt
 
+np.random.seed(1503)
+
 def quadratic(a, b, c, x):
     return a*x**2 + b*x + c
 
