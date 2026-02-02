@@ -143,7 +143,7 @@ class MCMC(BaseRetrieval):
     def lnprob(self, theta):
         lp_prior = self.retrieval_input.prior_obj.lnprior(
             theta,
-            *self.retrieval_input.prior_obj.prior_params.values()) #todo: sort out ordering of these inputs
+            **self.retrieval_input.prior_obj.prior_params)
         if not np.isfinite(lp_prior):
             return -np.inf
         
