@@ -29,9 +29,12 @@ class LPU(BaseRetrieval):
         res = minimize(self.find_chisum, theta_0)
         
         if self.Jx is None:
-            Jx = res.jac #todo: fix 
+            #Jx = res.jac #todo: fix 
             #Jx = cm.calculate_Jacobian(self.retrieval_input.measurement_function_obj.measurement_function, 
              #                          res.x)
+            
+            Jx = cm.calculate_Jacobian(self.retrieval_input.measurement_function_obj.measurement_function_x,
+                                       (res.x , self.retrieval_input.ancillary_obj.b))
         else:
             Jx = self.Jx
 
