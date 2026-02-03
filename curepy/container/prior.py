@@ -27,7 +27,7 @@ class Prior:
         #check required params exist 
         if sorted(list((params.keys()))) != sorted(implemented_prior_shapes[shape]["params"]):
             raise ValueError(
-                f"Prior shape ({shape}) requires the following inputs in param dictionary {implemented_prior_shapes[shape]}"
+                f"Prior shape ({shape}) requires the following inputs in param dictionary {implemented_prior_shapes[shape]["params"]}"
             )
     
         
