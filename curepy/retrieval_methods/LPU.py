@@ -23,10 +23,12 @@ class LPU(BaseRetrieval):
                       return_corr: bool = True):
         
         self.retrieval_input = retrieval_input
+        
+        self._check_retrieval_input()
 
         theta_0 = self.generate_theta_0(self.retrieval_input.measurement_function_obj.initial_guess)
         
-        res = minimize(self.find_chisum, #todo: change this to lnlike
+        res = minimize(self.lnprob, #todo: change this to lnlike
                        theta_0)
         
         if self.Jx is None:

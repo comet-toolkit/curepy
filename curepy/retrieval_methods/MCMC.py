@@ -3,7 +3,7 @@
 from curepy.retrieval_methods.base import BaseRetrieval
 from curepy.container.retrieval_input import RetrievalInput
 from curepy.container.retrieval_result import RetrievalResult
-from curepy.utilities.maths import lnlike
+
 
 from multiprocessing import Pool
 import emcee
@@ -34,14 +34,9 @@ class MCMC(BaseRetrieval):
                       return_corr = False,
                       return_b_samples = False):
         
-        #format and define retrieval input
-        if retrieval_input.ancillary_obj is None:
-            retrieval_input.build_ancillary()
-        if retrieval_input.prior_obj is None:
-            retrieval_input.build_prior(prior_shape="uniform",
-                                        prior_params={"minimum": -np.inf,
-                                                      "maximum": np.inf})    
         self.retrieval_input = retrieval_input
+        
+        self._check_retrieval_input()
         
         #define theta_0
         theta_0 = self.generate_theta_0(self.retrieval_input.measurement_function_obj.initial_guess)
@@ -135,17 +130,5 @@ class MCMC(BaseRetrieval):
                                )
 
         return outs
-    
-    def lnprob(self, theta):
-        lp_prior = self.retrieval_input.prior_obj.lnprior(
-            theta,
-            **self.retrieval_input.prior_obj.prior_params)
-        if not np.isfinite(lp_prior):
-            return -np.inf
-        
-        lp = lnlike(self.find_chisum(theta,
-                                     repeat_dims=[]))#todo: placeholder! figure out where to define
-        
-        return lp_prior + lp
     
     

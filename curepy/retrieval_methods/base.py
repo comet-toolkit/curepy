@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 from curepy.container.retrieval_input import RetrievalInput
 import numpy as np
+from curepy.utilities.maths import lnlike
 
 class BaseRetrieval(ABC):
     """Base retrieval object"""
@@ -24,6 +25,16 @@ class BaseRetrieval(ABC):
             theta_0 = np.array([ig])
             
         return theta_0
+    
+    def _check_retrieval_input(self):
+        
+        #format and define retrieval input
+        if self.retrieval_input.ancillary_obj is None:
+            self.retrieval_input.build_ancillary()
+        if self.retrieval_input.prior_obj is None:
+            self.retrieval_input.build_prior(prior_shape="uniform",
+                                        prior_params={"minimum": -np.inf,
+                                                      "maximum": np.inf})    
     
     def find_chisum(self,
                     theta,
@@ -52,6 +63,18 @@ class BaseRetrieval(ABC):
                 "The difference between model and observations is infinite"
             )
         return np.inf
+    
+    def lnprob(self, theta):
+        lp_prior = self.retrieval_input.prior_obj.lnprior(
+            theta,
+            **self.retrieval_input.prior_obj.prior_params)
+        if not np.isfinite(lp_prior):
+            return -np.inf
+        
+        lp = lnlike(self.find_chisum(theta,
+                                     repeat_dims=[]))#todo: placeholder! figure out where to define
+        
+        return lp_prior + lp
     
     
 if __name__ == "__main__":
