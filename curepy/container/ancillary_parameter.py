@@ -21,28 +21,30 @@ class AncillaryParameter():
         self.corr_b = None
         self.corr_between_b = None
         
-        if self.b is not None:
+        if b is not None:
             self._format_ancillary_data(b, u_b, corr_b, corr_between_b)
             
         self.b_iter = b_iter #todo: rename to make functionality clearer
         self.b_samples = b_samples
     
     def _format_ancillary_data(self, b, u_b, corr_b, corr_between_b):
+        multiple_b = False
         if b is not None:
             try:
                 self.b = np.array(b)
             except:
-                self.b = np.array(b, dtype=object)
+                multiple_b = True
+                self.b = util.to_ragged_array(b)
                 
         if u_b is not None:
-            if self.b.ndim > 1:
-                self.u_b = np.array(u_b, dtype=object)
+            if multiple_b:
+                self.u_b = util.to_ragged_array(u_b)
             else:
                 self.u_b = np.array(u_b)
                 
         if corr_b is not None:
-            if self.b.ndim > 1:
-                self.corr_b = np.array([util.format_correlation(self.b[i], corr_b[i]) for i in range(self.b.shape[0])], dtype = object)
+            if multiple_b:
+                self.corr_b = util.to_ragged_array([util.format_correlation(self.b[i], corr_b[i]) for i in range(self.b.shape[0])])
             else:
                 self.corr_b = util.format_correlation(self.b, corr_b)
                 
@@ -68,10 +70,10 @@ class AncillaryParameter():
             return None
         else:
             if self.corr_b is not None:
-                total_corr = cm.calculate_flattened_corr(corrs = [self.corr_b],
+                total_corr = cm.calculate_flattened_corr(corrs = [corr for corr in self.corr_b],
                                                          corr_between = self.corr_between_b if self.corr_between_b is not None else np.eye(len(self.b)))
                 
-                return cm.convert_corr_to_cov(total_corr, self.u_b.flatten())
+                return cm.convert_corr_to_cov(total_corr, np.hstack(self.u_b))
             else:
                 warnings.warn("Correlation matrix must be defined to calculate covariance")
                 return None
