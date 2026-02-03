@@ -53,7 +53,7 @@ class AncillaryParameter():
             return None
         else:
             if self.corr_b is not None:
-                total_corr = cm.calculate_flattened_corr(corrs = self.corr_b,
+                total_corr = cm.calculate_flattened_corr(corrs = [self.corr_b],
                                                          corr_between = self.corr_between_b if self.corr_between_b is not None else np.eye(len(self.b)))
                 
                 return cm.convert_corr_to_cov(total_corr, self.u_b.flatten())
