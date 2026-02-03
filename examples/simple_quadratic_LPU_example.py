@@ -11,17 +11,18 @@ import matplotlib.pyplot as plt
 
 np.random.seed(1503)
 
-def quadratic(a, b, c, x):
-    return a*x**2 + b*x + c
+def quadratic(a, b, c, x, d):
+    return a*x**2 + b*x + c + d
 
 x = np.linspace(-5, 5, 200)
+d = 5
 data = 0.27*x**2 -0.19*x -8.5
 noise = np.random.normal(0, 1, data.shape)
 y = data + noise
 
-meas_func = MeasurementFunction(quadratic, [[0.5,0.2], [0.2, 0.3], [-10, -9]])
-meas = Measurement(y, noise, np.diag(noise**2))
-ancill = AncillaryParameter(x, 0.01*np.ones_like(x), np.eye(len(x)), b_iter = 1)
+meas_func = MeasurementFunction(quadratic, [0.5, 0.2, -10])
+meas = Measurement(y, noise, np.eye(len(x)))
+ancill = AncillaryParameter([x, d], [0.01*np.ones_like(x), 1], [np.eye(len(x)), np.array([1,])],b_iter = 1)
 
 inputs = RetrievalInput(meas_func, meas, ancill)
 
