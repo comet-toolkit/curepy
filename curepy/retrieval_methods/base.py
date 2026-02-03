@@ -32,9 +32,9 @@ class BaseRetrieval(ABC):
         if self.retrieval_input.ancillary_obj is None:
             self.retrieval_input.build_ancillary()
         if self.retrieval_input.prior_obj is None:
-            self.retrieval_input.build_prior(prior_shape="uniform",
-                                        prior_params={"minimum": -np.inf,
-                                                      "maximum": np.inf})    
+            self.retrieval_input.build_prior(prior_shape=["uniform"] * len(self.retrieval_input.measurement_function_obj.initial_guess),
+                                        prior_params=[{"minimum": -np.inf,"maximum": np.inf}] * len(
+                                            self.retrieval_input.measurement_function_obj.initial_guess))    
     
     def find_chisum(self,
                     theta,
@@ -67,14 +67,14 @@ class BaseRetrieval(ABC):
     def lnprob(self, theta):
         lp_prior = self.retrieval_input.prior_obj.lnprior(
             theta,
-            **self.retrieval_input.prior_obj.prior_params)
-        if not np.isfinite(lp_prior):
+            )()
+        if not all(np.isfinite(lp_prior)):
             return -np.inf
         
         lp = lnlike(self.find_chisum(theta,
                                      repeat_dims=[]))#todo: placeholder! figure out where to define
         
-        return lp_prior + lp
+        return np.sum(lp_prior) + lp
     
     def maximiser(self, theta):
         return self.lnprob(theta)

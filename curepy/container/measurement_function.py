@@ -60,12 +60,11 @@ class MeasurementFunction:
 
     def measurement_function_x(self, theta, b):
         x = self.make_x_tuple(theta)
-        if b is not None:
-            return self.measurement_function(*x, b) #todo: tests for edge cases
+        if b is None:
+            return self.measurement_function(*x) #todo: tests for edge cases
         else:
-            return self.measurement_function(*x)
-        
-    
+            return self.measurement_function(*x, *b)
+          
     def make_x_tuple(self, theta):
         x = deepcopy(self.initial_guess)
         j = 0
