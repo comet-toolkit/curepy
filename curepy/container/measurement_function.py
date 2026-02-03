@@ -2,6 +2,7 @@
 
 from typing import Union, List
 import numpy as np
+from copy import deepcopy
 
 class MeasurementFunction:
     def __init__(self,
@@ -58,7 +59,6 @@ class MeasurementFunction:
             return arr
 
     def measurement_function_x(self, theta, b):
-        #todo: where to define make_x_tuple
         x = self.make_x_tuple(theta)
         if b is not None:
             return self.measurement_function(*x, b) #todo: tests for edge cases
@@ -67,4 +67,24 @@ class MeasurementFunction:
         
     
     def make_x_tuple(self, theta):
-        return tuple(theta) #todo: definitely need to rewrite
+        x = deepcopy(self.initial_guess)
+        j = 0
+        for i in range(len(x)):
+            if not hasattr(x[i], "__len__"):
+                x[i] = theta[j]
+                j += 1
+            else:
+                for ii in range(len(x[i])):
+                    if not hasattr(x[i][ii], "__len__"):
+                        x[i][ii] = theta[j]
+                        j += 1
+                    else:
+                        for iii in range(len(x[i][ii])):
+                            if not hasattr(x[i][ii][iii], "__len__"):
+                                x[i][ii][iii] = theta[j]
+                                j += 1
+                            else:
+                                raise ValueError(
+                                    "The initial guess has too high dimensionality."
+                                )
+        return tuple(x)
