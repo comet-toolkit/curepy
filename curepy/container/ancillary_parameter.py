@@ -52,4 +52,11 @@ class AncillaryParameter():
             warnings.warn("b, u_b, and a correlation matrix must be defined to calculate a covariance matrix")
             return None
         else:
-            return cm.convert_corr_to_cov(self.corr_b, self.u_b)#todo: how to include corr_between_b
+            if self.corr_b is not None:
+                total_corr = cm.calculate_flattened_corr(corrs = self.corr_b,
+                                                         corr_between = self.corr_between_b if self.corr_between_b is not None else np.eye(len(self.b)))
+                
+                return cm.convert_corr_to_cov(total_corr, self.u_b.flatten())
+            else:
+                warnings.warn("Correlation matrix must be defined to calculate covariance")
+                return None
