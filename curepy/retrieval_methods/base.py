@@ -30,7 +30,7 @@ class BaseRetrieval(ABC):
                     repeat_dims = []):
         
         modelled_data = self.retrieval_input.measurement_function_obj.measurement_function_x(theta, self.retrieval_input.ancillary_obj.b)
-        diff = modelled_data - self.retrieval_input.measurement_obj.y
+        diff = modelled_data - self.retrieval_input.measurement_obj.y#todo: flat?
         if np.isfinite(np.sum(diff)):
             if self.retrieval_input.measurement_obj.invcov is None:
                 return np.sum((diff) ** 2 / self.retrieval_input.measurement_obj.u_y**2)

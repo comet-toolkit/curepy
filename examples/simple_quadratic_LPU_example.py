@@ -19,7 +19,7 @@ data = 0.27*x**2 -0.19*x -8.5
 noise = np.random.normal(0, 1, data.shape)
 y = data + noise
 
-meas_func = MeasurementFunction(quadratic, [0.5, 0.2, -10])
+meas_func = MeasurementFunction(quadratic, [[0.5,0.2], [0.2, 0.3], [-10, -9]])
 meas = Measurement(y, noise, np.diag(noise**2))
 ancill = AncillaryParameter(x, 0.01*np.ones_like(x), np.eye(len(x)), b_iter = 1)
 

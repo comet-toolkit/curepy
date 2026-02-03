@@ -117,8 +117,6 @@ class MCMC(BaseRetrieval):
     ):
         
         medians = np.median(samples, axis=0)
-        
-        #todo: still need to refactor/finalise calculations
         unc_up = np.percentile(samples, 84, axis=0) - medians
         unc_down = -(np.percentile(samples, 16, axis=0) - medians)
         unc_avg = (unc_up + unc_down) / 2.0
