@@ -4,6 +4,7 @@ import numpy as np
 import punpy
 import comet_maths as cm
 import warnings
+import curepy.utilities.utilities as util
 
 class AncillaryParameter():
     def __init__(self,
@@ -20,21 +21,35 @@ class AncillaryParameter():
         self.corr_b = None
         self.corr_between_b = None
         
+        if self.b is not None:
+            self._format_ancillary_data(b, u_b, corr_b, corr_between_b)
+            
+        self.b_iter = b_iter #todo: rename to make functionality clearer
+        self.b_samples = b_samples
+    
+    def _format_ancillary_data(self, b, u_b, corr_b, corr_between_b):
         if b is not None:
             try:
                 self.b = np.array(b)
             except:
                 self.b = np.array(b, dtype=object)
+                
         if u_b is not None:
-            self.u_b = np.array(u_b)
+            if self.b.ndim > 1:
+                self.u_b = np.array(u_b, dtype=object)
+            else:
+                self.u_b = np.array(u_b)
+                
         if corr_b is not None:
-            self.corr_b = np.array(corr_b)
+            if self.b.ndim > 1:
+                self.corr_b = np.array([util.format_correlation(self.b[i], corr_b[i]) for i in range(self.b.shape[0])], dtype = object)
+            else:
+                self.corr_b = util.format_correlation(self.b, corr_b)
+                
         if corr_between_b is not None:
             self.corr_between_b = np.array(corr_between_b)
             
-        self.b_iter = b_iter #todo: rename to make functionality clearer
-        self.b_samples = b_samples
-        
+            
     def generate_b_samples(self):
         if self.b is None:
             self.b_samples = None
