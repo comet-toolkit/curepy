@@ -29,7 +29,7 @@ def format_correlation(y, corr):
     :return: Formatted correlation matrix
     """
 
-    if corr is None:
+    if corr is None or not hasattr(y, "__len__"):
         return None
     elif isinstance(corr, str):
         if corr == 'rand':
@@ -40,3 +40,6 @@ def format_correlation(y, corr):
             raise ValueError('Error correlation matrix must be defined as None, "rand", "syst", or a custom matrix')
     else:
         return corr
+    
+def to_ragged_array(list_of_lists):
+    return np.array([np.array(sub) for sub in list_of_lists], dtype=object)
