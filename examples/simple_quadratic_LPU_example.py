@@ -21,7 +21,7 @@ y = data + noise
 
 meas_func = MeasurementFunction(quadratic, [0.5, 0.2, -10])
 meas = Measurement(y, noise, np.diag(noise**2))
-ancill = AncillaryParameter(x, np.zeros_like(x), b_iter = 1)
+ancill = AncillaryParameter(x, 0.01*np.ones_like(x), np.eye(len(x)), b_iter = 1)
 
 inputs = RetrievalInput(meas_func, meas, ancill)
 

@@ -52,6 +52,7 @@ class LPU(BaseRetrieval):
         return u_func, corr_x
 
     def calculate_measurand_covariance(self, J, Sy_inv, Sa_inv=None, Sb_inv=None):
+        Sb_inv = self.retrieval_input.ancillary_obj.calculate_b_cov()
         if Sy_inv is not None and Sb_inv is not None:
             Se_inv = Sy_inv + Sb_inv
         elif Sy_inv is not None and Sb_inv is None:

@@ -2,6 +2,8 @@
 
 import numpy as np
 import punpy
+import comet_maths as cm
+import warnings
 
 class AncillaryParameter():
     def __init__(self,
@@ -44,4 +46,10 @@ class AncillaryParameter():
                 )
             else:
                 self.b_samples = self.b_samples
-        
+                
+    def calculate_b_cov(self):
+        if self.b is None and self.u_b is None and (self.corr_b is None or self.corr_between_b is None):
+            warnings.warn("b, u_b, and a correlation matrix must be defined to calculate a covariance matrix")
+            return None
+        else:
+            return cm.convert_corr_to_cov(self.corr_b, self.u_b)#todo: how to include corr_between_b
