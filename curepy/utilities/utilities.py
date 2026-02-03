@@ -20,3 +20,23 @@ def reshape_array(A_flat,shape):
     """
     return A_flat.reshape(shape)
     
+
+def format_correlation(y, corr):
+    """
+    Format correlation matrix from class inputs
+
+    :param corr: Correlation matrix input
+    :return: Formatted correlation matrix
+    """
+
+    if corr is None:
+        return None
+    elif isinstance(corr, str):
+        if corr == 'rand':
+            return np.eye(len(y))
+        elif corr == 'syst':
+            return np.ones((len(y), len(y)))
+        else:
+            raise ValueError('Error correlation matrix must be defined as None, "rand", "syst", or a custom matrix')
+    else:
+        return corr
