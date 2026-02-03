@@ -28,7 +28,7 @@ class LPU(BaseRetrieval):
 
         theta_0 = self.generate_theta_0(self.retrieval_input.measurement_function_obj.initial_guess)
         
-        res = minimize(self.lnprob, #todo: change this to lnlike
+        res = minimize(self.minimiser, #todo: change this to lnlike
                        theta_0)
         
         if self.Jx is None:

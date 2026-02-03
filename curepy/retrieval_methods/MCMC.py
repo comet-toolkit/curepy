@@ -90,9 +90,9 @@ class MCMC(BaseRetrieval):
         
         if self.parallel_cores > 1:
             p = Pool(self.parallel_cores)
-            sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob, pool=p)
+            sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.maximiser, pool=p)
         else:
-            sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob)
+            sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.maximiser)
         sampler.run_mcmc(pos, steps, progress=self.progress)
 
         samples = sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::]
