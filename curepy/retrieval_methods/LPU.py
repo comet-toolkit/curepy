@@ -29,14 +29,11 @@ class LPU(BaseRetrieval):
 
         theta_0 = self.generate_theta_0(self.retrieval_input.measurement_function_obj.initial_guess)
         
-        res = minimize(self.minimiser, #todo: change this to lnlike
+        res = minimize(self.minimiser,
                        theta_0)
         
         if self.Jx is None:
-            #Jx = cm.calculate_Jacobian(self.retrieval_input.measurement_function_obj.measurement_function_x,
-             #                          (res.x , self.retrieval_input.ancillary_obj.b))
             Jx = self.calculate_Jx(res.x)
-        
         else:
             Jx = self.Jx
 
