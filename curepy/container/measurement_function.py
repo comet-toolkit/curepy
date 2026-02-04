@@ -64,6 +64,17 @@ class MeasurementFunction:
             return self.measurement_function(*x) #todo: tests for edge cases
         else:
             return self.measurement_function(*x, *b)
+        
+    def measurement_function_flattened_b(self, theta, b_flat, b_shape_list):
+        x = self.make_x_tuple(theta)
+        num = 0
+        b = np.empty(len(b_shape_list), dtype = object)
+        for i,sh in enumerate(b_shape_list):
+            num_sh = int(np.prod([x for x in sh]))
+            b[i] = b_flat[num:num + num_sh].reshape(sh)
+            num += num_sh
+        
+        return self.measurement_function(*x, *b)
           
     def make_x_tuple(self, theta):
         x = deepcopy(self.initial_guess)

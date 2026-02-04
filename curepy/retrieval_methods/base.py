@@ -34,7 +34,7 @@ class BaseRetrieval(ABC):
         if self.retrieval_input.prior_obj is None:
             self.retrieval_input.build_prior(prior_shape=["uniform"] * len(self.retrieval_input.measurement_function_obj.initial_guess),
                                         prior_params=[{"minimum": -np.inf,"maximum": np.inf}] * len(
-                                            self.retrieval_input.measurement_function_obj.initial_guess))    
+                                            self.retrieval_input.measurement_function_obj.initial_guess))
     
     def find_chisum(self,
                     theta,
