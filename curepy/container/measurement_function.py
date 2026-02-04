@@ -75,6 +75,15 @@ class MeasurementFunction:
             num += num_sh
         
         return self.measurement_function(*x, *b)
+    
+    def measurement_function_flattened_output(self, theta, b):
+        x = self.make_x_tuple(theta)
+        if b is None:
+            out = self.measurement_function(*x) #todo: tests for edge cases
+        else:
+            out = self.measurement_function(*x, *b)
+            
+        return out.flatten()
           
     def make_x_tuple(self, theta):
         x = deepcopy(self.initial_guess)

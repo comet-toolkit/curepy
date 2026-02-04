@@ -55,12 +55,15 @@ class LPU(BaseRetrieval):
         if Sy_inv is not None and Sb_inv is not None:
             Se_inv = Sy_inv + Sb_inv
           
-        elif Sy_inv is not None and Sb_inv is None: 
+        elif Sy_inv is not None and Sb_inv is None:
             Sb = self.retrieval_input.ancillary_obj.calculate_b_cov()
-            Jb = self.calculate_Jb(x)
-            Sb_y = np.dot(np.dot(Jb, Sb), Jb.T)
+            if Sb is not None:
+                Jb = self.calculate_Jb(x)
+                Sb_y = np.dot(np.dot(Jb, Sb), Jb.T)
+                Se = np.linalg.inv(Sy_inv) + Sb_y 
+            else:
+                Se = np.linalg.inv(Sy_inv)
         
-            Se = np.linalg.inv(Sy_inv) + Sb_y
             Se_inv = np.linalg.inv(Se)
 
         else:
@@ -73,7 +76,7 @@ class LPU(BaseRetrieval):
         
     def calculate_Jx(self, x):
         
-        meas_func_fixed_b = partial(self.retrieval_input.measurement_function_obj.measurement_function_x,
+        meas_func_fixed_b = partial(self.retrieval_input.measurement_function_obj.measurement_function_flattened_output,
                                     b = self.retrieval_input.ancillary_obj.b)
         
         Jx = cm.calculate_Jacobian(meas_func_fixed_b, x)
