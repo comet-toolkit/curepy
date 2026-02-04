@@ -23,8 +23,9 @@ y = data + noise
 meas_func = MeasurementFunction(quadratic, [0.5, 0.2, -10])
 meas = Measurement(y, noise, np.eye(len(x)))
 ancill = AncillaryParameter([x, d], [0.01*np.ones_like(x), 0.05], [np.eye(len(x)), np.array([1,])],b_iter = 1)
+prior = Prior(['uniform']*3, [{"minimum": -15, "maximum": 10}]*3)
 
-inputs = RetrievalInput(meas_func, meas, ancill)
+inputs = RetrievalInput(meas_func, meas, ancill, prior)
 
 ret = LPU()
 
