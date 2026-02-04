@@ -22,12 +22,12 @@ class Measurement:
         self.u_y = u_y
         self.y_flat, self.u_y_flat, self.y_shape = self._flatten_inputs(self.y, self.u_y)
         
-        self.corr_y = util.format_correlation(self.y, corr_y)
+        self.corr_y = util.format_correlation(self.y_flat, corr_y)
         
-        self._check_shapes(self.y, self.u_y, self.corr_y)
+        self._check_shapes(self.y_flat, self.u_y_flat, self.corr_y)
         
         if corr_y is not None:
-            self.invcov = self.calculate_inv_cov(self.u_y, self.corr_y)
+            self.invcov = self.calculate_inv_cov(self.u_y_flat, self.corr_y)
         else:
             self.invcov = None
     

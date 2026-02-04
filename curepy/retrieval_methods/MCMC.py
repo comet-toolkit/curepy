@@ -100,9 +100,9 @@ class MCMC(BaseRetrieval):
     
     def generate_theta_i(self, theta_0, factor_std=0.1):
         theta_i = theta_0 * np.random.normal(1.0, factor_std, theta_0.shape)
-        if np.all(self.retrieval_input.prior_obj.prior_params["minimum"] < theta_i) and np.all(
-            self.retrieval_input.prior_obj.prior_params["maximum"] > theta_i#todo: check what to do for non uniform priors
-        ):
+        if all(np.isfinite(self.retrieval_input.prior_obj.lnprior(
+            theta_i,
+            )())):
             return theta_i
         else:
             return self.generate_theta_i(theta_0, factor_std=factor_std * 0.9)
@@ -126,7 +126,7 @@ class MCMC(BaseRetrieval):
                                u_x = unc_avg,
                                corr_x = corr if return_corr else None,
                                samples = samples if return_samples else None,
-                               b_samples = b_samples if return_b_samples else None,
+                               b_samples = b_samples if return_b_samples else None,#todo: if input multidimensional reshape samples?
                                )
 
         return outs
