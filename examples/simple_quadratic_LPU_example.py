@@ -22,7 +22,7 @@ y = data + noise
 
 meas_func = MeasurementFunction(quadratic, [0.5, 0.2, -10])
 meas = Measurement(y, noise, np.eye(len(x)))
-ancill = AncillaryParameter([x, d], [0.01*np.ones_like(x), 1], [np.eye(len(x)), np.array([1,])],b_iter = 1)
+ancill = AncillaryParameter([x, d], [0.01*np.ones_like(x), 0.05], [np.eye(len(x)), np.array([1,])],b_iter = 1)
 
 inputs = RetrievalInput(meas_func, meas, ancill)
 
@@ -32,6 +32,6 @@ results = ret.run_retrieval(inputs)
 
 print(results.values)
 print(results.uncertainties)
-plt.plot(x, quadratic(*results.values, x))
+plt.plot(x, quadratic(*results.values, x, d))
 plt.scatter(x, y, alpha = 0.5, c = 'orange')
 plt.savefig("C:/Users/jr20/code/curepy/examples/LPU_test.png")
