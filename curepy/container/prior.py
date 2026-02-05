@@ -26,12 +26,11 @@ class Prior:
         self.function_list = [implemented_prior_shapes[shape]["function"] for shape in prior_shape]
         self.prior_params = prior_params
         self.prior_correlation = prior_correlation
+        self.Sa_inv = self.return_Sa_inv()
         
         if np.all(prior_shape == "normal"):
             mu = np.array([p["mu"] for p in prior_params])
-            Sa = self.return_Sa()
-            Sa_inv = np.linalg.inv(Sa)
-            self.lnprior = lambda x: ln_multi_normal(x, mu, Sa_inv)
+            self.lnprior = lambda x: ln_multi_normal(x, mu, self.Sa_inv)
         else:
             self.lnprior = self.combine_dist_functions
     
@@ -60,11 +59,11 @@ class Prior:
     def combine_dist_functions(self, xs):
         return lambda: [f(x, **kws) for f, x, kws in zip(self.function_list, xs, self.prior_params)]
         
-    def return_Sa(self):
+    def return_Sa_inv(self):
         corr = util.format_correlation(self.prior_params, self.prior_correlation)
         if corr is None:
             return None
         else:
             u = np.array([p["sigma"] for p in self.prior_params]) #only set up for gaussian priors
             Sa = cm.convert_corr_to_cov(corr, u)
-            return Sa
+            return np.linalg.inv(Sa)

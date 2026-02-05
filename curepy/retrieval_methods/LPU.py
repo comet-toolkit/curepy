@@ -44,7 +44,8 @@ class LPU(BaseRetrieval):
                                corr_x = corr_x if return_corr else None)
         
     def process_inverse_jacobian(self, J, x):
-        covx = self.calculate_measurand_covariance(x, J, self.retrieval_input.measurement_obj.invcov)
+        covx = self.calculate_measurand_covariance(x, J, self.retrieval_input.measurement_obj.invcov,
+                                                   Sa_inv = self.retrieval_input.prior_obj.Sa_inv)
         u_func = np.sqrt(np.diag(covx))
         corr_x = cm.convert_cov_to_corr(covx, u_func)
         
@@ -69,7 +70,7 @@ class LPU(BaseRetrieval):
         else:
             raise ValueError("Covariance must be set for LPU method")
             
-        if Sa_inv:
+        if Sa_inv is not None:
             return np.linalg.inv(np.dot(np.dot(J.T, Se_inv), J) + Sa_inv)
         else:
             return np.linalg.inv(np.dot(np.dot(J.T, Se_inv), J))
