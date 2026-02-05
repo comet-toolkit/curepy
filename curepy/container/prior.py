@@ -4,6 +4,8 @@ import numpy as np
 from curepy.utilities.distributions import *
 from typing import List
 import warnings
+import curepy.utilities.utilities as util
+import comet_maths as cm
 
 implemented_prior_shapes = {"uniform": {"function": ln_uniform,
                                         "params": ["minimum", "maximum"],
@@ -23,8 +25,15 @@ class Prior:
         self._check_inputs(prior_shape, prior_params, prior_correlation)
         self.function_list = [implemented_prior_shapes[shape]["function"] for shape in prior_shape]
         self.prior_params = prior_params
-        self.lnprior = self.combine_dist_functions
         self.prior_correlation = prior_correlation
+        
+        if np.all(prior_shape == "normal"):
+            mu = np.array([p["mu"] for p in prior_params])
+            Sa = self.return_Sa()
+            Sa_inv = np.linalg.inv(Sa)
+            self.lnprior = lambda x: ln_multi_normal(x, mu, Sa_inv)
+        else:
+            self.lnprior = self.combine_dist_functions
     
     @staticmethod   
     def _check_inputs(shape, params, corr):
@@ -51,4 +60,11 @@ class Prior:
     def combine_dist_functions(self, xs):
         return lambda: [f(x, **kws) for f, x, kws in zip(self.function_list, xs, self.prior_params)]
         
-        
+    def return_Sa(self):
+        corr = util.format_correlation(self.prior_params, self.prior_correlation)
+        if corr is None:
+            return None
+        else:
+            u = np.array([p["sigma"] for p in self.prior_params]) #only set up for gaussian priors
+            Sa = cm.convert_corr_to_cov(corr, u)
+            return Sa
