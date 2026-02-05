@@ -5,7 +5,9 @@ from curepy.utilities.distributions import *
 from typing import List
 
 implemented_prior_shapes = {"uniform": {"function": ln_uniform,
-                                        "params": ["minimum", "maximum"]}
+                                        "params": ["minimum", "maximum"]},
+                            "normal": {"function": ln_normal,
+                                       "params": ["mu", "sigma"]}
                             }
 
 class Prior:

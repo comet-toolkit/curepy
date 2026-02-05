@@ -12,3 +12,6 @@ def ln_uniform(theta, minimum, maximum):
         
     else:
         return -np.inf
+    
+def ln_normal(theta, mu, sigma):
+    return - ((theta - mu)**2)/(2*sigma**2)
