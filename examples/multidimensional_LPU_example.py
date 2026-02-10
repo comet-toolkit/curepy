@@ -1,13 +1,11 @@
 from curepy.container.measurement_function import MeasurementFunction
 from curepy.container.measurement import Measurement
 from curepy.container.ancillary_parameter import AncillaryParameter
-from curepy.container.prior import Prior
 from curepy.retrieval_methods.LPU import LPU
 from curepy.container.retrieval_input import RetrievalInput
-from curepy.utilities.plotting import corner
 
 import numpy as np
-import matplotlib.pyplot as plt
+
 
 np.random.seed(1503)
 
