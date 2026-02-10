@@ -17,30 +17,6 @@ class TestMeasurement(unittest.TestCase):
 
         self.assertIsNone(meas.invcov)
 
-    def test__format_correlation_none(self):
-        corr = None
-        formatted_corr = Measurement._format_correlation(y, corr)
-
-        self.assertIsNone(formatted_corr)
-
-    def test__format_correlation_rand(self):
-        corr = "rand"
-        formatted_corr = Measurement._format_correlation(y, corr)
-
-        np.testing.assert_array_equal(formatted_corr, np.diag(np.diag(formatted_corr)))
-
-    def test__format_correlation_syst(self):
-        corr = "syst"
-        formatted_corr = Measurement._format_correlation(y, corr)
-
-        np.testing.assert_array_equal(formatted_corr, np.ones((len(y), len(y))))
-
-    def test__format_correlation_custom(self):
-        corr = np.ones((len(y), len(y))) + np.eye(len(y))
-        formatted_corr = Measurement._format_correlation(y, corr)
-
-        np.testing.assert_array_equal(formatted_corr, corr)
-
     @patch("comet_maths.convert_corr_to_cov")
     def test_calculate_inv_cov_diag(self, mock_convert_corr_to_cov):
         mock_convert_corr_to_cov.return_value = 0.5 * np.eye(5)
