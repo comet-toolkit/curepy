@@ -4,21 +4,25 @@ from typing import Union, List
 import numpy as np
 from copy import deepcopy
 
+
 class MeasurementFunction:
-    def __init__(self,
-                 measurement_func,
-                 initial_guess,
-                 multiple_guess_measurements: bool = False,
-                 measurand_name: str = None,
-                 input_quantities_names: Union[str, List[str]] = None,
-                 ):
-        
+    def __init__(
+        self,
+        measurement_func,
+        initial_guess,
+        multiple_guess_measurements: bool = False,
+        measurand_name: str = None,
+        input_quantities_names: Union[str, List[str]] = None,
+    ):
+
         self.measurement_function = measurement_func
         self._measurand_name = measurand_name
         self._input_quantities_names = input_quantities_names
-    
-        self.initial_guess = self._format_initial_guess(initial_guess, multiple_guess_measurements)
-        
+
+        self.initial_guess = self._format_initial_guess(
+            initial_guess, multiple_guess_measurements
+        )
+
     @staticmethod
     def _format_initial_guess(
         initial_guess,
@@ -26,21 +30,21 @@ class MeasurementFunction:
     ):
         """
         Format initial guess
-        
+
         :param initial_guess: Input initial guess for retrieval parameters
         :param multiple_guess_measurements: Bool, True if initial guess contains multiple measurements for each parameter else False
 
         """
         # Handle nested case:
         if hasattr(initial_guess, "__len__") and hasattr(initial_guess[0], "__len__"):
-            #If rectangular return array
+            # If rectangular return array
             try:
                 arr2d = np.array(initial_guess, dtype=float)
                 if arr2d.ndim == 2:
                     return arr2d
             except Exception:
                 pass
-            #If ragged rows -> object array of 1-D float arrays
+            # If ragged rows -> object array of 1-D float arrays
             ig_obj = np.empty(len(initial_guess), dtype=object)
             for i, row in enumerate(initial_guess):
                 ig_obj[i] = np.array(row, dtype=float)
@@ -61,30 +65,30 @@ class MeasurementFunction:
     def measurement_function_x(self, theta, b):
         x = self.make_x_tuple(theta)
         if b is None:
-            return self.measurement_function(*x) #todo: tests for edge cases
+            return self.measurement_function(*x)  # todo: tests for edge cases
         else:
             return self.measurement_function(*x, *b)
-        
+
     def measurement_function_flattened_b(self, theta, b_flat, b_shape_list):
         x = self.make_x_tuple(theta)
         num = 0
-        b = np.empty(len(b_shape_list), dtype = object)
-        for i,sh in enumerate(b_shape_list):
+        b = np.empty(len(b_shape_list), dtype=object)
+        for i, sh in enumerate(b_shape_list):
             num_sh = int(np.prod([x for x in sh]))
-            b[i] = b_flat[num:num + num_sh].reshape(sh)
+            b[i] = b_flat[num : num + num_sh].reshape(sh)
             num += num_sh
-        
+
         return self.measurement_function(*x, *b).flatten()
-    
+
     def measurement_function_flattened_output(self, theta, b):
         x = self.make_x_tuple(theta)
         if b is None:
-            out = self.measurement_function(*x) #todo: tests for edge cases
+            out = self.measurement_function(*x)  # todo: tests for edge cases
         else:
             out = self.measurement_function(*x, *b)
-            
+
         return out.flatten()
-          
+
     def make_x_tuple(self, theta):
         x = deepcopy(self.initial_guess)
         j = 0

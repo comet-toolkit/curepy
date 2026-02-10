@@ -9,13 +9,14 @@ from multiprocessing import Pool
 import emcee
 import numpy as np
 
+
 class MCMC(BaseRetrieval):
     """MCMC retrieval object"""
-    
+
     def __init__(
         self,
-        nwalkers, 
-        steps, 
+        nwalkers,
+        steps,
         burn_in,
         progress: bool = True,
         parallel_cores: int = 1,
@@ -24,37 +25,44 @@ class MCMC(BaseRetrieval):
         self.nwalkers = nwalkers
         self.steps = steps
         self.burn_in = burn_in
-        
+
         self.progress = progress
         self.parallel_cores = parallel_cores
-    
-    def run_retrieval(self, 
-                      retrieval_input: RetrievalInput,
-                      return_samples = False,
-                      return_corr = False,
-                      return_b_samples = False):
-        
+
+    def run_retrieval(
+        self,
+        retrieval_input: RetrievalInput,
+        return_samples=False,
+        return_corr=False,
+        return_b_samples=False,
+    ):
+
         self.retrieval_input = retrieval_input
-        
+
         self._check_retrieval_input()
-        
-        #define theta_0
-        theta_0 = self.generate_theta_0(self.retrieval_input.measurement_function_obj.initial_guess)
-        
-        #generate b samples if ancillary data exists
+
+        # define theta_0
+        theta_0 = self.generate_theta_0(
+            self.retrieval_input.measurement_function_obj.initial_guess
+        )
+
+        # generate b samples if ancillary data exists
         self.retrieval_input.ancillary_obj.generate_b_samples()
         b_samples = self.retrieval_input.ancillary_obj.b_samples
-        
-        #generate samples with MCMC
+
+        # generate samples with MCMC
         if b_samples is None or self.retrieval_input.ancillary_obj.b_iter == 1:
             samples = self.run_MCMC(theta_0, self.nwalkers, self.steps, self.burn_in)
         else:
             samples = np.zeros(
-                    ((self.nwalkers * self.steps - self.burn_in) * self.retrieval_input.ancillary_obj.b_iter, len(theta_0)),
-                    dtype=np.float32,
-                )
-            
-            
+                (
+                    (self.nwalkers * self.steps - self.burn_in)
+                    * self.retrieval_input.ancillary_obj.b_iter,
+                    len(theta_0),
+                ),
+                dtype=np.float32,
+            )
+
             b = self.b[:]
 
             for i in range(len(b_samples[0])):
@@ -78,15 +86,15 @@ class MCMC(BaseRetrieval):
                 ] = self.run_MCMC(theta_0, self.nwalkers, self.steps, self.burn_in)
 
             self.b = b[:]
-            
+
         return self.analyse_samples(
-        samples, b_samples, return_samples, return_corr, return_b_samples
-    )
-                
+            samples, b_samples, return_samples, return_corr, return_b_samples
+        )
+
     def run_MCMC(self, theta_0, nwalkers, steps, burn_in):
         ndimw = len(theta_0)
         pos = [self.generate_theta_i(theta_0) for i in range(nwalkers)]
-        
+
         if self.parallel_cores > 1:
             p = Pool(self.parallel_cores)
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.maximiser, pool=p)
@@ -96,20 +104,24 @@ class MCMC(BaseRetrieval):
 
         samples = sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
-    
+
     def generate_theta_i(self, theta_0, factor_std=0.1):
         theta_i = theta_0 * np.random.normal(1.0, factor_std, theta_0.shape)
-        if all(np.isfinite(self.retrieval_input.prior_obj.lnprior(
-            theta_i,
-            )())):
+        if all(
+            np.isfinite(
+                self.retrieval_input.prior_obj.lnprior(
+                    theta_i,
+                )()
+            )
+        ):
             return theta_i
         else:
             return self.generate_theta_i(theta_0, factor_std=factor_std * 0.9)
-    
+
     def analyse_samples(
         self, samples, b_samples, return_samples, return_corr, return_b_samples
     ):
-        
+
         medians = np.median(samples, axis=0)
         unc_up = np.percentile(samples, 84, axis=0) - medians
         unc_down = -(np.percentile(samples, 16, axis=0) - medians)
@@ -121,13 +133,12 @@ class MCMC(BaseRetrieval):
             else:
                 corr = np.ones((1,))
 
-        outs = RetrievalResult(x = medians,
-                               u_x = unc_avg,
-                               corr_x = corr if return_corr else None,
-                               samples = samples if return_samples else None,
-                               b_samples = b_samples if return_b_samples else None,
-                               )
+        outs = RetrievalResult(
+            x=medians,
+            u_x=unc_avg,
+            corr_x=corr if return_corr else None,
+            samples=samples if return_samples else None,
+            b_samples=b_samples if return_b_samples else None,
+        )
 
         return outs
-    
-    
