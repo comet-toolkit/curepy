@@ -30,8 +30,9 @@ class RetrievalInput:
                                 multiple_guess_measurements: bool = False,
                                 measurand_name: str = None,
                                 input_quantities_names: Union[str, List[str]] = None,
-                                prior_shape: str = None,
-                                prior_params: dict = {},
+                                prior_shape: List[str] = None,
+                                prior_params: List[dict] = [{}],
+                                prior_correlation = None,
                                 b = None,
                                 u_b = None,
                                 corr_b = None,
@@ -56,7 +57,8 @@ class RetrievalInput:
                                                b_samples,
                                                b_iter)
         self.prior_obj = Prior(prior_shape,
-                               prior_params)
+                               prior_params,
+                               prior_correlation)
         
     def build_measurement_function(self,
                                    measurement_func,
@@ -81,11 +83,13 @@ class RetrievalInput:
                                            corr_y)
         
     def build_prior(self,
-                    prior_shape: str = None,
-                    prior_params: dict = {},):
+                    prior_shape: List[str] = None,
+                    prior_params: List[dict] = [{}],
+                    prior_correlation = None,):
         
         self.prior_obj = Prior(prior_shape,
-                               prior_params)
+                               prior_params,
+                               prior_correlation)
         
     def build_ancillary(self,
                         b = None,
