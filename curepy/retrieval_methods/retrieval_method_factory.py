@@ -2,11 +2,13 @@
 
 from curepy.retrieval_methods.base import BaseRetrieval
 from curepy.retrieval_methods.MCMC import MCMC
+from curepy.retrieval_methods.LPU import LPU
 
 from typing import Union
 
 RETRIEVAL_HANDLERS = {
     "mcmc": MCMC,
+    "lpu": LPU
     
 } 
 
