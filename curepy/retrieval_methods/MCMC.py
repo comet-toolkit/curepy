@@ -55,7 +55,6 @@ class MCMC(BaseRetrieval):
                 )
             
             
-            #todo: not refactored yet 
             b = self.b[:]
 
             for i in range(len(b_samples[0])):
@@ -126,7 +125,7 @@ class MCMC(BaseRetrieval):
                                u_x = unc_avg,
                                corr_x = corr if return_corr else None,
                                samples = samples if return_samples else None,
-                               b_samples = b_samples if return_b_samples else None,#todo: if input multidimensional reshape samples?
+                               b_samples = b_samples if return_b_samples else None,
                                )
 
         return outs
