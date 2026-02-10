@@ -76,6 +76,7 @@ class AncillaryParameter():
                                                             corr_between = self.corr_between_b if self.corr_between_b is not None else np.eye(len(self.b)))
                 else:
                      total_corr = block_diag(*[corr for corr in self.corr_b])
+                     warnings.warn("Correlation matrices for each b have different shapes. Assuming no correlation between different b values.")
                      
                 return cm.convert_corr_to_cov(total_corr, np.hstack([b.flatten() for b in self.u_b]))
             else:
