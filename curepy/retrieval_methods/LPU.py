@@ -86,7 +86,7 @@ class LPU(BaseRetrieval):
     
     def calculate_Jb(self, x):
         
-        b_flat = np.hstack(self.retrieval_input.ancillary_obj.b)
+        b_flat = np.hstack([b.flatten() for b in self.retrieval_input.ancillary_obj.b])
         b_shape_list = [b.shape for b in self.retrieval_input.ancillary_obj.b]
         
         meas_func_fixed_x = lambda b: self.retrieval_input.measurement_function_obj.measurement_function_flattened_b(x, b, b_shape_list)

@@ -5,6 +5,7 @@ import punpy
 import comet_maths as cm
 import warnings
 import curepy.utilities.utilities as util
+from scipy.linalg import block_diag
 
 class AncillaryParameter():
     def __init__(self,
@@ -70,10 +71,13 @@ class AncillaryParameter():
             return None
         else:
             if self.corr_b is not None:
-                total_corr = cm.calculate_flattened_corr(corrs = [corr for corr in self.corr_b],
-                                                         corr_between = self.corr_between_b if self.corr_between_b is not None else np.eye(len(self.b)))
-                
-                return cm.convert_corr_to_cov(total_corr, np.hstack(self.u_b))
+                if len(set([len(corr) for corr in self.corr_b])) == 1:
+                    total_corr = cm.calculate_flattened_corr(corrs = [corr for corr in self.corr_b],
+                                                            corr_between = self.corr_between_b if self.corr_between_b is not None else np.eye(len(self.b)))
+                else:
+                     total_corr = block_diag(*[corr for corr in self.corr_b])
+                     
+                return cm.convert_corr_to_cov(total_corr, np.hstack([b.flatten() for b in self.u_b]))
             else:
                 warnings.warn("Correlation matrix must be defined to calculate covariance")
                 return None

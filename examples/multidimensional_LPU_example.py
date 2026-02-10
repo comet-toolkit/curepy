@@ -22,7 +22,7 @@ y = data + noise
 
 meas_func = MeasurementFunction(quadratic, [0.5, 0.2, -10])
 meas = Measurement(y, noise, 'rand')
-ancill = AncillaryParameter([x, d], [0.01*np.ones_like(x), 1], None,b_iter = 1)
+ancill =  AncillaryParameter([x, d], [0.01*np.ones_like(x), 1], [np.eye(len(x.flatten())), np.array([1,])],b_iter = 1)
 
 inputs = RetrievalInput(meas_func, meas, ancill)
 

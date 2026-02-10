@@ -74,7 +74,7 @@ class MeasurementFunction:
             b[i] = b_flat[num:num + num_sh].reshape(sh)
             num += num_sh
         
-        return self.measurement_function(*x, *b)
+        return self.measurement_function(*x, *b).flatten()
     
     def measurement_function_flattened_output(self, theta, b):
         x = self.make_x_tuple(theta)
