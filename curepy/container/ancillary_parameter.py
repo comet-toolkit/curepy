@@ -16,7 +16,7 @@ class AncillaryParameter:
         corr_b=None,
         corr_between_b=None,
         b_samples=None,
-        b_iter=None,
+        b_MC_steps=None,
     ):
 
         self.b = None
@@ -27,7 +27,7 @@ class AncillaryParameter:
         if b is not None:
             self._format_ancillary_data(b, u_b, corr_b, corr_between_b)
 
-        self.b_iter = b_iter  # todo: rename to make functionality clearer
+        self.b_MC_steps = b_MC_steps
         self.b_samples = b_samples
 
     def _format_ancillary_data(self, b, u_b, corr_b, corr_between_b):
@@ -63,7 +63,7 @@ class AncillaryParameter:
         if self.b is None:
             self.b_samples = None
         else:
-            prop = punpy.MCPropagation(self.b_iter)
+            prop = punpy.MCPropagation(self.b_MC_steps)
             if self.b_samples is None:
                 self.b_samples = prop.generate_MC_sample(
                     self.b, self.u_b, self.corr_b, self.corr_between_b
