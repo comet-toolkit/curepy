@@ -14,8 +14,9 @@ class BaseRetrieval(ABC):
         pass
     
     def reshape_outputs(self, x, u_x, corr_x):
+        theta = self.generate_theta_0(self.retrieval_input.measurement_function_obj.initial_guess)
         x_shape = self.retrieval_input.measurement_function_obj.measurement_function_x(
-            self.retrieval_input.measurement_function_obj.initial_guess, 
+            theta, 
             self.retrieval_input.ancillary_obj.b).shape
         
         x = x.reshape(x_shape)
