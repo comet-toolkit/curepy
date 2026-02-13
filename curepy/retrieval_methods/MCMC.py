@@ -52,13 +52,13 @@ class MCMC(BaseRetrieval):
         b_samples = self.retrieval_input.ancillary_obj.b_samples
 
         # generate samples with MCMC
-        if b_samples is None or self.retrieval_input.ancillary_obj.b_iter == 1:
+        if b_samples is None or self.retrieval_input.ancillary_obj.b_MC_steps == 1:
             samples = self.run_MCMC(theta_0, self.nwalkers, self.steps, self.burn_in)
         else:
             samples = np.zeros(
                 (
                     (self.nwalkers * self.steps - self.burn_in)
-                    * self.retrieval_input.ancillary_obj.b_iter,
+                    * self.retrieval_input.ancillary_obj.b_MC_steps,
                     len(theta_0),
                 ),
                 dtype=np.float32,
@@ -135,7 +135,9 @@ class MCMC(BaseRetrieval):
                 corr = np.ones((1,))
 
         if reshape_results:
-            medians, unc_avg, corr = self.reshape_outputs(medians, unc_avg, corr)
+            medians, unc_avg, corr = self.reshape_outputs(medians,
+                                                          unc_avg,
+                                                          corr if return_corr else None)
         
         outs = RetrievalResult(
             x=medians,
