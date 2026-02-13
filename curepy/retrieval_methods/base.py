@@ -14,16 +14,14 @@ class BaseRetrieval(ABC):
         pass
     
     def reshape_outputs(self, x, u_x, corr_x):
-        theta = self.generate_theta_0(self.retrieval_input.measurement_function_obj.initial_guess)
-        x_shape = self.retrieval_input.measurement_function_obj.measurement_function_x(
-            theta, 
-            self.retrieval_input.ancillary_obj.b).shape
+        x_shape = self.retrieval_input.measurement_function_obj.initial_guess.shape
         
         x = x.reshape(x_shape)
         u_x = u_x.reshape(x_shape)
         if corr_x is not None:
             raise NotImplementedError("Reshaping of correlation matrices is not yet implemented")
-
+        #corr_x = corr_x.reshape(x.shape + (np.prod(x_shape),))
+        
     @staticmethod
     def generate_theta_0(ig):
 
