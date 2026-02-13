@@ -17,7 +17,9 @@ class LPU(BaseRetrieval):
 
         self.Jx = Jx
 
-    def run_retrieval(self, retrieval_input: RetrievalInput, return_corr: bool = True):
+    def run_retrieval(self, retrieval_input: RetrievalInput,
+                      return_corr: bool = True,
+                      reshape_results: bool = False):
 
         self.retrieval_input = retrieval_input
 
@@ -34,10 +36,14 @@ class LPU(BaseRetrieval):
         else:
             Jx = self.Jx
 
+        x = res.x
         u_func, corr_x = self.process_inverse_jacobian(Jx, res.x)
 
+        if reshape_results:
+            x, u_func, corr_x = self.reshape_results(x, u_func, corr_x)
+        
         return RetrievalResult(
-            x=res.x, u_x=u_func, corr_x=corr_x if return_corr else None
+            x=x, u_x=u_func, corr_x=corr_x if return_corr else None
         )
 
     def process_inverse_jacobian(self, J, x):

@@ -35,6 +35,7 @@ class MCMC(BaseRetrieval):
         return_samples=False,
         return_corr=False,
         return_b_samples=False,
+        reshape_results: bool = False
     ):
 
         self.retrieval_input = retrieval_input
@@ -119,7 +120,7 @@ class MCMC(BaseRetrieval):
             return self.generate_theta_i(theta_0, factor_std=factor_std * 0.9)
 
     def analyse_samples(
-        self, samples, b_samples, return_samples, return_corr, return_b_samples
+        self, samples, b_samples, return_samples, return_corr, return_b_samples, reshape_results
     ):
 
         medians = np.median(samples, axis=0)
@@ -133,6 +134,9 @@ class MCMC(BaseRetrieval):
             else:
                 corr = np.ones((1,))
 
+        if reshape_results:
+            medians, unc_avg, corr = self.reshape_results(medians, unc_avg, corr)
+        
         outs = RetrievalResult(
             x=medians,
             u_x=unc_avg,
