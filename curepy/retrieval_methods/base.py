@@ -13,7 +13,7 @@ class BaseRetrieval(ABC):
     def run_retrieval(self, retrieval_inputs: RetrievalInput):
         pass
     
-    def reshape_results(self, x, u_x, corr_x):
+    def reshape_outputs(self, x, u_x, corr_x):
         x_shape = self.retrieval_input.measurement
 
     @staticmethod

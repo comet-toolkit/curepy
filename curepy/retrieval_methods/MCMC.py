@@ -35,7 +35,7 @@ class MCMC(BaseRetrieval):
         return_samples=False,
         return_corr=False,
         return_b_samples=False,
-        reshape_results: bool = False
+        reshape_results=False,
     ):
 
         self.retrieval_input = retrieval_input
@@ -89,7 +89,7 @@ class MCMC(BaseRetrieval):
             self.b = b[:]
 
         return self.analyse_samples(
-            samples, b_samples, return_samples, return_corr, return_b_samples
+            samples, b_samples, return_samples, return_corr, return_b_samples, reshape_results
         )
 
     def run_MCMC(self, theta_0, nwalkers, steps, burn_in):
@@ -135,7 +135,7 @@ class MCMC(BaseRetrieval):
                 corr = np.ones((1,))
 
         if reshape_results:
-            medians, unc_avg, corr = self.reshape_results(medians, unc_avg, corr)
+            medians, unc_avg, corr = self.reshape_outputs(medians, unc_avg, corr)
         
         outs = RetrievalResult(
             x=medians,

@@ -22,13 +22,13 @@ y = data + noise
 
 meas_func = MeasurementFunction(quadratic, [0.5, 0.2, -10])
 meas = Measurement(y, noise, 'rand')
-ancill = AncillaryParameter([x, d], [0.01*np.ones_like(x), 1], [np.eye(len(x)), np.array([1,])],b_iter = 1)
+ancill = AncillaryParameter([x, d], [0.01*np.ones_like(x), 1], [np.eye(len(x)), np.array([1,])],b_MC_steps= 1)
 
 inputs = RetrievalInput(meas_func, meas, ancill)
 
 ret = MCMC(100, 1000, 100)
 
-results = ret.run_retrieval(inputs, return_samples=True)
+results = ret.run_retrieval(inputs, return_samples=True, reshape_results=True)
 
 print(results.values)
 print(results.uncertainties)
