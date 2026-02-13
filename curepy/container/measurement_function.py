@@ -65,7 +65,7 @@ class MeasurementFunction:
     def measurement_function_x(self, theta, b):
         x = self.make_x_tuple(theta)
         if b is None:
-            return self.measurement_function(*x)  # todo: tests for edge cases
+            return self.measurement_function(*x)
         else:
             return self.measurement_function(*x, *b)
 
@@ -83,7 +83,7 @@ class MeasurementFunction:
     def measurement_function_flattened_output(self, theta, b):
         x = self.make_x_tuple(theta)
         if b is None:
-            out = self.measurement_function(*x)  # todo: tests for edge cases
+            out = self.measurement_function(*x)
         else:
             out = self.measurement_function(*x, *b)
 
