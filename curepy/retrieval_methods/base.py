@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from curepy.container.retrieval_input import RetrievalInput
 import numpy as np
 from curepy.utilities.maths import lnlike
-
+import warnings
 
 class BaseRetrieval(ABC):
     """Base retrieval object"""
@@ -19,9 +19,10 @@ class BaseRetrieval(ABC):
         x = x.reshape(x_shape)
         u_x = u_x.reshape(x_shape)
         if corr_x is not None:
-            raise NotImplementedError("Reshaping of correlation matrices is not yet implemented")
+            warnings.warn("Reshaping of correlation matrices is not yet implemented")
         #corr_x = corr_x.reshape(x.shape + (np.prod(x_shape),))
-        
+        return x, u_x, corr_x
+    
     @staticmethod
     def generate_theta_0(ig):
 
