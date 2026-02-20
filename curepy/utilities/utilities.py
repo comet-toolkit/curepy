@@ -45,4 +45,7 @@ def format_correlation(y, corr):
 
 
 def to_ragged_array(list_of_lists):
-    return np.array([np.array(sub) for sub in list_of_lists], dtype=object)
+    return np.array(
+        [np.array(sub) if sub is not None else None for sub in list_of_lists],
+        dtype=object,
+    )

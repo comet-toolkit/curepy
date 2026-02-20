@@ -14,10 +14,10 @@ try:
 except ImportError:
     gaussian_filter = None
 
-__all__ = ["corner", "hist2d", "quantile"]
+__all__ = ["plot_corner", "hist2d", "quantile"]
 
 
-def corner(
+def plot_corner(
     xs,
     bins=20,
     range=None,

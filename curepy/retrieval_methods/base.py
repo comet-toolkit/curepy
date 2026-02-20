@@ -6,23 +6,24 @@ import numpy as np
 from curepy.utilities.maths import lnlike
 import warnings
 
+
 class BaseRetrieval(ABC):
     """Base retrieval object"""
 
     @abstractmethod
     def run_retrieval(self, retrieval_inputs: RetrievalInput):
         pass
-    
+
     def reshape_outputs(self, x, u_x, corr_x):
         x_shape = self.retrieval_input.measurement_function_obj.initial_guess.shape
-        
+
         x = x.reshape(x_shape)
         u_x = u_x.reshape(x_shape)
         if corr_x is not None:
             warnings.warn("Reshaping of correlation matrices is not yet implemented")
-        #corr_x = corr_x.reshape(x.shape + (np.prod(x_shape),))
+        # corr_x = corr_x.reshape(x.shape + (np.prod(x_shape),))
         return x, u_x, corr_x
-    
+
     @staticmethod
     def generate_theta_0(ig):
 

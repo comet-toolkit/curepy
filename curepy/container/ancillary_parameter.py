@@ -33,6 +33,11 @@ class AncillaryParameter:
     def _format_ancillary_data(self, b, u_b, corr_b, corr_between_b):
         multiple_b = False
         if b is not None:
+            for i in range(len(b)):
+                if not hasattr(b[i], "__len__"):
+                    b[i] = np.array([b[i]])
+                else:
+                    b[i] = np.array(b[i])
             try:
                 self.b = np.array(b)
             except:
@@ -40,10 +45,18 @@ class AncillaryParameter:
                 self.b = util.to_ragged_array(b)
 
         if u_b is not None:
+            for i in range(len(u_b)):
+                if u_b[i] is None:
+                    u_b[i] = np.zeros_like(self.b[i])
+                elif not hasattr(u_b[i], "__len__"):
+                    u_b[i] = np.array([u_b[i]])
+                else:
+                    u_b[i] = np.array(u_b[i])
+
             if multiple_b:
                 self.u_b = util.to_ragged_array(u_b)
             else:
-                self.u_b = np.array(u_b)
+                self.u_b = u_b
 
         if corr_b is not None:
             if multiple_b:
@@ -66,7 +79,10 @@ class AncillaryParameter:
             prop = punpy.MCPropagation(self.b_MC_steps)
             if self.b_samples is None:
                 self.b_samples = prop.generate_MC_sample(
-                    self.b, self.u_b, self.corr_b, self.corr_between_b
+                    self.b,
+                    self.u_b,
+                    self.corr_b,
+                    self.corr_between_b,
                 )
             else:
                 self.b_samples = self.b_samples
@@ -83,6 +99,9 @@ class AncillaryParameter:
             return None
         else:
             if self.corr_b is not None:
+                for i in range(len(self.corr_b)):
+                    if self.corr_b[i] is None:
+                        self.corr_b[i] = np.eye(len(self.b[i]))
                 if len(set([len(corr) for corr in self.corr_b])) == 1:
                     total_corr = cm.calculate_flattened_corr(
                         corrs=[corr for corr in self.corr_b],
