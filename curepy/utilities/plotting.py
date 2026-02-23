@@ -14,10 +14,10 @@ try:
 except ImportError:
     gaussian_filter = None
 
-__all__ = ["corner", "hist2d", "quantile"]
+__all__ = ["plot_corner", "hist2d", "quantile"]
 
 
-def corner(
+def plot_corner(
     xs,
     bins=20,
     range=None,
@@ -45,7 +45,7 @@ def corner(
     **hist2d_kwargs,
 ):
     """
-    Make a *sick* corner plot showing the projections of a data set in a
+    Make a corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
     `matplotlib` styling.
 
