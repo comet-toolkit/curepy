@@ -115,3 +115,4 @@ ENV/
 
 # IDE settings
 .vscode/.git.old
+examples/*.png

@@ -1,3 +1,23 @@
+__all__ = [
+    "MCMC",
+    "LPU",
+    "RetrievalFactory",
+    "AncillaryParameter",
+    "Measurement",
+    "MeasurementFunction",
+    "Prior",
+    "RetrievalInput",
+    "RetrievalResult",
+    "plot_corner",
+    "lnlike",
+    "ln_uniform",
+    "ln_normal",
+    "ln_multi_normal",
+    "flatten_array",
+    "reshape_array",
+    "format_correlation",
+]
+
 # Retrieval methods
 from curepy.retrieval_methods.MCMC import MCMC
 from curepy.retrieval_methods.LPU import LPU
@@ -12,7 +32,7 @@ from curepy.container.retrieval_input import RetrievalInput
 from curepy.container.retrieval_result import RetrievalResult
 
 # Utilities
-from curepy.utilities.plotting import corner as plot_corner
+from curepy.utilities.plotting import plot_corner
 from curepy.utilities.maths import lnlike
 from curepy.utilities.distributions import ln_uniform, ln_normal, ln_multi_normal
 from curepy.utilities.utilities import flatten_array, reshape_array, format_correlation
