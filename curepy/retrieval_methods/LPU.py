@@ -18,8 +18,8 @@ class LPU(BaseRetrieval):
         self.Jx = Jx
 
     def run_retrieval(self, retrieval_input: RetrievalInput,
-                      return_corr: bool = True,
-                      reshape_results: bool = False):
+                      return_corr: bool = False,
+                      reshape_results: bool = True):
 
         self.retrieval_input = retrieval_input
 

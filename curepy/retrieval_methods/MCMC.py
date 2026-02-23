@@ -35,7 +35,7 @@ class MCMC(BaseRetrieval):
         return_samples=False,
         return_corr=False,
         return_b_samples=False,
-        reshape_results=False,
+        reshape_results=True,
     ):
 
         self.retrieval_input = retrieval_input

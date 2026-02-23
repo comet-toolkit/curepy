@@ -14,13 +14,12 @@ class BaseRetrieval(ABC):
         pass
     
     def reshape_outputs(self, x, u_x, corr_x):
-        x_shape = self.retrieval_input.measurement_function_obj.initial_guess.shape
+        x_shape = self.retrieval_input.measurement_function_obj.initial_guess.shape #todo: check this works for ragged initial guesses
         
         x = x.reshape(x_shape)
         u_x = u_x.reshape(x_shape)
         if corr_x is not None:
-            warnings.warn("Reshaping of correlation matrices is not yet implemented")
-        #corr_x = corr_x.reshape(x.shape + (np.prod(x_shape),))
+            warnings.warn("Reshaping of correlation matrices is not yet implemented, full flattened correlation will be returned")
         return x, u_x, corr_x
     
     @staticmethod
