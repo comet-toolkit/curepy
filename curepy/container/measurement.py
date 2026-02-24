@@ -38,7 +38,8 @@ class Measurement:
     @staticmethod
     def _flatten_inputs(y, u_y):
         y_flat, y_shape = util.flatten_array(y)
-        u_y_flat, u_y_shape = util.flatten_array(u_y)
+        if u_y is not None:
+            u_y_flat, u_y_shape = util.flatten_array(u_y)
         if not y_shape == u_y_shape:
             raise ValueError(
                 "Measurement variable, y, and related uncertainties, u_y, have different shapes:",
