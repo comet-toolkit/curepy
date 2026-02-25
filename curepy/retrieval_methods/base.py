@@ -99,12 +99,5 @@ class BaseRetrieval(ABC):
 
         return np.sum(lp_prior) + lp
 
-    def maximiser(self, theta):
-        return self.lnprob(theta)
-
-    def minimiser(self, theta):
-        return -self.lnprob(theta)
-
-
 if __name__ == "__main__":
     pass

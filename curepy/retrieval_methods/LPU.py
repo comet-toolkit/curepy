@@ -32,7 +32,7 @@ class LPU(BaseRetrieval):
             self.retrieval_input.measurement_function_obj.initial_guess
         )
 
-        res = minimize(self.minimiser, theta_0)
+        res = minimize(-self.lnprob, theta_0)
 
         if self.Jx is None:
             Jx = self.calculate_Jx(res.x)
