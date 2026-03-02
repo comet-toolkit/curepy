@@ -38,6 +38,21 @@ class TestBaseRetrieval(unittest.TestCase):
         x_r, u_r, c_r = dr.reshape_outputs(x, u_x, corr)
         self.assertEqual(x_r.shape, (2, 2))
         self.assertEqual(u_r.shape, (2, 2))
+        
+    def test_reshape_outputs_incorrect_shape(self):
+        dr = DummyRetrieval()
+        
+        dr.retrieval_input = MagicMock()
+        dr.retrieval_input.measurement_function_obj.initial_guess = (MagicMock(shape=(2,2)))
+
+        x = np.arange(3)
+        u_x = np.arange(4).astype(float)
+        corr = None
+
+        with self.assertRaises(ValueError):
+            x_r, u_r, c_r = dr.reshape_outputs(x, u_x, corr)
+
+
 
 
 if __name__ == "__main__":
