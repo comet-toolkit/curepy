@@ -11,7 +11,7 @@ class TestPlotting(unittest.TestCase):
     def test_quantile_basic(self):
         x = np.array([0.0, 1.0, 2.0, 3.0])
         q = quantile(x, [0.5])
-        self.assertEqual(float(q), 1.5)
+        self.assertEqual(float(q[0]), 1.5)
 
     def test_quantile_invalid_q(self):
         x = np.array([0.0, 1.0])
