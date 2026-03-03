@@ -28,6 +28,7 @@ dev = [
     "tox",
     "sphinx",
     "sphinx_rtd_theme"
+    "pytest-html"
 ]
 
 [tool.setuptools.packages.find]
