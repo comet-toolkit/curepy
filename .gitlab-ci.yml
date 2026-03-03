@@ -66,14 +66,14 @@ black:
 
 
 mypy:
-  image:
-    name: grktsh/mypy
-    entrypoint: [""]
+  image: python:3.11
   stage: Static Analysis
   script:
+    - pip install mypy --quiet
+    - mypy curepy --install-types --non-interactive
     - mypy curepy
   allow_failure: true
-  needs: []
+  needs: [ ]
 
 
 ### Tests ###
@@ -86,8 +86,10 @@ mypy:
     - python -c "import sys;print(sys.path)"
     - pip install tox
     - mkdir test_report
-    - tox
-  coverage: '/^TOTAL.+?(\d+\%)$/'
+    - pytest --html=test_report/report.html
+    - pytest --cov-report html:test_report/cov_report --cov=eoio
+    - coverage report -m --omit=eoio/tests/*,eoio/*/tests/*,examples/*
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   needs: []
   artifacts:
     when: always
@@ -119,31 +121,6 @@ tox-3.12:
     - if: '$CI_COMMIT_TAG'
       when: always
   
-# tox_slowtests:
-#     extends: .py_venv
-#     stage: "Full test"
-#     rules:
-#       # Run for scheduled or triggered builds
-#       - if: '$CI_PIPELINE_SOURCE == "trigger"'
-#         when: always
-#       - if: '$CI_PIPELINE_SOURCE == "schedule"'
-#         when: always        
-#       # Run for tags
-#       - if: '$CI_COMMIT_TAG'
-#         when: always
-#       # And allow manual runs
-#       - if: '$CI_COMMIT_BRANCH'
-#         when: manual
-#         allow_failure: true
-#     script:
-#       - pwd
-#       - ls -l
-#       - export PYTHONPATH="$PYTHONPATH:."
-#       - python -c "import sys;print(sys.path)"
-#       - pip install tox
-#       - tox -- --runslow
-#     coverage: '/^TOTAL.+?(\d+\%)$/'
-#     needs: []
 
 test_report:
   needs: ["tox-3.11"]
