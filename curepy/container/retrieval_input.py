@@ -41,7 +41,7 @@ class RetrievalInput:
         corr_b=None,
         corr_between_b=None,
         b_samples=None,
-        b_iter=None,
+        b_MC_steps=None,
     ):
 
         self.measurement_function_obj = MeasurementFunction(
@@ -55,7 +55,7 @@ class RetrievalInput:
         self.measurement_obj = Measurement(y, u_y, corr_y)
 
         self.ancillary_obj = AncillaryParameter(
-            b, u_b, corr_b, corr_between_b, b_samples, b_iter
+            b, u_b, corr_b, corr_between_b, b_samples, b_MC_steps
         )
         self.prior_obj = Prior(prior_shape, prior_params, prior_correlation)
 
@@ -101,9 +101,9 @@ class RetrievalInput:
         corr_b=None,
         corr_between_b=None,
         b_samples=None,
-        b_iter=None,
+        b_MC_steps=None,
     ):
 
         self.ancillary_obj = AncillaryParameter(
-            b, u_b, corr_b, corr_between_b, b_samples, b_iter
+            b, u_b, corr_b, corr_between_b, b_samples, b_MC_steps
         )
