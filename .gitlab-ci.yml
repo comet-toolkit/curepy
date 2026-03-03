@@ -87,8 +87,8 @@ mypy:
     - pip install tox
     - mkdir test_report
     - pytest --html=test_report/report.html
-    - pytest --cov-report html:test_report/cov_report --cov=eoio
-    - coverage report -m --omit=eoio/tests/*,eoio/*/tests/*,examples/*
+    - pytest --cov-report html:test_report/cov_report --cov=curepy
+    - coverage report -m --omit=curepy/tests/*,curepy/*/tests/*,examples/*
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   needs: []
   artifacts:
