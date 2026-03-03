@@ -4,8 +4,10 @@ import unittest
 import numpy as np
 from unittest.mock import MagicMock
 
+from curepy.container.retrieval_input import RetrievalInput
 from curepy.retrieval_methods.base import BaseRetrieval
 
+TEST_INPUT = RetrievalInput()
 
 class DummyRetrieval(BaseRetrieval):
     def run_retrieval(self, retrieval_inputs):
@@ -56,6 +58,30 @@ class TestBaseRetrieval(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             x_r, u_r, c_r = dr.reshape_outputs(x, u_x, corr)
+    
+    def test__check_retrieval_input_good(self):
+        dr = DummyRetrieval()
+        TEST_INPUT.build_prior(['uniform'], [{'minimum': 0, 'maximum': 1}])
+        TEST_INPUT.build_ancillary()
+        dr.run_retrieval(TEST_INPUT)
+        dr._check_retrieval_input()
+        
+    def test__check_retrieval_input_no_prior(self):
+        dr = DummyRetrieval()
+        TEST_INPUT.build_ancillary()
+        dr.run_retrieval(TEST_INPUT)
+        dr.retrieval_input.measurement_function_obj = MagicMock()
+        dr.retrieval_input.measurement_function_obj.initial_guess = [0]
+        dr._check_retrieval_input()
+        self.assertEqual(dr.retrieval_input.prior_obj.prior_params, [{'minimum': -np.inf, 'maximum': np.inf}])
+        
+    def test__check_retrieval_input_no_ancill(self):
+        dr = DummyRetrieval()
+        TEST_INPUT.build_prior(['uniform'], [{'minimum': 0, 'maximum': 1}])
+        dr.run_retrieval(TEST_INPUT)
+        dr._check_retrieval_input()
+        assert(dr.retrieval_input.ancillary_obj)
+        
 
 
 if __name__ == "__main__":
