@@ -5,8 +5,13 @@ import numpy as np
 from unittest.mock import patch, MagicMock
 
 from curepy.retrieval_methods.LPU import LPU
+from curepy.retrieval_methods.base import BaseRetrieval
+from curepy.container.retrieval_input import RetrievalInput
 
-
+class DummyRetrieval(BaseRetrieval):
+    def run_retrieval(self, retrieval_inputs):
+        self.retrieval_input = retrieval_inputs
+        
 class TestLPU(unittest.TestCase):
 
     def test_calculate_measurand_covariance_sy_and_sb_inv(self):
@@ -20,6 +25,51 @@ class TestLPU(unittest.TestCase):
         )
 
         expected = (1.0 / 0.7) * np.eye(2)
+        np.testing.assert_allclose(cov, expected)
+
+    def test_calculate_measurand_covariance_sa_inv(self):
+        lpu = LPU()
+        J = np.eye(2)
+        Sy_inv = 0.5 * np.eye(2)
+        Sb_inv = 0.2 * np.eye(2)
+        Sa_inv = 0.2 * np.eye(2)
+
+        cov = lpu.calculate_measurand_covariance(
+            None, J, Sy_inv, Sa_inv=Sa_inv, Sb_inv=Sb_inv
+        )
+
+        expected = (1.0 / 0.9) * np.eye(2)
+        np.testing.assert_allclose(cov, expected)
+        
+    def test_calculate_measurand_covariance_no_covariance(self):
+        lpu = LPU()
+        J = np.eye(2)
+        Sy_inv = None
+        Sb_inv = None
+
+        with self.assertRaises(ValueError):
+            cov = lpu.calculate_measurand_covariance(
+                None, J, Sy_inv, Sa_inv=None, Sb_inv=Sb_inv
+            )
+    
+    @patch.object(LPU, "calculate_Jb")
+    def test_calculate_measurand_covariance_sy_inv(self, mock_calculate_Jb):
+        lpu = LPU()
+        J = np.eye(2)
+        Sy_inv = 0.5 * np.eye(2)
+        Sb_inv = None
+
+        mock_calculate_Jb.return_value = np.eye(2)
+        inp = RetrievalInput()
+        inp.ancillary_obj = MagicMock()
+        inp.ancillary_obj.calculate_b_cov = lambda: np.eye(2)
+        lpu.retrieval_input = inp
+        
+        cov = lpu.calculate_measurand_covariance(
+            None, J, Sy_inv, Sa_inv=None, Sb_inv=Sb_inv
+        )
+
+        expected = (3) * np.eye(2)
         np.testing.assert_allclose(cov, expected)
 
     @patch("curepy.retrieval_methods.LPU.LPU.calculate_measurand_covariance")
