@@ -2,7 +2,7 @@
 
 import unittest
 import numpy as np
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from curepy.container.retrieval_input import RetrievalInput
 from curepy.retrieval_methods.base import BaseRetrieval
@@ -189,7 +189,28 @@ class TestBaseRetrieval(unittest.TestCase):
         expected = diff.T @ invcov @ diff
 
         assert result == expected
-
+        
+    @patch.object(BaseRetrieval, "find_chisum")
+    def test_lnprob_valid(self, mock_find_chisum):
+        dr = DummyRetrieval()
+        TEST_INPUT = RetrievalInput()
+        TEST_INPUT.prior_obj = MagicMock()
+        TEST_INPUT.prior_obj.lnprior = lambda theta: (lambda: np.array([0.0]))
+        mock_find_chisum.return_value = 5
+        dr.run_retrieval(TEST_INPUT)
+        out = dr.lnprob([3])
+        self.assertEqual(out, -2.5)
+        
+    @patch.object(BaseRetrieval, "find_chisum")
+    def test_lnprob_invalid(self, mock_find_chisum):
+        dr = DummyRetrieval()
+        TEST_INPUT = RetrievalInput()
+        TEST_INPUT.prior_obj = MagicMock()
+        TEST_INPUT.prior_obj.lnprior = lambda theta: (lambda: np.array([-np.inf]))
+        mock_find_chisum.return_value = 5
+        dr.run_retrieval(TEST_INPUT)
+        out = dr.lnprob([3])
+        self.assertEqual(out, -np.inf)
 
 if __name__ == "__main__":
     unittest.main()
