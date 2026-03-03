@@ -2,6 +2,7 @@
 
 import unittest
 import numpy as np
+import scipy
 from unittest.mock import patch, MagicMock
 
 from curepy.retrieval_methods.LPU import LPU
@@ -99,6 +100,21 @@ class TestLPU(unittest.TestCase):
         mock_calc_jac.return_value = np.array([[1.0]])
         Jx = lpu.calculate_Jx(np.array([1.0]))
         np.testing.assert_array_equal(Jx, np.array([[1.0]]))
+        self.assertEqual(mock_calc_jac.call_count, 1)
+        
+    @patch("comet_maths.calculate_Jacobian")
+    def test_calculate_Jb_calls_calculate_Jacobian(self, mock_calc_jac):
+        lpu = LPU()
+        lpu.retrieval_input = MagicMock()
+        lpu.retrieval_input.measurement_function_obj.measurement_function_flattened_b = (
+            MagicMock()
+        )
+        lpu.retrieval_input.ancillary_obj = MagicMock()
+        lpu.retrieval_input.ancillary_obj.b = np.array([1])
+
+        mock_calc_jac.return_value = np.array([[1.0]])
+        Jb = lpu.calculate_Jb(np.array([1.0]))
+        np.testing.assert_array_equal(Jb, np.array([[1.0]]))
         self.assertEqual(mock_calc_jac.call_count, 1)
 
 
