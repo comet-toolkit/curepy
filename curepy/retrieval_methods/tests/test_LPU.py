@@ -15,8 +15,10 @@ class TestLPU(unittest.TestCase):
         Sy_inv = 0.5 * np.eye(2)
         Sb_inv = 0.2 * np.eye(2)
 
-        cov = lpu.calculate_measurand_covariance(None, J, Sy_inv, Sa_inv=None, Sb_inv=Sb_inv)
-        
+        cov = lpu.calculate_measurand_covariance(
+            None, J, Sy_inv, Sa_inv=None, Sb_inv=Sb_inv
+        )
+
         expected = (1.0 / 0.7) * np.eye(2)
         np.testing.assert_allclose(cov, expected)
 
@@ -25,7 +27,7 @@ class TestLPU(unittest.TestCase):
     def test_process_inverse_jacobian(self, mock_convert, mock_calc_cov):
         lpu = LPU()
         lpu.retrieval_input = MagicMock()
-        lpu.retrieval_input.measurement_obj.invcov = (MagicMock(shape=(2,2)))
+        lpu.retrieval_input.measurement_obj.invcov = MagicMock(shape=(2, 2))
 
         covx = np.array([[4.0, 0.0], [0.0, 9.0]])
         mock_calc_cov.return_value = covx
@@ -39,9 +41,11 @@ class TestLPU(unittest.TestCase):
     def test_calculate_Jx_calls_calculate_Jacobian(self, mock_calc_jac):
         lpu = LPU()
         lpu.retrieval_input = MagicMock()
-        lpu.retrieval_input.measurement_function_obj.measurement_function_flattened_output = MagicMock()
+        lpu.retrieval_input.measurement_function_obj.measurement_function_flattened_output = (
+            MagicMock()
+        )
         lpu.retrieval_input.ancillary_obj.b = MagicMock()
-        
+
         mock_calc_jac.return_value = np.array([[1.0]])
         Jx = lpu.calculate_Jx(np.array([1.0]))
         np.testing.assert_array_equal(Jx, np.array([[1.0]]))

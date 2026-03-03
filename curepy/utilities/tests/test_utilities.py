@@ -16,7 +16,7 @@ class TestUtilities(unittest.TestCase):
     def test_reshape(self):
         A = np.arange(6).reshape((2, 3))
         flat = np.arange(6)
-        shape = (2,3)
+        shape = (2, 3)
         A2 = reshape_array(flat, shape)
         np.testing.assert_array_equal(A, A2)
 

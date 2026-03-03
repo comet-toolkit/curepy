@@ -29,7 +29,14 @@ class TestMCMC(unittest.TestCase):
         m = MCMC(nwalkers=2, steps=10, burn_in=1)
         # create simple samples: 3 samples, 1-dim
         samples = np.array([[0.0], [1.0], [2.0]])
-        res = m.analyse_samples(samples, b_samples=None, return_samples=True, return_corr=True, return_b_samples=False, reshape_results=False)
+        res = m.analyse_samples(
+            samples,
+            b_samples=None,
+            return_samples=True,
+            return_corr=True,
+            return_b_samples=False,
+            reshape_results=False,
+        )
 
         # medians should be 1.0, uncertainties average ((84-50)+(50-16))/2 ~ 1.0
         self.assertEqual(res.values.tolist(), [1.0])
@@ -65,9 +72,11 @@ class TestMCMC(unittest.TestCase):
         retrieval_input.measurement_function_obj.initial_guess = np.array([1.0])
         # ancillary that generates no b_samples
         anc = MagicMock()
+
         def gen_b():
             anc.b_samples = None
             anc.b_MC_steps = 1
+
         anc.generate_b_samples = gen_b
         anc.b = [np.array(0.0)]
         retrieval_input.ancillary_obj = anc
@@ -100,9 +109,11 @@ class TestMCMC(unittest.TestCase):
         # b_samples shaped as [param][sample_index]
         anc.b_samples = [np.array([10.0, 20.0]), np.array([30.0, 40.0])]
         anc.b_MC_steps = 2
+
         def gen_b():
             # already set
             return None
+
         anc.generate_b_samples = gen_b
         retrieval_input.ancillary_obj = anc
 
@@ -152,7 +163,9 @@ class TestMCMC(unittest.TestCase):
     @patch("curepy.retrieval_methods.MCMC.Pool")
     @patch("curepy.retrieval_methods.MCMC.emcee.EnsembleSampler")
     @patch.object(MCMC, "generate_theta_i")
-    def test_run_MCMC_parallel_uses_pool(self, mock_generate, mock_sampler_class, mock_pool_class):
+    def test_run_MCMC_parallel_uses_pool(
+        self, mock_generate, mock_sampler_class, mock_pool_class
+    ):
         m = MCMC(nwalkers=2, steps=4, burn_in=0, parallel_cores=2)
         theta_0 = np.array([1.0])
         mock_generate.return_value = [0 for i in range(2)]

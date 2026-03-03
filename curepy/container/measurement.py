@@ -48,7 +48,7 @@ class Measurement:
                 )
         else:
             u_y_flat = None
-            
+
         return y_flat, u_y_flat, y_shape
 
     @staticmethod

@@ -23,5 +23,6 @@ class TestPlotting(unittest.TestCase):
         with self.assertRaises(ValueError):
             quantile(x, [0.5], weights=np.array([1.0, 2.0, 3.0]))
 
+
 if __name__ == "__main__":
     unittest.main()

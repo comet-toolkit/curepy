@@ -99,5 +99,6 @@ class BaseRetrieval(ABC):
 
         return np.sum(lp_prior) + lp
 
+
 if __name__ == "__main__":
     pass
