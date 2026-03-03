@@ -88,7 +88,7 @@ mypy:
     - mkdir test_report
     - pytest --html=test_report/report.html
     - pytest --cov-report html:test_report/cov_report --cov=curepy
-    - coverage report -m --omit=curepy/tests/*,curepy/*/tests/*,examples/*,*/__init__.py
+    - coverage report -m --omit=curepy/tests/*,curepy/*/tests/*,examples/*,*/__init__.py,*/_*.py
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   needs: []
   artifacts:
