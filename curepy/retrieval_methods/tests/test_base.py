@@ -7,8 +7,6 @@ from unittest.mock import MagicMock
 from curepy.container.retrieval_input import RetrievalInput
 from curepy.retrieval_methods.base import BaseRetrieval
 
-TEST_INPUT = RetrievalInput()
-
 class DummyRetrieval(BaseRetrieval):
     def run_retrieval(self, retrieval_inputs):
         self.retrieval_input = retrieval_inputs
@@ -61,6 +59,7 @@ class TestBaseRetrieval(unittest.TestCase):
     
     def test__check_retrieval_input_good(self):
         dr = DummyRetrieval()
+        TEST_INPUT = RetrievalInput()
         TEST_INPUT.build_prior(['uniform'], [{'minimum': 0, 'maximum': 1}])
         TEST_INPUT.build_ancillary()
         dr.run_retrieval(TEST_INPUT)
@@ -68,6 +67,7 @@ class TestBaseRetrieval(unittest.TestCase):
         
     def test__check_retrieval_input_no_prior(self):
         dr = DummyRetrieval()
+        TEST_INPUT = RetrievalInput()
         TEST_INPUT.build_ancillary()
         dr.run_retrieval(TEST_INPUT)
         dr.retrieval_input.measurement_function_obj = MagicMock()
@@ -77,6 +77,7 @@ class TestBaseRetrieval(unittest.TestCase):
         
     def test__check_retrieval_input_no_ancill(self):
         dr = DummyRetrieval()
+        TEST_INPUT = RetrievalInput()
         TEST_INPUT.build_prior(['uniform'], [{'minimum': 0, 'maximum': 1}])
         dr.run_retrieval(TEST_INPUT)
         dr._check_retrieval_input()
