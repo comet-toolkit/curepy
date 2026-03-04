@@ -42,7 +42,7 @@ class Prior:
     @staticmethod
     def _check_inputs(shape, params, corr):
         # check shape
-        if all([shape.lower() not in implemented_prior_shapes for shape in shape]):
+        if any([shape.lower() not in implemented_prior_shapes for shape in shape]):
             raise ValueError(
                 f"A provided prior shape ({shape}) is not an implemented prior distribution shape {implemented_prior_shapes.keys()}"
             )
