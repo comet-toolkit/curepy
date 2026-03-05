@@ -2,8 +2,6 @@
 
 import unittest
 import numpy as np
-import numpy.testing as npt
-from unittest.mock import patch
 
 from curepy.container.retrieval_input import RetrievalInput
 
