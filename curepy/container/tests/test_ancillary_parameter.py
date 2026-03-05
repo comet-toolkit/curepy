@@ -19,21 +19,21 @@ class TestAncillary(unittest.TestCase):
         self.assertIsNone(cov)
 
     def test_calculate_b_cov_no_corr(self):
-        b = np.ones(5)
-        u_b = b * 0.1
+        b = [np.ones(5)]
+        u_b = [np.ones(5) * 0.1]
         a = AncillaryParameter(b, u_b)
         with self.assertWarns(Warning):
             cov = a.calculate_b_cov()
         self.assertIsNone(cov)
         
     def test_calculate_b_cov_single_b(self):
-        b = np.ones(5)
-        u_b = b * 0.1
-        corr_b = [np.eye(len(b))]
+        b = [np.ones(5)]
+        u_b = [np.ones(5) * 0.1]
+        corr_b = [np.eye(5)]
 
         a = AncillaryParameter(b, u_b, corr_b)
         cov = a.calculate_b_cov()
-        npt.assert_array_almost_equal(cov, 0.01*np.eye(len(b)))
+        npt.assert_array_almost_equal(cov, 0.01*np.eye(5))
         
     def test_calculate_b_cov_equal_len_b(self):
         b = [np.ones(5), 2*np.ones(5)]
