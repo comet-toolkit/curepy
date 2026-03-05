@@ -41,6 +41,10 @@ class Prior:
 
     @staticmethod
     def _check_inputs(shape, params, corr):
+        if shape is None:
+            raise ValueError(
+                "Cannot instantiate empty Prior object"
+            )
         # check shape
         if any([shape.lower() not in implemented_prior_shapes for shape in shape]):
             raise ValueError(
