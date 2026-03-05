@@ -28,6 +28,10 @@ class TestPrior(unittest.TestCase):
         corr = np.eye(len(shape))
         Prior._check_inputs(shape, params, corr)
         
+    def test__check_inputs_empty(self):
+        with self.assertRaises(ValueError):
+            Prior._check_inputs(None, [{}], [])
+        
     def test__check_inputs_invalid_shape(self):
         with self.assertRaises(ValueError):
             Prior._check_inputs(['normal', 'invalid'], 
