@@ -35,4 +35,4 @@ These functions build the ``Measurement``, ``Prior``, ``AncillaryParameter``, an
 
 Every retrieval method requires a ``Measurement`` and ``MeasurementFunction`` input to be set in the ``RetrievalInput``.
 ``Prior`` and ``AncillaryParameter`` objects are optional. If no ``Prior`` is defined, the default is set to a uniform distribution
-spanning from :math:`-inf` to :math:`inf`.
+spanning from :math:`-\inf` to :math:`\inf`.
