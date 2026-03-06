@@ -32,3 +32,7 @@ Individual containers can also be built within the ``RetrievalInput`` object usi
     ret.build_measurement_function()
 
 These functions build the ``Measurement``, ``Prior``, ``AncillaryParameter``, and ``MeasurementFunction`` objects, respectively.
+
+Every retrieval method requires a ``Measurement`` and ``MeasurementFunction`` input to be set in the ``RetrievalInput``.
+``Prior`` and ``AncillaryParameter`` objects are optional. If no ``Prior`` is defined, the default is set to a uniform distribution
+spanning from $-inf$ to $inf$.
