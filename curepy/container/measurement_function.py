@@ -102,12 +102,7 @@ class MeasurementFunction:
                         x[i][ii] = theta[j]
                         j += 1
                     else:
-                        for iii in range(len(x[i][ii])):
-                            if not hasattr(x[i][ii][iii], "__len__"):
-                                x[i][ii][iii] = theta[j]
-                                j += 1
-                            else:
-                                raise ValueError(
-                                    "The initial guess has too high dimensionality."
-                                )
+                        raise ValueError(
+                            "The initial guess has too high dimensionality."
+                        )
         return tuple(x)
