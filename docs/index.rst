@@ -7,6 +7,7 @@ Welcome to curepy's documentation!
 
    content/readme
    content/usage
+   content/theory
 
 API Documentation
 ~~~~~~~~~~~~~~~~~
