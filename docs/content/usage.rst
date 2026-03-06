@@ -34,5 +34,38 @@ Individual containers can also be built within the ``RetrievalInput`` object usi
 These functions build the ``Measurement``, ``Prior``, ``AncillaryParameter``, and ``MeasurementFunction`` objects, respectively.
 
 Every retrieval method requires a ``Measurement`` and ``MeasurementFunction`` input to be set in the ``RetrievalInput``.
-``Prior`` and ``AncillaryParameter`` objects are optional. If no ``Prior`` is defined, the default is set to a uniform distribution
-spanning from :math:`-\infty` to :math:`\infty`.
+``Prior`` and ``AncillaryParameter`` objects are optional.
+
+Measurement
+^^^^^^^^^^^
+
+The ``Measurement`` object stores the measurements, :math:`y`, and any related uncertainty and correlation information. 
+
+MeasurementFunction
+^^^^^^^^^^^^^^^^^^^
+
+The ``MeasurementFunction`` object stores the measurement function, :math:`f()` and an initial guess for the values of :math:`x`.
+There are is also an optional Boolean input `multiple_guess_measurements`, if False, the initial guess input is a valid input to the measurement function,
+if True, the initial guess input is made up of multiple valid inputs to the measurement function joined along the first dimension. By default, this is set to False.
+
+Prior
+^^^^^
+
+The ``Prior`` object stores information used to define the prior distribution. The inputs are `prior_shape`, a List of the shapes of each prior, `prior_params`,
+a List of Dictionaries of each priors' parameters, and an optional `prior_correlation`, a correlation matrix describing the correlation between each prior distribution.
+The length of `prior_shape`, `prior_params`, and the side length of `prior_correlation` must be equal to the number of components in :math:`\underline{x}`. 
+
+.. note::
+    If `prior_correlation` is not defined, it is set to random as default (the identity matrix).
+
+The table of valid prior shapes and associated parameters can be found below
+
++--------------+-----------------------------------+
+| Shape        | Parameters                        |
++==============+===================================+
+| uniform      | * minimum                         |
+|              | * maximum                         |
++--------------+-----------------------------------+
+| normal       | * mu (mean)                       |
+|              | * sigma (standard deviation)      |
++--------------+-----------------------------------+
