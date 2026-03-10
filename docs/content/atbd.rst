@@ -21,7 +21,16 @@ we need a method of inverting :math:`f()`, and propagting uncertainties through 
 Retrieval Methods
 -----------------
 
-Described below are the current retrieval methods implemented in **curepy**, ( #add info about future methods?)
+Described below are the current retrieval methods implemented in **curepy**, all methods use the chi-square
+function, :math:`\chi^{2}`, as a cost function where
+
+..math::
+
+    \chi^{2} = [f(x) - y]^{T}C_{y}^{-1}[f(x) - y]
+
+
+
+#add info about future methods?
 
 Law of Propagation of Uncertainties (Optimal Estimation?) 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
