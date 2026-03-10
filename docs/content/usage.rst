@@ -5,7 +5,7 @@ Usage
 Getting Started
 ------
 
-``curepy`` can be installed via pip::
+**curepy** can be installed via pip::
 
     pip install curepy
 
@@ -21,15 +21,15 @@ Instantiating a Retrieval Input
 Every retrieval method requires a ``RetrievalInput`` object to run a retrieval::
 
     from curepy.retrieval_methods.retrieval_input import RetrievalInput
-    ret = RetrievalInput()
+    inp = RetrievalInput()
 
 This object can be instatiated using a combination of containers or by using the ``RetrievalInput().build_retrieval_inputs()`` function.
 Individual containers can also be built within the ``RetrievalInput`` object using the individual 'build' functions::
 
-    ret.build_measurement()
-    ret.build_prior()
-    ret.build_ancillary()
-    ret.build_measurement_function()
+    inp.build_measurement()
+    inp.build_prior()
+    inp.build_ancillary()
+    inp.build_measurement_function()
 
 These functions build the ``Measurement``, ``Prior``, ``AncillaryParameter``, and ``MeasurementFunction`` objects, respectively.
 
@@ -82,11 +82,29 @@ The ``AncillaryParameter`` object stores the ancillary parameters, :math:`b`, of
 Instantiating a Retrieval Method
 --------------------------------
 
+Retrieval method objects can be instatiated directly::
 
+    from curepy.retrieval_methods.LPU import LPU
+    ret = LPU()
+
+or by using the ``RetrievalFactory``::
+
+    from curepy.retrieval_methods.retrieval_method_factory import RetrievalFactory
+    ret = RetrievalFactory().make_retrieval_object('lpu')
+    
+``make_retrieval_object`` can also take any retrieval method-specific args and kwargs that could be given to
+the object directly::
+
+    from curepy.retrieval_methods.retrieval_method_factory import RetrievalFactory
+    ret = RetrievalFactory().make_retrieval_object('mcmc', nwalkers = 100, steps = 1000, burn_in = 100)
 
 Running a Retrieval
 -------------------
 
+Every retrieval is run using the ``run_retrieval`` method, this function's interface is identical for all 
+retrieval methods, the only input is a ``RetrievalInput`` object::
+
+    results = ret.run_retrieval(inp)
 
 
 

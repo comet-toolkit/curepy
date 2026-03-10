@@ -1,6 +1,6 @@
-======
-ATBD
-======
+===========================
+Algorithm Theoretical Basis
+===========================
 
 Inverse Problems
 ----------------
@@ -18,15 +18,17 @@ this is what we know as forward propagation. However, if we know the values of t
 we need a method of inverting :math:`f()`, and propagting uncertainties through the inversion process. 
 
 
-
 Retrieval Methods
 -----------------
 
+Described below are the current retrieval methods implemented in **curepy**, ( #add info about future methods?)
 
 Law of Propagation of Uncertainties (Optimal Estimation?) 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 
+
 Markov Chain Monte Carlo (MCMC)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
