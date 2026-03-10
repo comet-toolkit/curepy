@@ -58,7 +58,7 @@ The length of `prior_shape`, `prior_params`, and the side length of `prior_corre
 .. note::
     If `prior_correlation` is not defined, it is set to random as default (the identity matrix).
 
-The table of valid prior shapes and associated parameters can be found below
+The table of valid prior shapes and associated parameters can be found below.
 
 +--------------+-----------------------------------+
 | Shape        | Parameters                        |
@@ -69,3 +69,24 @@ The table of valid prior shapes and associated parameters can be found below
 | normal       | * mu (mean)                       |
 |              | * sigma (standard deviation)      |
 +--------------+-----------------------------------+
+
+.. note::
+    If no ``Prior`` object is set within the ``RetrievalInput``, all prior distributions are set to be uniform with minimum :math:`\infty` and maximum :math:`\infty`.
+
+AncillaryParameter
+^^^^^^^^^^^^^^^^^^
+
+The ``AncillaryParameter`` object stores the ancillary parameters, :math:`b`, of the measurement function, with associated uncertainty and correlation information.
+#add info about other kwargs
+
+Instantiating a Retrieval Method
+--------------------------------
+
+
+
+Running a Retrieval
+-------------------
+
+
+
+

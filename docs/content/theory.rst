@@ -1,7 +1,0 @@
-======
-Theory
-======
-
-Inverse Problems
-----------------
-

@@ -203,7 +203,7 @@ texinfo_documents = [
         "curepy Documentation",
         author,
         "curepy",
-        "Retrievall UNcertainties in PYthon",
+        "Comet Uncertainties for Retrievals in PYthon",
         "Miscellaneous",
     ),
 ]

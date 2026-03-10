@@ -7,7 +7,7 @@ Welcome to curepy's documentation!
 
    content/readme
    content/usage
-   content/theory
+   content/atbd
 
 API Documentation
 ~~~~~~~~~~~~~~~~~
