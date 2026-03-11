@@ -46,7 +46,7 @@ class TestMCMC(unittest.TestCase):
         # for 1-dim corr should be ones((1,)) per implementation
         self.assertTrue(np.allclose(res.correlation, np.ones((1,))))
 
-    @patch("curepy.retrieval_methods.MCMC.emcee.EnsembleSampler")
+    @patch("curepy.retrieval_methods.mcmc.emcee.EnsembleSampler")
     @patch.object(MCMC, "generate_theta_i")
     def test_run_MCMC_uses_sampler(self, mock_generate, mock_sampler_class):
         m = MCMC(nwalkers=2, steps=5, burn_in=0)
@@ -162,8 +162,8 @@ class TestMCMC(unittest.TestCase):
 
         self.assertEqual(ti.shape, theta_0.shape)
 
-    @patch("curepy.retrieval_methods.MCMC.Pool")
-    @patch("curepy.retrieval_methods.MCMC.emcee.EnsembleSampler")
+    @patch("curepy.retrieval_methods.mcmc.Pool")
+    @patch("curepy.retrieval_methods.mcmc.emcee.EnsembleSampler")
     @patch.object(MCMC, "generate_theta_i")
     def test_run_MCMC_parallel_uses_pool(
         self, mock_generate, mock_sampler_class, mock_pool_class
