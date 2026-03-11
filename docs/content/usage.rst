@@ -45,7 +45,7 @@ MeasurementFunction
 ^^^^^^^^^^^^^^^^^^^
 
 The ``MeasurementFunction`` object stores the measurement function, :math:`f()` and an initial guess for the values of :math:`x`.
-There are is also an optional Boolean input `multiple_guess_measurements`, if False, the initial guess input is a valid input to the measurement function,
+There is also an optional Boolean input `multiple_guess_measurements`, if False, the initial guess input is a valid input to the measurement function,
 if True, the initial guess input is made up of multiple valid inputs to the measurement function joined along the first dimension. By default, this is set to False.
 
 Prior
@@ -77,7 +77,11 @@ AncillaryParameter
 ^^^^^^^^^^^^^^^^^^
 
 The ``AncillaryParameter`` object stores the ancillary parameters, :math:`b`, of the measurement function, with associated uncertainty and correlation information.
-#add info about other kwargs
+``b``, ``u_b``, and ``corr_b`` should all be input as Lists of length equal to the number of ancillary inputs to
+the measurement function, then ``corr_between_b`` should be a square matrix with side length equal to the number of ancillary inputs to
+the measurement function. If the MCMC retrieval method is being used, the kwargs ``b_MC_steps`` and ``b_samples`` can be set.
+``b_MC_steps`` is an integer defining the number of MC samples of the ancillary parameters to be drawn, and ``b_samples`` is an optional array
+that can be given instead of drawing an MC sample.  
 
 Instantiating a Retrieval Method
 --------------------------------

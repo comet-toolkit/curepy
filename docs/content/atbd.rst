@@ -28,6 +28,12 @@ function, :math:`\chi^{2}`, as a cost function where
 
     \chi^{2} = [f(x) - y]^{T}C_{y}^{-1}[f(x) - y]
 
+The associated likelihood is defined as:
+
+..math::
+
+    P(y|x) = 2\pi^{\frac{n}{2}}|C_{y}^{\frac{-1}{2}}|\exp{\chi^{2}}
+
 
 
 #add info about future methods?
@@ -35,7 +41,7 @@ function, :math:`\chi^{2}`, as a cost function where
 Law of Propagation of Uncertainties (Optimal Estimation?) 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
+The Law of Propagation
 
 
 Markov Chain Monte Carlo (MCMC)
