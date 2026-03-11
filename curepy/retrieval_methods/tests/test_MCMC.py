@@ -4,7 +4,7 @@ import unittest
 import numpy as np
 from unittest.mock import patch, MagicMock
 
-from curepy.retrieval_methods.MCMC import MCMC
+from curepy.retrieval_methods.mcmc import MCMC
 
 
 class DummyPrior:

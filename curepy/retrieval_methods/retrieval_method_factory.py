@@ -1,8 +1,8 @@
 """Factory design to generate retrieval objects"""
 
 from curepy.retrieval_methods.base import BaseRetrieval
-from curepy.retrieval_methods.MCMC import MCMC
-from curepy.retrieval_methods.OptimalEstimation import OE
+from curepy.retrieval_methods.mcmc import MCMC
+from curepy.retrieval_methods.optimal_estimation import OE
 
 from typing import Union
 

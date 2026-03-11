@@ -88,7 +88,7 @@ Instantiating a Retrieval Method
 
 Retrieval method objects can be instatiated directly::
 
-    from curepy.retrieval_methods.OptimalEstimation import OE
+    from curepy.retrieval_methods.optimal_estimation import OE
     ret = OE()
 
 or by using the ``RetrievalFactory``::

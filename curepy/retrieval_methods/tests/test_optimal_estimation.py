@@ -5,7 +5,7 @@ import numpy as np
 import scipy
 from unittest.mock import patch, MagicMock
 
-from curepy.retrieval_methods.OptimalEstimation import OE
+from curepy.retrieval_methods.optimal_estimation import OE
 from curepy.retrieval_methods.base import BaseRetrieval
 from curepy.container.retrieval_input import RetrievalInput
 
@@ -73,7 +73,7 @@ class TestOE(unittest.TestCase):
         expected = (3) * np.eye(2)
         np.testing.assert_allclose(cov, expected)
 
-    @patch("curepy.retrieval_methods.OptimalEstimation.OE.calculate_measurand_covariance")
+    @patch("curepy.retrieval_methods.optimal_estimation.OE.calculate_measurand_covariance")
     @patch("comet_maths.convert_cov_to_corr")
     def test_process_inverse_jacobian(self, mock_convert, mock_calc_cov):
         oe = OE()
