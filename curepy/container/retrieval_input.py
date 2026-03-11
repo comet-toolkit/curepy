@@ -139,11 +139,11 @@ class RetrievalInput:
             b = []
             u_b = []
             corr_b = []
-            corr_between_b = []
+            corr_between_b = None # corr between variables not yet implemented in obsarray, user could manually define after running function
             for name in b_name:
                 b.append(obs_ds[name].values)
                 u_b.append(obs_ds.unc[name].total_unc())
-                corr_b.append(obs_ds.unc[name].total_err_corr_matrix())##add handling if no uncertainty
+                corr_b.append(obs_ds.unc[name].total_err_corr_matrix())#todo: add handling if no uncertainty
         
         self.measurement_function_obj = MeasurementFunction(
             measurement_func,
