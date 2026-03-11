@@ -1,6 +1,6 @@
 __all__ = [
     "MCMC",
-    "LPU",
+    "OE",
     "RetrievalFactory",
     "AncillaryParameter",
     "Measurement",
@@ -20,7 +20,7 @@ __all__ = [
 
 # Retrieval methods
 from curepy.retrieval_methods.MCMC import MCMC
-from curepy.retrieval_methods.LPU import LPU
+from curepy.retrieval_methods.OptimalEstimation import OE
 from curepy.retrieval_methods.retrieval_method_factory import RetrievalFactory
 
 # Container classes

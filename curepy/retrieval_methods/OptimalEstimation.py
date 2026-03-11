@@ -1,4 +1,4 @@
-"""Law of Propagation of Uncertainties retrieval class"""
+"""Optimal Estimation retrieval class"""
 
 from curepy.retrieval_methods.base import BaseRetrieval
 from curepy.container.retrieval_input import RetrievalInput
@@ -10,8 +10,8 @@ import comet_maths as cm
 from functools import partial
 
 
-class LPU(BaseRetrieval):
-    """LPU retrieval object"""
+class OE(BaseRetrieval):
+    """OE retrieval object"""
 
     def __init__(self, Jx=None):
 

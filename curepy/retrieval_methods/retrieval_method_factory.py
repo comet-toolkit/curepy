@@ -2,11 +2,11 @@
 
 from curepy.retrieval_methods.base import BaseRetrieval
 from curepy.retrieval_methods.MCMC import MCMC
-from curepy.retrieval_methods.LPU import LPU
+from curepy.retrieval_methods.OptimalEstimation import OE
 
 from typing import Union
 
-RETRIEVAL_HANDLERS = {"mcmc": MCMC, "lpu": LPU}
+RETRIEVAL_HANDLERS = {"mcmc": MCMC, "oe": OE}
 
 
 class RetrievalFactory:
