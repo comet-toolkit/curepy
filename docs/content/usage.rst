@@ -139,3 +139,5 @@ The table of optional parameters for each retrieval method can be found below.
 |              | * return_b_samples - bool, return MC samples of ancillary parameters                    |
 +--------------+-----------------------------------------------------------------------------------------+
 
+The output of ``run_retrieval`` is a ``RetrievalResult`` object, this stores the retrieved values of ``x`` with associated uncertainties, and any other requested information
+such as correlation and samples.
