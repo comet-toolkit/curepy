@@ -102,6 +102,21 @@ the object directly::
     from curepy.retrieval_methods.retrieval_method_factory import RetrievalFactory
     ret = RetrievalFactory().make_retrieval_object('mcmc', nwalkers = 100, steps = 1000, burn_in = 100)
 
+The table of valid retreival methods and associated parameters can be found below.
+
++--------------+----------------------------------------------------------------------+
+| Method       | Parameters                                                           |
++==============+======================================================================+
+| LPU          | * Jx - pre-calculated Jacobian for the measurement function w.r.t x  |
++--------------+----------------------------------------------------------------------+
+| MCMC         | * nwalkers - number of walkers (or chains to run)                    |
+|              | * steps - number of steps to take in chain                           |
+|              | * burn_in - number of samples to discard at the start of the chain   |
+|              | * progress - bool, show progress bar                                 |
+|              | * parallel_cores - int, number of cores to use                       |
++--------------+----------------------------------------------------------------------+
+
+
 Running a Retrieval
 -------------------
 
@@ -110,5 +125,5 @@ retrieval methods, the only input is a ``RetrievalInput`` object::
 
     results = ret.run_retrieval(inp)
 
-
+return_corr
 
