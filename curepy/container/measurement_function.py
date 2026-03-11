@@ -11,12 +11,12 @@ class MeasurementFunction:
         measurement_func,
         initial_guess,
         multiple_guess_measurements: bool = False,
-        measurand_name: str = None,
+        measurement_name: str = None,
         input_quantities_names: Union[str, List[str]] = None,
     ):
 
         self.measurement_function = measurement_func
-        self._measurand_name = measurand_name
+        self._measurement_name = measurement_name
         self._input_quantities_names = input_quantities_names
 
         self.initial_guess = self._format_initial_guess(

@@ -48,7 +48,7 @@ class RetrievalInput:
             measurement_func,
             initial_guess,
             multiple_guess_measurements,
-            measurand_name,
+            measurement_name,
             input_quantities_names,
         )
 
@@ -64,7 +64,7 @@ class RetrievalInput:
         measurement_func,
         initial_guess,
         multiple_guess_measurements: bool = False,
-        measurand_name: str = None,
+        measurement_name: str = None,
         input_quantities_names: Union[str, List[str]] = None,
     ):
 
@@ -72,7 +72,7 @@ class RetrievalInput:
             measurement_func,
             initial_guess,
             multiple_guess_measurements,
-            measurand_name,
+            measurement_name,
             input_quantities_names,
         )
 
@@ -127,7 +127,7 @@ class RetrievalInput:
         y = obs_ds[y_name].values
         u_y = obs_ds.unc[y_name].total_unc()
         corr_y = obs_ds.unc[y_name].total_err_corr_matrix()
-        measurand_name = y_name
+        measurement_name = y_name
         
         if b_name is None:
             b = None
@@ -149,7 +149,7 @@ class RetrievalInput:
             measurement_func,
             initial_guess,
             multiple_guess_measurements,
-            measurand_name,
+            measurement_name,
             input_quantities_names,
         )
 
