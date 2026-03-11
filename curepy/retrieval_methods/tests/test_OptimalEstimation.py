@@ -73,7 +73,7 @@ class TestOE(unittest.TestCase):
         expected = (3) * np.eye(2)
         np.testing.assert_allclose(cov, expected)
 
-    @patch("curepy.retrieval_methods.OE.OE.calculate_measurand_covariance")
+    @patch("curepy.retrieval_methods.OptimalEstimation.OE.calculate_measurand_covariance")
     @patch("comet_maths.convert_cov_to_corr")
     def test_process_inverse_jacobian(self, mock_convert, mock_calc_cov):
         oe = OE()
