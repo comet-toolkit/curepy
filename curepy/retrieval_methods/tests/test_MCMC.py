@@ -27,6 +27,8 @@ class TestMCMC(unittest.TestCase):
 
     def test_analyse_samples_basic(self):
         m = MCMC(nwalkers=2, steps=10, burn_in=1)
+        m.retrieval_input = MagicMock()
+        m.retrieval_input.measurement_function_obj._input_quantities_names = None
         # create simple samples: 3 samples, 1-dim
         samples = np.array([[0.0], [1.0], [2.0]])
         res = m.analyse_samples(
