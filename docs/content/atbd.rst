@@ -34,9 +34,8 @@ The associated likelihood is defined as:
 
     P(y|x) = 2\pi^{\frac{n}{2}}|C_{y}^{\frac{-1}{2}}|\exp{\chi^{2}}
 
-#add info about future methods?
 
-Law of Propagation of Uncertainties (Optimal Estimation?) 
+Optimal Estimation (OE)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The Optimal Estimation method is described thoroughly in [1]. It involves minimising the cost function to find the optimal values of the state vector, 

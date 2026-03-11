@@ -88,13 +88,13 @@ Instantiating a Retrieval Method
 
 Retrieval method objects can be instatiated directly::
 
-    from curepy.retrieval_methods.LPU import LPU
-    ret = LPU()
+    from curepy.retrieval_methods.OptimalEstimation import OE
+    ret = OE()
 
 or by using the ``RetrievalFactory``::
 
     from curepy.retrieval_methods.retrieval_method_factory import RetrievalFactory
-    ret = RetrievalFactory().make_retrieval_object('lpu')
+    ret = RetrievalFactory().make_retrieval_object('oe')
     
 ``make_retrieval_object`` can also take any retrieval method-specific args and kwargs that could be given to
 the object directly::
@@ -107,7 +107,7 @@ The table of valid retreival methods and associated parameters can be found belo
 +--------------+----------------------------------------------------------------------+
 | Method       | Parameters                                                           |
 +==============+======================================================================+
-| LPU          | * Jx - pre-calculated Jacobian for the measurement function w.r.t x  |
+| OE           | * Jx - pre-calculated Jacobian for the measurement function w.r.t x  |
 +--------------+----------------------------------------------------------------------+
 | MCMC         | * nwalkers - number of walkers (or chains to run)                    |
 |              | * steps - number of steps to take in chain                           |
@@ -130,7 +130,7 @@ The table of optional parameters for each retrieval method can be found below.
 +--------------+-----------------------------------------------------------------------------------------+
 | Method       | Optional ``run_retrieval`` Parameters                                                   |
 +==============+=========================================================================================+
-| LPU          | * return_corr - bool, return correlation matrix between x values                        |
+| OE           | * return_corr - bool, return correlation matrix between x values                        |
 |              | * reshape_results - bool, reshape x values and uncertainties to shape of initial guess  |
 +--------------+-----------------------------------------------------------------------------------------+
 | MCMC         | * return_corr - bool, return correlation matrix between x values                        |
