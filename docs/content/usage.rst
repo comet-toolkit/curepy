@@ -125,5 +125,17 @@ retrieval methods, the only input is a ``RetrievalInput`` object::
 
     results = ret.run_retrieval(inp)
 
-return_corr
+The table of optional parameters for each retrieval method can be found below.
+
++--------------+-----------------------------------------------------------------------------------------+
+| Method       | Optional ``run_retrieval`` Parameters                                                   |
++==============+=========================================================================================+
+| LPU          | * return_corr - bool, return correlation matrix between x values                        |
+|              | * reshape_results - bool, reshape x values and uncertainties to shape of initial guess  |
++--------------+-----------------------------------------------------------------------------------------+
+| MCMC         | * return_corr - bool, return correlation matrix between x values                        |
+|              | * reshape_results - bool, reshape x values and uncertainties to shape of initial guess  |
+|              | * return_samples - bool, return samples used to approximate posterior distribution      |
+|              | * return_b_samples - bool, return MC samples of ancillary parameters                    |
++--------------+-----------------------------------------------------------------------------------------+
 
