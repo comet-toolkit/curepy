@@ -31,7 +31,7 @@ class RetrievalInput:
         u_y=None,
         corr_y=None,
         multiple_guess_measurements: bool = False,
-        measurand_name: str = None,
+        measurement_name: str = None,
         input_quantities_names: Union[str, List[str]] = None,
         prior_shape: List[str] = None,
         prior_params: List[dict] = [{}],
@@ -107,3 +107,55 @@ class RetrievalInput:
         self.ancillary_obj = AncillaryParameter(
             b, u_b, corr_b, corr_between_b, b_samples, b_MC_steps
         )
+        
+    def build_from_obsarray(
+        self,
+        obs_ds,
+        y_name: str,
+        measurement_func,
+        initial_guess,
+        b_name: List[str] = None,
+        multiple_guess_measurements: bool = False,
+        input_quantities_names: Union[str, List[str]] = None,
+        prior_shape: List[str] = None,
+        prior_params: List[dict] = [{}],
+        prior_correlation=None,
+        b_samples=None,
+        b_MC_steps=None,        
+    ):
+        
+        y = obs_ds[y_name].values
+        u_y = obs_ds.unc[y_name].total_unc()
+        corr_y = obs_ds.unc[y_name].total_err_corr_matrix()
+        measurand_name = y_name
+        
+        if b_name is None:
+            b = None
+            u_b = None
+            corr_b = None
+            corr_between_b = None
+            
+        else:
+            b = []
+            u_b = []
+            corr_b = []
+            corr_between_b = []
+            for name in b_name:
+                b.append(obs_ds[name].values)
+                u_b.append(obs_ds.unc[name].total_unc())
+                corr_b.append(obs_ds.unc[name].total_err_corr_matrix())##add handling if no uncertainty
+        
+        self.measurement_function_obj = MeasurementFunction(
+            measurement_func,
+            initial_guess,
+            multiple_guess_measurements,
+            measurand_name,
+            input_quantities_names,
+        )
+
+        self.measurement_obj = Measurement(y, u_y, corr_y)
+
+        self.ancillary_obj = AncillaryParameter(
+            b, u_b, corr_b, corr_between_b, b_samples, b_MC_steps
+        )
+        self.prior_obj = Prior(prior_shape, prior_params, prior_correlation)

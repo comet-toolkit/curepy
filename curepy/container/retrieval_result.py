@@ -9,3 +9,4 @@ class RetrievalResult:
         self.correlation = corr_x
         self.samples = samples
         self.b_samples = b_samples
+#add function that generates obs array dataset
