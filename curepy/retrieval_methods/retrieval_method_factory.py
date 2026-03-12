@@ -10,16 +10,24 @@ RETRIEVAL_HANDLERS = {"mcmc": MCMC, "oe": OE}
 
 
 class RetrievalFactory:
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Initialise the factory with the default set of retrieval handlers.
+        """
         self.retrieval_objects = RETRIEVAL_HANDLERS
 
     def make_retrieval_object(
         self, name: Union[str, BaseRetrieval], *args, **kwargs
     ) -> BaseRetrieval:
-        """Return specified retrieval object
+        """
+        Return the specified retrieval object.
 
-        :param name: Selected retrieval method (eg. "mcmc")
-        :return: Retrieval method object
+        :param name: Retrieval method identifier.  May be a string key
+            (e.g. ``"mcmc"``, ``"oe"``) or a
+            :class:`~curepy.retrieval_methods.base.BaseRetrieval` subclass.
+        :returns: Instantiated retrieval method object.
+        :raises ValueError: If ``name`` does not match any registered
+            retrieval method.
         """
 
         if name in self.retrieval_objects.values():

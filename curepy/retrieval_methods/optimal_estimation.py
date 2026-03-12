@@ -8,12 +8,20 @@ from scipy.optimize import minimize
 import numpy as np
 import comet_maths as cm
 from functools import partial
+from typing import Optional, Callable
 
 
 class OE(BaseRetrieval):
-    """OE retrieval object"""
+    """Optimal Estimation (OE / LPU) retrieval object."""
 
-    def __init__(self, Jx=None):
+    def __init__(self, Jx: Optional[np.ndarray] = None) -> None:
+        """
+        Initialise the OE retrieval object.
+
+        :param Jx: Pre-computed Jacobian of the measurement function with
+            respect to the state vector.  If ``None``, the Jacobian is
+            computed numerically during :meth:`run_retrieval`.
+        """
 
         self.Jx = Jx
 
@@ -22,7 +30,23 @@ class OE(BaseRetrieval):
         retrieval_input: RetrievalInput,
         return_corr: bool = True,
         reshape_results: bool = False,
-    ):
+    ) -> RetrievalResult:
+        """
+        Run the OE retrieval using numerical minimisation and LPU.
+
+        Minimises the negative log posterior with
+        :func:`scipy.optimize.minimize`, then propagates measurement and
+        ancillary-parameter uncertainties through the inverse Jacobian to
+        obtain state-vector uncertainties.
+
+        :param retrieval_input: Object containing all retrieval inputs.
+        :param return_corr: If ``True``, include the state-vector correlation
+            matrix in the result.
+        :param reshape_results: If ``True``, reshape the flat output arrays
+            to the initial-guess shape.
+        :returns: Retrieved values, uncertainties, and optionally the
+            correlation matrix.
+        """
 
         self.retrieval_input = retrieval_input
 
@@ -47,7 +71,20 @@ class OE(BaseRetrieval):
 
         return RetrievalResult(x=x, u_x=u_func, corr_x=corr_x if return_corr else None, x_names=self.retrieval_input.measurement_function_obj._input_quantities_names)
 
-    def process_inverse_jacobian(self, J, x):
+    def process_inverse_jacobian(
+        self,
+        J: np.ndarray,
+        x: np.ndarray,
+    ) -> tuple:
+        """
+        Derive state-vector uncertainties from the Jacobian via LPU.
+
+        :param J: Jacobian of the measurement function with respect to the
+            state vector, evaluated at ``x``.
+        :param x: Retrieved state vector.
+        :returns: Tuple of ``(u_func, corr_x)`` where ``u_func`` is the
+            1-sigma uncertainty array and ``corr_x`` is the correlation matrix.
+        """
         covx = self.calculate_measurand_covariance(
             x,
             J,
@@ -59,7 +96,33 @@ class OE(BaseRetrieval):
 
         return u_func, corr_x
 
-    def calculate_measurand_covariance(self, x, J, Sy_inv, Sa_inv=None, Sb_inv=None):
+    def calculate_measurand_covariance(
+        self,
+        x: np.ndarray,
+        J: np.ndarray,
+        Sy_inv: Optional[np.ndarray],
+        Sa_inv: Optional[np.ndarray] = None,
+        Sb_inv: Optional[np.ndarray] = None,
+    ) -> np.ndarray:
+        """
+        Calculate the posterior state-vector covariance matrix.
+
+        Uses the Gauss–Newton / LPU formula combining measurement,
+        ancillary, and prior uncertainty contributions.
+
+        :param x: Retrieved state vector.
+        :param J: Jacobian with respect to the state vector.
+        :param Sy_inv: Inverse measurement covariance.  Must not be ``None``
+            unless ``Sb_inv`` is also provided.
+        :param Sa_inv: Inverse prior covariance, or ``None`` if no prior is
+            used.
+        :param Sb_inv: Pre-computed inverse ancillary-parameter covariance
+            mapped to measurement space.  If ``None``, the covariance is
+            computed from the ancillary object.
+        :returns: Posterior state-vector covariance matrix.
+        :raises ValueError: If ``Sy_inv`` is ``None`` and ``Sb_inv`` is also
+            ``None``.
+        """
 
         if Sy_inv is not None and Sb_inv is not None:
             Se_inv = Sy_inv + Sb_inv
@@ -83,7 +146,14 @@ class OE(BaseRetrieval):
         else:
             return np.linalg.inv(np.dot(np.dot(J.T, Se_inv), J))
 
-    def calculate_Jx(self, x):
+    def calculate_Jx(self, x: np.ndarray) -> np.ndarray:
+        """
+        Numerically compute the Jacobian of the measurement function with
+        respect to the state vector.
+
+        :param x: State vector at which the Jacobian is evaluated.
+        :returns: Jacobian matrix with shape ``(n_obs, n_state)``.
+        """
 
         meas_func_fixed_b = partial(
             self.retrieval_input.measurement_function_obj.measurement_function_flattened_output,
@@ -94,7 +164,14 @@ class OE(BaseRetrieval):
 
         return Jx
 
-    def calculate_Jb(self, x):
+    def calculate_Jb(self, x: np.ndarray) -> np.ndarray:
+        """
+        Numerically compute the Jacobian of the measurement function with
+        respect to the flattened ancillary parameters.
+
+        :param x: State vector at which the Jacobian is evaluated.
+        :returns: Jacobian matrix with shape ``(n_obs, n_b)``.
+        """
 
         b_flat = np.hstack([b.flatten() for b in self.retrieval_input.ancillary_obj.b])
         b_shape_list = [b.shape for b in self.retrieval_input.ancillary_obj.b]

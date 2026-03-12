@@ -1,6 +1,6 @@
 """Container for Measurement Function"""
 
-from typing import Union, List
+from typing import Union, List, Callable, Optional, Any
 import numpy as np
 from copy import deepcopy
 
@@ -8,12 +8,30 @@ from copy import deepcopy
 class MeasurementFunction:
     def __init__(
         self,
-        measurement_func,
-        initial_guess,
+        measurement_func: Callable,
+        initial_guess: Any,
         multiple_guess_measurements: bool = False,
         measurement_name: str = None,
         input_quantities_names: Union[str, List[str]] = None,
-    ):
+    ) -> None:
+        """
+        Container for the measurement (forward-model) function and the
+        initial retrieval state.
+
+        :param measurement_func: Callable measurement/forward-model function.
+            Its positional arguments are the retrieval state-vector entries
+            (in the same order as ``initial_guess``) optionally followed by
+            ancillary parameters ``b``.
+        :param initial_guess: Initial values for the retrieval parameters.
+            May be a scalar, a 1-D iterable, or a 2-D iterable (one row per
+            measurement location).
+        :param multiple_guess_measurements: If ``True``, treat a 1-D
+            ``initial_guess`` as a single row to be broadcast across multiple
+            measurements.
+        :param measurement_name: Optional name for the measured quantity.
+        :param input_quantities_names: Optional name(s) for the retrieval
+            input quantities.
+        """
 
         self.measurement_function = measurement_func
         self._measurement_name = measurement_name
@@ -25,15 +43,15 @@ class MeasurementFunction:
 
     @staticmethod
     def _format_initial_guess(
-        initial_guess,
+        initial_guess: Any,
         multiple_guess_measurements: bool = False,
-    ):
+    ) -> np.ndarray:
         """
-        Format initial guess
+        Format initial guess.
 
-        :param initial_guess: Input initial guess for retrieval parameters
-        :param multiple_guess_measurements: Bool, True if initial guess contains multiple measurements for each parameter else False
-
+        :param initial_guess: Input initial guess for retrieval parameters.
+        :param multiple_guess_measurements: If ``True``, the initial guess
+            contains one row per measurement per parameter.
         """
         # Handle nested case:
         if hasattr(initial_guess, "__len__") and hasattr(initial_guess[0], "__len__"):
@@ -62,14 +80,43 @@ class MeasurementFunction:
         else:
             return arr
 
-    def measurement_function_x(self, theta, b):
+    def measurement_function_x(self, theta: np.ndarray, b: Optional[np.ndarray]) -> np.ndarray:
+        """
+        Evaluate the measurement function at state vector ``theta``.
+
+        Unpacks ``theta`` into the input-quantity tuple expected by the
+        underlying measurement function and calls it, optionally passing
+        ancillary parameters ``b``.
+
+        :param theta: Flattened retrieval state vector.
+        :param b: Ancillary parameter values, or ``None`` if not used.
+        :returns: Output of the measurement function.
+        """
         x = self.make_x_tuple(theta)
         if b is None:
             return self.measurement_function(*x)
         else:
             return self.measurement_function(*x, *b)
 
-    def measurement_function_flattened_b(self, theta, b_flat, b_shape_list):
+    def measurement_function_flattened_b(
+        self,
+        theta: np.ndarray,
+        b_flat: np.ndarray,
+        b_shape_list: List[tuple],
+    ) -> np.ndarray:
+        """
+        Evaluate the measurement function with a flat ancillary-parameter vector.
+
+        Reconstructs the original ancillary parameter arrays from the flat
+        vector ``b_flat`` using the shapes in ``b_shape_list``, then calls
+        the measurement function and returns a flattened result.
+
+        :param theta: Flattened retrieval state vector.
+        :param b_flat: Concatenated, flattened ancillary parameter values.
+        :param b_shape_list: Shapes used to reconstruct each ancillary
+            parameter array.
+        :returns: Flattened output of the measurement function.
+        """
         x = self.make_x_tuple(theta)
         num = 0
         b = np.empty(len(b_shape_list), dtype=object)
@@ -80,7 +127,18 @@ class MeasurementFunction:
 
         return self.measurement_function(*x, *b).flatten()
 
-    def measurement_function_flattened_output(self, theta, b):
+    def measurement_function_flattened_output(
+        self,
+        theta: np.ndarray,
+        b: Optional[np.ndarray],
+    ) -> np.ndarray:
+        """
+        Evaluate the measurement function and return a flattened output array.
+
+        :param theta: Flattened retrieval state vector.
+        :param b: Ancillary parameter values, or ``None`` if not used.
+        :returns: Flattened output of the measurement function.
+        """
         x = self.make_x_tuple(theta)
         if b is None:
             out = self.measurement_function(*x)
@@ -89,7 +147,20 @@ class MeasurementFunction:
 
         return out.flatten()
 
-    def make_x_tuple(self, theta):
+    def make_x_tuple(self, theta: np.ndarray) -> tuple:
+        """
+        Build the input-quantity tuple from the flattened state vector.
+
+        Fills a deep copy of ``initial_guess`` with values from ``theta`` in
+        order, supporting up to three levels of nesting.
+
+        :param theta: Flattened state vector whose values are inserted into
+            the initial-guess structure.
+        :returns: Tuple of input quantities ready to be passed to the
+            measurement function.
+        :raises ValueError: If the initial guess has more than three levels
+            of nesting.
+        """
         x = deepcopy(self.initial_guess)
         j = 0
         for i in range(len(x)):

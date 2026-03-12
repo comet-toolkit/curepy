@@ -1,6 +1,7 @@
 """Container for Measurement data"""
 
 import numpy as np
+from typing import Optional, Union
 import comet_maths as cm
 import curepy.utilities.utilities as util
 
@@ -8,16 +9,20 @@ import curepy.utilities.utilities as util
 class Measurement:
     def __init__(
         self,
-        y,
-        u_y=None,
-        corr_y=None,
-    ):
+        y: np.ndarray,
+        u_y: Optional[np.ndarray] = None,
+        corr_y: Optional[Union[str, np.ndarray]] = None,
+    ) -> None:
         """
-        Container class for Measurement variable data
+        Container class for measurement variable data.
 
-        :param y: Measurement variable
-        :param u_y: Uncertainty of measurement variable, must be the same shape as y
-        :param corr_y: Error-correlation of measurement variable, str("rand" or "syst") or square matrix with side length equal to length of measurement variable input
+        :param y: Measurement variable.
+        :param u_y: Uncertainty of measurement variable; must have the same
+            shape as ``y``.
+        :param corr_y: Error-correlation of the measurement variable.
+            Accepted values: ``None``, ``"rand"`` (random), ``"syst"``
+            (systematic), or a square matrix whose side length equals the
+            length of ``y``.
         """
 
         self.y = y
@@ -36,7 +41,20 @@ class Measurement:
             self.invcov = None
 
     @staticmethod
-    def _flatten_inputs(y, u_y):
+    def _flatten_inputs(
+        y: np.ndarray,
+        u_y: Optional[np.ndarray],
+    ) -> tuple:
+        """
+        Flatten the measurement variable and its uncertainties.
+
+        :param y: Measurement variable array.
+        :param u_y: Uncertainty array for the measurement variable, or
+            ``None`` if uncertainties are not provided.
+        :returns: Tuple of ``(y_flat, u_y_flat, y_shape)`` where
+            ``u_y_flat`` is ``None`` when ``u_y`` is ``None``.
+        :raises ValueError: If ``y`` and ``u_y`` have different shapes.
+        """
         y_flat, y_shape = util.flatten_array(y)
         if u_y is not None:
             u_y_flat, u_y_shape = util.flatten_array(u_y)
@@ -52,9 +70,19 @@ class Measurement:
         return y_flat, u_y_flat, y_shape
 
     @staticmethod
-    def _check_shapes(y, u_y, corr_y):
+    def _check_shapes(
+        y: np.ndarray,
+        u_y: Optional[np.ndarray],
+        corr_y: Optional[np.ndarray],
+    ) -> None:
         """
-        Check shapes of measurement variable y, uncertainties, and error correlations are compatible.
+        Check that the shapes of ``y``, ``u_y``, and ``corr_y`` are
+        mutually compatible.
+
+        :param y: Flattened measurement variable.
+        :param u_y: Flattened uncertainty array, or ``None``.
+        :param corr_y: Error-correlation matrix, or ``None``.
+        :raises ValueError: If any shape constraint is violated.
         """
         N = len(y)
 
@@ -77,12 +105,13 @@ class Measurement:
             )
 
     @staticmethod
-    def calculate_inv_cov(unc, corr):
+    def calculate_inv_cov(unc: np.ndarray, corr: np.ndarray) -> np.ndarray:
         """
-        Calculate inverse covariance matrix
+        Calculate the inverse covariance matrix.
 
-        :param unc: Uncertainty
-        :param corr: Correlation matrix
+        :param unc: Uncertainty (standard deviation) array.
+        :param corr: Correlation matrix.
+        :returns: Inverse of the covariance matrix.
         """
 
         cov = cm.convert_corr_to_cov(corr, unc)

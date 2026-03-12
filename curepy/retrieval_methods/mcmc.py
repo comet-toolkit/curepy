@@ -8,19 +8,31 @@ from curepy.container.retrieval_result import RetrievalResult
 from multiprocessing import Pool
 import emcee
 import numpy as np
+from typing import Optional
 
 
 class MCMC(BaseRetrieval):
-    """MCMC retrieval object"""
+    """MCMC retrieval object."""
 
     def __init__(
         self,
-        nwalkers,
-        steps,
-        burn_in,
+        nwalkers: int,
+        steps: int,
+        burn_in: int,
         progress: bool = True,
         parallel_cores: int = 1,
-    ):
+    ) -> None:
+        """
+        Initialise the MCMC retrieval sampler.
+
+        :param nwalkers: Number of ensemble walkers used by
+            :class:`emcee.EnsembleSampler`.
+        :param steps: Total number of MCMC steps per walker.
+        :param burn_in: Number of initial samples to discard as burn-in.
+        :param progress: If ``True``, display a progress bar during sampling.
+        :param parallel_cores: Number of CPU cores for parallel sampling.
+            Values greater than 1 use :class:`multiprocessing.Pool`.
+        """
 
         self.nwalkers = nwalkers
         self.steps = steps
@@ -32,11 +44,30 @@ class MCMC(BaseRetrieval):
     def run_retrieval(
         self,
         retrieval_input: RetrievalInput,
-        return_samples=False,
-        return_corr=False,
-        return_b_samples=False,
-        reshape_results=True,
-    ):
+        return_samples: bool = False,
+        return_corr: bool = False,
+        return_b_samples: bool = False,
+        reshape_results: bool = True,
+    ) -> RetrievalResult:
+        """
+        Run the MCMC retrieval and return the results.
+
+        Optionally propagates ancillary-parameter uncertainty by cycling
+        through pre-generated MC samples of ``b`` and concatenating the
+        resulting MCMC chains.
+
+        :param retrieval_input: Object containing all retrieval inputs.
+        :param return_samples: If ``True``, the full sample array is stored
+            in the returned :class:`~curepy.container.retrieval_result.RetrievalResult`.
+        :param return_corr: If ``True``, the parameter correlation matrix is
+            computed from the samples and stored in the result.
+        :param return_b_samples: If ``True``, the ancillary parameter samples
+            are stored in the result.
+        :param reshape_results: If ``True``, reshape the flat output arrays
+            to the initial-guess shape.
+        :returns: Object containing retrieved values, uncertainties, and
+            optionally samples and correlations.
+        """
 
         self.retrieval_input = retrieval_input
 
@@ -97,7 +128,24 @@ class MCMC(BaseRetrieval):
             reshape_results,
         )
 
-    def run_MCMC(self, theta_0, nwalkers, steps, burn_in):
+    def run_MCMC(
+        self,
+        theta_0: np.ndarray,
+        nwalkers: int,
+        steps: int,
+        burn_in: int,
+    ) -> np.ndarray:
+        """
+        Run :class:`emcee.EnsembleSampler` and return the post-burn-in chain.
+
+        :param theta_0: Initial state vector around which walkers are
+            initialised.
+        :param nwalkers: Number of ensemble walkers.
+        :param steps: Total number of sampling steps.
+        :param burn_in: Number of initial samples to discard.
+        :returns: Array of post-burn-in samples with shape
+            ``(nwalkers * steps - burn_in, ndim)``.
+        """
         ndimw = len(theta_0)
         pos = [self.generate_theta_i(theta_0) for i in range(nwalkers)]
 
@@ -111,7 +159,24 @@ class MCMC(BaseRetrieval):
         samples = sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
 
-    def generate_theta_i(self, theta_0, factor_std=0.1):
+    def generate_theta_i(
+        self,
+        theta_0: np.ndarray,
+        factor_std: float = 0.1,
+    ) -> np.ndarray:
+        """
+        Generate a single walker starting position from ``theta_0``.
+
+        Perturbs ``theta_0`` by a Gaussian factor and recursively reduces
+        the perturbation magnitude until the resulting position lies within
+        the support of the prior.
+
+        :param theta_0: Central state vector.
+        :param factor_std: Standard deviation of the multiplicative Gaussian
+            perturbation.
+        :returns: Perturbed starting position that is within the prior
+            support.
+        """
         theta_i = theta_0 * np.random.normal(1.0, factor_std, theta_0.shape)
         if all(
             np.isfinite(
@@ -126,13 +191,31 @@ class MCMC(BaseRetrieval):
 
     def analyse_samples(
         self,
-        samples,
-        b_samples,
-        return_samples,
-        return_corr,
-        return_b_samples,
-        reshape_results,
-    ):
+        samples: np.ndarray,
+        b_samples: Optional[np.ndarray],
+        return_samples: bool,
+        return_corr: bool,
+        return_b_samples: bool,
+        reshape_results: bool,
+    ) -> RetrievalResult:
+        """
+        Summarise MCMC samples into a :class:`~curepy.container.retrieval_result.RetrievalResult`.
+
+        Computes the median, symmetric uncertainty (average of upper and
+        lower 1-sigma percentiles), and optionally the correlation matrix.
+
+        :param samples: Post-burn-in MCMC samples with shape
+            ``(n_samples, ndim)``.
+        :param b_samples: Ancillary parameter samples, or ``None``.
+        :param return_samples: If ``True``, include the raw samples in the
+            result.
+        :param return_corr: If ``True``, compute and include the correlation
+            matrix.
+        :param return_b_samples: If ``True``, include ancillary samples.
+        :param reshape_results: If ``True``, reshape outputs to the
+            initial-guess shape.
+        :returns: Retrieved values, uncertainties, and optional extras.
+        """
 
         medians = np.median(samples, axis=0)
         unc_up = np.percentile(samples, 84, axis=0) - medians
