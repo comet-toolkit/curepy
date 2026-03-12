@@ -45,6 +45,9 @@ class AncillaryParameter:
 
         self.b_MC_steps = b_MC_steps
         self.b_samples = b_samples
+        
+        if self.b is None and self.b_samples is not None:
+            self.b = self.b_samples
 
     def _format_ancillary_data(
         self,
