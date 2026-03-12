@@ -39,4 +39,4 @@ class RetrievalResult:
         .. note::
             Not yet implemented.
         """
-        pass
+        raise NotImplementedError

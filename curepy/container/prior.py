@@ -36,9 +36,6 @@ class Prior:
             ``"normal"`` requires ``"mu"`` and ``"sigma"``.
         :param prior_correlation: Correlation matrix between retrieval
             parameters, or ``None`` to assume no correlation.
-        :raises ValueError: If ``prior_shape`` is ``None``, contains
-            unsupported distribution names, required parameters are missing,
-            or the correlation is incompatible with the chosen distribution.
         """
 
         self._check_inputs(prior_shape, prior_params, prior_correlation)
@@ -68,9 +65,6 @@ class Prior:
         :param params: List of parameter dictionaries for each distribution.
         :param corr: Correlation matrix between retrieval parameters, or
             ``None``.
-        :raises ValueError: If any shape is unsupported, required parameters
-            are missing, or a correlation is provided for a distribution that
-            does not support it.
         """
         if shape is None:
             raise ValueError(

@@ -50,8 +50,8 @@ class MeasurementFunction:
         Format initial guess.
 
         :param initial_guess: Input initial guess for retrieval parameters.
-        :param multiple_guess_measurements: If ``True``, the initial guess
-            contains one row per measurement per parameter.
+        :param multiple_guess_measurements:  If ``True``, the initial guess
+            contains multiple measurements per parameter.
         """
         # Handle nested case:
         if hasattr(initial_guess, "__len__") and hasattr(initial_guess[0], "__len__"):
@@ -158,8 +158,6 @@ class MeasurementFunction:
             the initial-guess structure.
         :returns: Tuple of input quantities ready to be passed to the
             measurement function.
-        :raises ValueError: If the initial guess has more than three levels
-            of nesting.
         """
         x = deepcopy(self.initial_guess)
         j = 0

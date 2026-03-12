@@ -53,7 +53,6 @@ class Measurement:
             ``None`` if uncertainties are not provided.
         :returns: Tuple of ``(y_flat, u_y_flat, y_shape)`` where
             ``u_y_flat`` is ``None`` when ``u_y`` is ``None``.
-        :raises ValueError: If ``y`` and ``u_y`` have different shapes.
         """
         y_flat, y_shape = util.flatten_array(y)
         if u_y is not None:
@@ -82,7 +81,6 @@ class Measurement:
         :param y: Flattened measurement variable.
         :param u_y: Flattened uncertainty array, or ``None``.
         :param corr_y: Error-correlation matrix, or ``None``.
-        :raises ValueError: If any shape constraint is violated.
         """
         N = len(y)
 
