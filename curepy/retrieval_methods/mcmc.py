@@ -75,8 +75,7 @@ class MCMC(BaseRetrieval):
         )
 
         # generate b samples if ancillary data exists
-        if self.retrieval_input.ancillary_obj.b_samples is None:
-            self.retrieval_input.ancillary_obj.generate_b_samples()
+        self.retrieval_input.ancillary_obj.generate_b_samples()
             
         b_samples = self.retrieval_input.ancillary_obj.b_samples
 
