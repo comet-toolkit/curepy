@@ -23,7 +23,7 @@ class MCMC(BaseRetrieval):
         parallel_cores: int = 1,
     ) -> None:
         """
-        Initialise the MCMC retrieval sampler.
+        Initialise the MCMC retrieval object.
 
         :param nwalkers: Number of ensemble walkers used by
             :class:`emcee.EnsembleSampler`.
@@ -51,10 +51,6 @@ class MCMC(BaseRetrieval):
     ) -> RetrievalResult:
         """
         Run the MCMC retrieval and return the results.
-
-        Optionally propagates ancillary-parameter uncertainty by cycling
-        through pre-generated MC samples of ``b`` and concatenating the
-        resulting MCMC chains.
 
         :param retrieval_input: Object containing all retrieval inputs.
         :param return_samples: If ``True``, the full sample array is stored
@@ -171,7 +167,7 @@ class MCMC(BaseRetrieval):
         the perturbation magnitude until the resulting position lies within
         the support of the prior.
 
-        :param theta_0: Central state vector.
+        :param theta_0: Initial state vector.
         :param factor_std: Standard deviation of the multiplicative Gaussian
             perturbation.
         :returns: Perturbed starting position that is within the prior
@@ -204,9 +200,8 @@ class MCMC(BaseRetrieval):
         Computes the median, symmetric uncertainty (average of upper and
         lower 1-sigma percentiles), and optionally the correlation matrix.
 
-        :param samples: Post-burn-in MCMC samples with shape
-            ``(n_samples, ndim)``.
-        :param b_samples: Ancillary parameter samples, or ``None``.
+        :param samples: Post-burn-in MCMC samples.
+        :param b_samples: Ancillary parameter samples.
         :param return_samples: If ``True``, include the raw samples in the
             result.
         :param return_corr: If ``True``, compute and include the correlation

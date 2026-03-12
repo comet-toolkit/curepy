@@ -26,8 +26,6 @@ class RetrievalFactory:
             (e.g. ``"mcmc"``, ``"oe"``) or a
             :class:`~curepy.retrieval_methods.base.BaseRetrieval` subclass.
         :returns: Instantiated retrieval method object.
-        :raises ValueError: If ``name`` does not match any registered
-            retrieval method.
         """
 
         if name in self.retrieval_objects.values():

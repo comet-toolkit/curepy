@@ -12,7 +12,7 @@ from typing import Optional, Callable
 
 
 class OE(BaseRetrieval):
-    """Optimal Estimation (OE / LPU) retrieval object."""
+    """Optimal Estimation (OE) retrieval object."""
 
     def __init__(self, Jx: Optional[np.ndarray] = None) -> None:
         """
@@ -32,7 +32,7 @@ class OE(BaseRetrieval):
         reshape_results: bool = False,
     ) -> RetrievalResult:
         """
-        Run the OE retrieval using numerical minimisation and LPU.
+        Run the OE retrieval.
 
         Minimises the negative log posterior with
         :func:`scipy.optimize.minimize`, then propagates measurement and
@@ -120,8 +120,6 @@ class OE(BaseRetrieval):
             mapped to measurement space.  If ``None``, the covariance is
             computed from the ancillary object.
         :returns: Posterior state-vector covariance matrix.
-        :raises ValueError: If ``Sy_inv`` is ``None`` and ``Sb_inv`` is also
-            ``None``.
         """
 
         if Sy_inv is not None and Sb_inv is not None:
@@ -152,7 +150,7 @@ class OE(BaseRetrieval):
         respect to the state vector.
 
         :param x: State vector at which the Jacobian is evaluated.
-        :returns: Jacobian matrix with shape ``(n_obs, n_state)``.
+        :returns: Jacobian matrix.
         """
 
         meas_func_fixed_b = partial(
@@ -170,7 +168,7 @@ class OE(BaseRetrieval):
         respect to the flattened ancillary parameters.
 
         :param x: State vector at which the Jacobian is evaluated.
-        :returns: Jacobian matrix with shape ``(n_obs, n_b)``.
+        :returns: Jacobian matrix.
         """
 
         b_flat = np.hstack([b.flatten() for b in self.retrieval_input.ancillary_obj.b])

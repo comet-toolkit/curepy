@@ -104,8 +104,6 @@ class BaseRetrieval(ABC):
             accumulate the chi-squared sum.  Only zero or one repeat
             dimensions are currently supported.
         :returns: Chi-squared cost value.
-        :raises ValueError: If ``repeat_dims`` contains more than one
-            dimension.
         """
 
         modelled_data = (
@@ -160,7 +158,7 @@ class BaseRetrieval(ABC):
 
         lp = lnlike(
             self.find_chisum(theta, repeat_dims=[])
-        )  # todo: placeholder! figure out where to define
+        )
 
         return np.sum(lp_prior) + lp
 
