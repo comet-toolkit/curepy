@@ -40,8 +40,6 @@ def format_correlation(
         * ``"syst"`` — fully systematic (all-ones matrix).
         * Custom square ``numpy.ndarray``.
     :returns: Formatted correlation matrix, or ``None``.
-    :raises ValueError: If ``corr`` is a string other than ``"rand"`` or
-        ``"syst"``.
     """
 
     if corr is None or not hasattr(y, "__len__"):
