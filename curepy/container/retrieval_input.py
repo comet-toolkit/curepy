@@ -235,7 +235,7 @@ class RetrievalInput:
             for name in b_name:
                 b.append(obs_ds[name].values)
                 u_b.append(obs_ds.unc[name].total_unc())
-                corr_b.append(obs_ds.unc[name].total_err_corr_matrix())#todo: add handling if no uncertainty
+                corr_b.append(obs_ds.unc[name].total_err_corr_matrix())
         
         self.measurement_function_obj = MeasurementFunction(
             measurement_func,
