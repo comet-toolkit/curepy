@@ -116,7 +116,7 @@ class MCMC(BaseRetrieval):
 
             self.retrieval_input.ancillary_obj.b = b[:]
 
-        result = self.analyse_samples(
+        return self.analyse_samples(
             samples,
             b_samples,
             return_samples,
@@ -124,10 +124,6 @@ class MCMC(BaseRetrieval):
             return_b_samples,
             reshape_results,
         )
-        
-        result.calculate_statistics(self.retrieval_input)
-        
-        return result
 
     def run_MCMC(
         self,
