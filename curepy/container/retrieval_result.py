@@ -1,6 +1,5 @@
 """Container class for retrieval results"""
-import xarray as xr
-import obsarray
+from curepy.container.retrieval_input import RetrievalInput
 from typing import Optional
 import numpy as np
 
@@ -32,11 +31,7 @@ class RetrievalResult:
         self.b_samples = b_samples
         self.x_names = x_names
 
-    def build_obsarray(self) -> None:
-        """
-        Build an ``obsarray`` dataset from the retrieval results.
-
-        .. note::
-            Not yet implemented.
-        """
-        raise NotImplementedError
+    def calculate_statistics(self,
+                             retrieval_input: RetrievalInput):
+        
+        pass
