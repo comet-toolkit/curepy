@@ -46,8 +46,6 @@ class AncillaryParameter:
         self.b_MC_steps = b_MC_steps
         self.b_samples = b_samples
         
-        if self.b is None and self.b_samples is not None:
-            self.b = self.b_samples
 
     def _format_ancillary_data(
         self,
@@ -124,16 +122,20 @@ class AncillaryParameter:
         if self.b is None:
             self.b_samples = None
         else:
-            prop = punpy.MCPropagation(self.b_MC_steps)
-            if self.b_samples is None:
-                self.b_samples = prop.generate_MC_sample(
-                    self.b,
-                    self.u_b,
-                    self.corr_b,
-                    self.corr_between_b,
-                )
-            else:
+            if self.b_samples is not None:
                 self.b_samples = self.b_samples
+            else:
+                if self.u_b is not None:
+                    prop = punpy.MCPropagation(self.b_MC_steps)
+                    if self.b_samples is None:
+                        self.b_samples = prop.generate_MC_sample(
+                            self.b,
+                            self.u_b,
+                            self.corr_b,
+                            self.corr_between_b,
+                        )
+                else:
+                    self.b_samples = self.b
 
     def calculate_b_cov(self) -> Optional[np.ndarray]:
         """
