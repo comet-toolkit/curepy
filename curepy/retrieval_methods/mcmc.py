@@ -8,7 +8,8 @@ from curepy.container.retrieval_result import RetrievalResult
 from multiprocessing import Pool
 import emcee
 import numpy as np
-from typing import Optional
+from typing import Optional, Union, Sequence
+import comet_maths as cm
 
 
 class MCMC(BaseRetrieval):
@@ -194,6 +195,7 @@ class MCMC(BaseRetrieval):
         return_corr: bool,
         return_b_samples: bool,
         reshape_results: bool,
+        corr_dims: Optional[Union[int, Sequence[int]]] = -99
     ) -> RetrievalResult:
         """
         Summarise MCMC samples into a :class:`~curepy.container.retrieval_result.RetrievalResult`.
@@ -210,6 +212,7 @@ class MCMC(BaseRetrieval):
         :param return_b_samples: If ``True``, include ancillary samples.
         :param reshape_results: If ``True``, reshape outputs to the
             initial-guess shape.
+        :param corr_dims: int or List of ints, axis to calculate correlation matrix along.
         :returns: Retrieved values, uncertainties, and optional extras.
         """
 
@@ -219,10 +222,7 @@ class MCMC(BaseRetrieval):
         unc_avg = (unc_up + unc_down) / 2.0
 
         if return_corr:
-            if samples.shape[1] > 1:
-                corr = np.corrcoef(samples.T)
-            else:
-                corr = np.ones((1,))
+            corr = cm.calculate_corr(samples, corr_dims)
 
         if reshape_results:
             medians, unc_avg, corr = self.reshape_outputs(
