@@ -41,7 +41,7 @@ class MCMC(BaseRetrieval):
         self.progress = progress
         self.parallel_cores = parallel_cores
 
-    def run_retrieval(
+    def _run_retrieval(
         self,
         retrieval_input: RetrievalInput,
         return_samples: bool = False,

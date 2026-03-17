@@ -33,7 +33,7 @@ def make_mock_retrieval_input_for_chisum(
     return retrieval_input
 
 class DummyRetrieval(BaseRetrieval):
-    def run_retrieval(self, retrieval_inputs):
+    def _run_retrieval(self, retrieval_inputs):
         self.retrieval_input = retrieval_inputs
 
 

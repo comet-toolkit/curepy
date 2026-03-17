@@ -12,14 +12,26 @@ class BaseRetrieval(ABC):
     """Base retrieval object."""
 
     @abstractmethod
-    def run_retrieval(self, retrieval_inputs: RetrievalInput):
+    def _run_retrieval(self, retrieval_inputs: RetrievalInput):
+        """
+        Abstract run_retrieval method to be implemented by each retrieval subclass
+        
+        :param retrieval_inputs: Object encapsulating all inputs needed for
+            the retrieval.
+        """
+        pass
+    
+    def run_retrieval(self, retrieval_inputs: RetrievalInput, *args, **kwargs):
         """
         Execute the retrieval algorithm.
 
         :param retrieval_inputs: Object encapsulating all inputs needed for
             the retrieval.
         """
+        result = self._run_retrieval(retrieval_inputs, *args, **kwargs)
 
+        return result
+        
     def reshape_outputs(
         self,
         x: np.ndarray,

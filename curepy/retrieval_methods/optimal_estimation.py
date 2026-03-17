@@ -25,7 +25,7 @@ class OE(BaseRetrieval):
 
         self.Jx = Jx
 
-    def run_retrieval(
+    def _run_retrieval(
         self,
         retrieval_input: RetrievalInput,
         return_corr: bool = True,
