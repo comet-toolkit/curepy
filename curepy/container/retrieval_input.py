@@ -39,7 +39,9 @@ class RetrievalInput:
         measurement_func: Callable,
         initial_guess: Any,
         y: Any,
-        u_y: Optional[Any] = None,
+        u_y_total: Optional[Any] = None,
+        u_y_rand: Optional[Any] = None,
+        u_y_syst: Optional[Any] = None,
         corr_y: Optional[Union[str, Any]] = None,
         multiple_guess_measurements: bool = False,
         measurement_name: str = None,
@@ -60,7 +62,9 @@ class RetrievalInput:
         :param measurement_func: Callable measurement/forward-model function.
         :param initial_guess: Initial values for the retrieval parameters.
         :param y: Measurement variable.
-        :param u_y: Uncertainty of the measurement variable.
+        :param u_y_total: Total uncertainty of the measurement variable.
+        :param u_y_rand: Random uncertainty of the measurement variable.
+        :param u_y_syst: Systematic uncertainty of the measurement variable.
         :param corr_y: Error-correlation of the measurement variable
             (``None``, ``"rand"``, ``"syst"``, or a square matrix).
         :param multiple_guess_measurements: If ``True``, the initial guess
@@ -86,7 +90,7 @@ class RetrievalInput:
             input_quantities_names,
         )
 
-        self.measurement_obj = Measurement(y, u_y, corr_y)
+        self.measurement_obj = Measurement(y, u_y_total, u_y_rand, u_y_syst, corr_y)
 
         self.ancillary_obj = AncillaryParameter(
             b, u_b, corr_b, corr_between_b, b_samples, b_MC_steps
@@ -123,19 +127,23 @@ class RetrievalInput:
     def build_measurement(
         self,
         y: Any,
-        u_y: Optional[Any] = None,
+        u_y_total: Optional[Any] = None,
+        u_y_rand: Optional[Any] = None,
+        u_y_syst: Optional[Any] = None,
         corr_y: Optional[Union[str, Any]] = None,
     ) -> None:
         """
         Construct ``measurement_obj`` from measurement data.
 
         :param y: Measurement variable.
-        :param u_y: Uncertainty of the measurement variable.
+        :param u_y_total: Total uncertainty of the measurement variable.
+        :param u_y_rand: Random uncertainty of the measurement variable.
+        :param u_y_syst: Systematic uncertainty of the measurement variable.
         :param corr_y: Error-correlation of the measurement variable
             (``None``, ``"rand"``, ``"syst"``, or a square matrix).
         """
 
-        self.measurement_obj = Measurement(y, u_y, corr_y)
+        self.measurement_obj = Measurement(y, u_y_total, u_y_rand, u_y_syst, corr_y)
 
     def build_prior(
         self,
