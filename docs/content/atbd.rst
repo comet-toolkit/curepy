@@ -13,7 +13,7 @@ Consider a measurement function :math:`f()`, where,
 
 y is a variable that can be measured, x is a vector of parameters that we want to retrieve (sometimes called the state vector), 
 and b is a vector of inputs to the measurement function that can be measured.
-The measurement function maps the state space to the measurement space. We know the meausrement function so it is easy to map the state space to the measurement space,
+The measurement function maps the state space to the measurement space. We know the measurement function so it is easy to map the state space to the measurement space,
 this is what we know as forward propagation. However, if we know the values of the measurements, :math:`y`, and want to calculate the values of the state vector, :math:`x`, 
 we need a method of inverting :math:`f()`, and propagting uncertainties through the inversion process. 
 
