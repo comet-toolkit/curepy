@@ -15,12 +15,12 @@ class BaseRetrieval(ABC):
     def _run_retrieval(self, retrieval_inputs: RetrievalInput):
         """
         Abstract run_retrieval method to be implemented by each retrieval subclass
-        
+
         :param retrieval_inputs: Object encapsulating all inputs needed for
             the retrieval.
         """
         pass
-    
+
     def run_retrieval(self, retrieval_inputs: RetrievalInput, *args, **kwargs):
         """
         Execute the retrieval algorithm.
@@ -31,7 +31,7 @@ class BaseRetrieval(ABC):
         result = self._run_retrieval(retrieval_inputs, *args, **kwargs)
 
         return result
-        
+
     def reshape_outputs(
         self,
         x: np.ndarray,
@@ -168,9 +168,7 @@ class BaseRetrieval(ABC):
         if not all(np.isfinite(lp_prior)):
             return -np.inf
 
-        lp = lnlike(
-            self.find_chisum(theta, repeat_dims=[])
-        )
+        lp = lnlike(self.find_chisum(theta, repeat_dims=[]))
 
         return np.sum(lp_prior) + lp
 

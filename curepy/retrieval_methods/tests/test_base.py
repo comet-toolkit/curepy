@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 from curepy.container.retrieval_input import RetrievalInput
 from curepy.retrieval_methods.base import BaseRetrieval
 
+
 def make_mock_retrieval_input_for_chisum(
     measurement_function_output,
     y_flat,
@@ -31,6 +32,7 @@ def make_mock_retrieval_input_for_chisum(
     retrieval_input.ancillary_obj.b = b
 
     return retrieval_input
+
 
 class DummyRetrieval(BaseRetrieval):
     def _run_retrieval(self, retrieval_inputs):
@@ -81,15 +83,15 @@ class TestBaseRetrieval(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             x_r, u_r, c_r = dr.reshape_outputs(x, u_x, corr)
-    
+
     def test__check_retrieval_input_good(self):
         dr = DummyRetrieval()
         TEST_INPUT = RetrievalInput()
-        TEST_INPUT.build_prior(['uniform'], [{'minimum': 0, 'maximum': 1}])
+        TEST_INPUT.build_prior(["uniform"], [{"minimum": 0, "maximum": 1}])
         TEST_INPUT.build_ancillary()
         dr.run_retrieval(TEST_INPUT)
         dr._check_retrieval_input()
-        
+
     def test__check_retrieval_input_no_prior(self):
         dr = DummyRetrieval()
         TEST_INPUT = RetrievalInput()
@@ -98,16 +100,19 @@ class TestBaseRetrieval(unittest.TestCase):
         dr.retrieval_input.measurement_function_obj = MagicMock()
         dr.retrieval_input.measurement_function_obj.initial_guess = [0]
         dr._check_retrieval_input()
-        self.assertEqual(dr.retrieval_input.prior_obj.prior_params, [{'minimum': -np.inf, 'maximum': np.inf}])
-        
+        self.assertEqual(
+            dr.retrieval_input.prior_obj.prior_params,
+            [{"minimum": -np.inf, "maximum": np.inf}],
+        )
+
     def test__check_retrieval_input_no_ancill(self):
         dr = DummyRetrieval()
         TEST_INPUT = RetrievalInput()
-        TEST_INPUT.build_prior(['uniform'], [{'minimum': 0, 'maximum': 1}])
+        TEST_INPUT.build_prior(["uniform"], [{"minimum": 0, "maximum": 1}])
         dr.run_retrieval(TEST_INPUT)
         dr._check_retrieval_input()
-        assert(dr.retrieval_input.ancillary_obj)
-        
+        assert dr.retrieval_input.ancillary_obj
+
     def test_chisum_no_invcov(self):
         measurement_output = np.array([1.0, 2.0, 3.0])
         y_flat = np.array([1.0, 1.0, 1.0])
@@ -120,15 +125,14 @@ class TestBaseRetrieval(unittest.TestCase):
             u_y=u_y,
             b=None,
         )
-        
+
         dr = DummyRetrieval()
         dr.run_retrieval(retrieval_input)
 
         result = dr.find_chisum(theta=None)
-        expected = np.sum(((measurement_output - y_flat) ** 2) / (u_y ** 2))
+        expected = np.sum(((measurement_output - y_flat) ** 2) / (u_y**2))
         assert result == expected
 
-    
     def test_multiple_repeat_dims_raises_error(self):
         retrieval_input = make_mock_retrieval_input_for_chisum(
             measurement_function_output=np.array([1.0, 2.0]),
@@ -143,7 +147,6 @@ class TestBaseRetrieval(unittest.TestCase):
         with self.assertRaises(ValueError):
             dr.find_chisum(theta=None, repeat_dims=[0, 1])
 
-        
     def test_returns_inf_when_diff_contains_nan(self):
         """If diff contains non-finite values, should return np.inf."""
 
@@ -189,7 +192,7 @@ class TestBaseRetrieval(unittest.TestCase):
         expected = diff.T @ invcov @ diff
 
         assert result == expected
-        
+
     @patch.object(BaseRetrieval, "find_chisum")
     def test_lnprob_valid(self, mock_find_chisum):
         dr = DummyRetrieval()
@@ -200,7 +203,7 @@ class TestBaseRetrieval(unittest.TestCase):
         dr.run_retrieval(TEST_INPUT)
         out = dr.lnprob([3])
         self.assertEqual(out, -2.5)
-        
+
     @patch.object(BaseRetrieval, "find_chisum")
     def test_lnprob_invalid(self, mock_find_chisum):
         dr = DummyRetrieval()
@@ -211,6 +214,7 @@ class TestBaseRetrieval(unittest.TestCase):
         dr.run_retrieval(TEST_INPUT)
         out = dr.lnprob([3])
         self.assertEqual(out, -np.inf)
+
 
 if __name__ == "__main__":
     unittest.main()

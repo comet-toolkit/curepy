@@ -69,7 +69,12 @@ class OE(BaseRetrieval):
         if reshape_results:
             x, u_func, corr_x = self.reshape_outputs(x, u_func, corr_x)
 
-        return RetrievalResult(x=x, u_x=u_func, corr_x=corr_x if return_corr else None, x_names=self.retrieval_input.measurement_function_obj._input_quantities_names)
+        return RetrievalResult(
+            x=x,
+            u_x=u_func,
+            corr_x=corr_x if return_corr else None,
+            x_names=self.retrieval_input.measurement_function_obj._input_quantities_names,
+        )
 
     def process_inverse_jacobian(
         self,

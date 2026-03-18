@@ -1,8 +1,10 @@
 """Container class for retrieval results"""
+
 import xarray as xr
 import obsarray
 from typing import Optional
 import numpy as np
+
 
 class RetrievalResult:
     def __init__(

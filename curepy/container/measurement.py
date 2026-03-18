@@ -11,8 +11,8 @@ class Measurement:
         self,
         y: np.ndarray,
         u_y_total: Optional[np.ndarray] = None,
-        u_y_rand:  Optional[np.ndarray] = None,
-        u_y_syst:  Optional[np.ndarray] = None,
+        u_y_rand: Optional[np.ndarray] = None,
+        u_y_syst: Optional[np.ndarray] = None,
         corr_y: Optional[Union[str, np.ndarray]] = None,
     ) -> None:
         """
@@ -31,8 +31,10 @@ class Measurement:
             length of ``y``.
         """
 
-        u_y_total, corr_y = self._format_uncertainty(u_y_total, u_y_rand, u_y_syst, corr_y)
-        
+        u_y_total, corr_y = self._format_uncertainty(
+            u_y_total, u_y_rand, u_y_syst, corr_y
+        )
+
         self.y = y
         self.u_y = u_y_total
         self.y_flat, self.u_y_flat, self.y_shape = self._flatten_inputs(
@@ -112,7 +114,7 @@ class Measurement:
 
     @staticmethod
     def _format_uncertainty(u_total, u_rand, u_syst, corr):
-        
+
         if u_total is None and u_rand is None and u_syst is None:
             return None, None
         elif u_total is not None and u_rand is None and u_syst is None:
@@ -126,13 +128,14 @@ class Measurement:
         elif u_total is None and u_rand is not None and u_syst is not None:
             tot = np.sqrt(u_rand**2 + u_syst**2)
             tot_cov = cm.convert_corr_to_cov(
-                np.eye(len(u_rand.flatten())), u_rand.flatten()) + cm.convert_corr_to_cov(
-                    np.ones((len(u_syst.flatten()), len(u_syst.flatten()))), u_syst.flatten()
-                )
+                np.eye(len(u_rand.flatten())), u_rand.flatten()
+            ) + cm.convert_corr_to_cov(
+                np.ones((len(u_syst.flatten()), len(u_syst.flatten()))),
+                u_syst.flatten(),
+            )
             tot_corr = cm.convert_cov_to_corr(tot_cov, tot)
             return tot, tot_corr
-        
-    
+
     @staticmethod
     def calculate_inv_cov(unc: np.ndarray, corr: np.ndarray) -> np.ndarray:
         """

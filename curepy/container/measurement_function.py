@@ -80,7 +80,9 @@ class MeasurementFunction:
         else:
             return arr
 
-    def measurement_function_x(self, theta: np.ndarray, b: Optional[np.ndarray]) -> np.ndarray:
+    def measurement_function_x(
+        self, theta: np.ndarray, b: Optional[np.ndarray]
+    ) -> np.ndarray:
         """
         Evaluate the measurement function at state vector ``theta``.
 

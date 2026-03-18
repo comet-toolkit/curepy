@@ -184,7 +184,7 @@ class RetrievalInput:
         self.ancillary_obj = AncillaryParameter(
             b, u_b, corr_b, corr_between_b, b_samples, b_MC_steps
         )
-        
+
     def build_from_obsarray(
         self,
         obs_ds: Any,
@@ -223,28 +223,28 @@ class RetrievalInput:
         :param b_samples: Pre-generated MC samples for ancillary parameters.
         :param b_MC_steps: Number of MC steps for ancillary parameter sampling.
         """
-        
+
         y = obs_ds[y_name].values
         u_y = obs_ds.unc[y_name].total_unc()
         corr_y = obs_ds.unc[y_name].total_err_corr_matrix()
         measurement_name = y_name
-        
+
         if b_name is None:
             b = None
             u_b = None
             corr_b = None
             corr_between_b = None
-            
+
         else:
             b = []
             u_b = []
             corr_b = []
-            corr_between_b = None # corr between variables not yet implemented in obsarray, user could manually define after running function
+            corr_between_b = None  # corr between variables not yet implemented in obsarray, user could manually define after running function
             for name in b_name:
                 b.append(obs_ds[name].values)
                 u_b.append(obs_ds.unc[name].total_unc())
                 corr_b.append(obs_ds.unc[name].total_err_corr_matrix())
-        
+
         self.measurement_function_obj = MeasurementFunction(
             measurement_func,
             initial_guess,

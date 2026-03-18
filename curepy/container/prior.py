@@ -67,9 +67,7 @@ class Prior:
             ``None``.
         """
         if shape is None:
-            raise ValueError(
-                "Cannot instantiate empty Prior object"
-            )
+            raise ValueError("Cannot instantiate empty Prior object")
         # check shape
         if any([shape.lower() not in implemented_prior_shapes for shape in shape]):
             raise ValueError(

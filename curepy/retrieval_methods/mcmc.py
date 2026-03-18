@@ -77,7 +77,7 @@ class MCMC(BaseRetrieval):
 
         # generate b samples if ancillary data exists
         self.retrieval_input.ancillary_obj.generate_b_samples()
-            
+
         b_samples = self.retrieval_input.ancillary_obj.b_samples
 
         # generate samples with MCMC
@@ -195,7 +195,7 @@ class MCMC(BaseRetrieval):
         return_corr: bool,
         return_b_samples: bool,
         reshape_results: bool,
-        corr_dims: Optional[Union[int, Sequence[int]]] = -99
+        corr_dims: Optional[Union[int, Sequence[int]]] = -99,
     ) -> RetrievalResult:
         """
         Summarise MCMC samples into a :class:`~curepy.container.retrieval_result.RetrievalResult`.
