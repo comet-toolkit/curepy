@@ -26,6 +26,7 @@ import sys
 # SH added to run apidoc on build
 this_directory = os.path.dirname(__file__)
 
+module_path = os.path.abspath(os.path.join(this_directory, "..", "..", "curepy"))
 
 def run_apidoc(_):
     ignore_paths = ["./../../*/tests/"]
@@ -37,7 +38,7 @@ def run_apidoc(_):
         "-M",
         "-o",
         os.path.join(this_directory, "content", "api"),
-        curepy.__path__[0],
+        module_path,
     ] + ignore_paths
 
     try:
