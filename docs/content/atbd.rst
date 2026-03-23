@@ -38,7 +38,7 @@ The associated likelihood is defined as:
 Optimal Estimation (OE)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The Optimal Estimation method is described thoroughly in [1]. It involves minimising the cost function to find the optimal values of the state vector, 
+The Optimal Estimation method is described thoroughly in [1]_. It involves minimising the cost function to find the optimal values of the state vector, 
 then the associated uncertainties and correlations are calculated from the posterior covariance which itself is calculated using the Jacobian.
 
 .. [1] https://www.sciencedirect.com/science/article/pii/S0034425718303304
