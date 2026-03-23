@@ -25,7 +25,7 @@ Welcome to curepy's documentation!
         The theory section provides a mathematical basis to inverse problems, and a description of the retrieval methods included in *curepy*.
 
     .. grid-item-card::  API reference
-        :link: content/api/modules
+        :link: content/api/curepy
         :link-type: doc
 
         The reference guide contains a detailed description of the *curepy* API.
@@ -40,4 +40,4 @@ Welcome to curepy's documentation!
    Getting Started <content/getting_started>
    User Guide <content/user_guide>
    ATBD <content/atbd>
-   API Reference <content/api/modules>
+   API Reference <content/api/curepy>
