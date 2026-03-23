@@ -160,6 +160,8 @@ pages:
       when: always
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
+    - if: '$CI_COMMIT_BRANCH == "tests-for-redesign"'
+      when: always
   
 pdf_make:  
   extends: .py_venv
