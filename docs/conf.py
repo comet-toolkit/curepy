@@ -77,7 +77,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
-    "sphinx_design",
+    #"sphinx_design",
 ]
 
 autosummary_generate = True
