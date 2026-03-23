@@ -24,14 +24,18 @@ Homepage = "https://gitlab.npl.co.uk/eco/tools/curepy"
 
 [project.optional-dependencies]
 dev = [
-    "pre-commit",
-    "tox",
-    "sphinx",
-    "sphinx_rtd_theme",
-    "pytest-html",
-    "pytest-cov",
-    "pytest"
-]
+        "pre-commit",
+        "tox",
+        "sphinx",
+        "sphinx_design",
+        "sphinx_book_theme",
+        "sphinx-rtd-theme",
+        "ipython",
+        "sphinx_autosummary_accessors",
+        "pytest-html",
+        "pytest-cov",
+        "pytest"
+        ]
 
 [tool.setuptools.packages.find]
 include = ["curepy*"]
