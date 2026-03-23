@@ -155,14 +155,6 @@ html_static_path = ["_static"]
 html_logo = "curepy_logo.png"
 html_title = "curepy"
 
-
-# SH added to override wide tables in RTD theme
-html_context = {
-    "css_files": [
-        "_static/theme_overrides.css",
-    ],
-}
-
 # -- Options for HTMLHelp output ---------------------------------------
 
 # Output file base name for HTML help builder.
