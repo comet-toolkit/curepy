@@ -29,7 +29,11 @@ this_directory = os.path.dirname(__file__)
 module_path = os.path.abspath(os.path.join(this_directory, "..", "..", "curepy"))
 
 def run_apidoc(_):
-    ignore_paths = ["./../../*/tests/"]
+    ignore_paths = [
+    "./../../*/tests/",
+    "setup.py",
+    "versioneer.py",
+]
 
     argv = [
         "-f",
