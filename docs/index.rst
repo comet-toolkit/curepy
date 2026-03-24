@@ -12,17 +12,18 @@ Welcome to curepy's documentation!
 
         New to *curepy*? Check out the getting started guides. They contain installation instructions.
 
+    .. grid-item-card::  ATBD
+        :link: content/atbd
+        :link-type: doc
+
+        The theory section provides a mathematical basis to inverse problems, and a description of the retrieval methods included in *curepy*.
+
     .. grid-item-card::  User Guide
         :link: content/user_guide
         :link-type: doc
 
         The user guide provides in-depth information on how to use the retrieval methods in *curepy*.
 
-    .. grid-item-card::  ATBD
-        :link: content/atbd
-        :link-type: doc
-
-        The theory section provides a mathematical basis to inverse problems, and a description of the retrieval methods included in *curepy*.
 
     .. grid-item-card::  API reference
         :link: content/api/curepy
@@ -38,6 +39,6 @@ Welcome to curepy's documentation!
    :hidden:
 
    Getting Started <content/getting_started>
-   User Guide <content/user_guide>
    ATBD <content/atbd>
+   User Guide <content/user_guide>
    API Reference <content/api/curepy>
