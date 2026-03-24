@@ -58,7 +58,7 @@ The table of valid prior shapes and associated parameters can be found below.
 +--------------+-----------------------------------+
 
 .. note::
-    If no ``Prior`` object is set within the ``RetrievalInput``, all prior distributions are set to be uniform with minimum :math:`\infty` and maximum :math:`\infty`.
+    If no ``Prior`` object is set within the ``RetrievalInput``, all prior distributions are set to be uniform with minimum :math:`-\infty` and maximum :math:`\infty`.
 
 AncillaryParameter
 ^^^^^^^^^^^^^^^^^^
@@ -73,7 +73,7 @@ that can be given instead of drawing an MC sample.
 Instantiating a Retrieval Method
 --------------------------------
 
-Retrieval method objects can be instatiated directly::
+Retrieval method objects can be instantiated directly::
 
     from curepy.retrieval_methods.optimal_estimation import OE
     ret = OE()
@@ -89,7 +89,7 @@ the object directly::
     from curepy.retrieval_methods.retrieval_method_factory import RetrievalFactory
     ret = RetrievalFactory().make_retrieval_object('mcmc', nwalkers = 100, steps = 1000, burn_in = 100)
 
-The table of valid retreival methods and associated parameters can be found below.
+The table of valid retrieval methods and associated parameters can be found below.
 
 +--------------+----------------------------------------------------------------------+
 | Method       | Parameters                                                           |
@@ -108,7 +108,7 @@ Running a Retrieval
 -------------------
 
 Every retrieval is run using the ``run_retrieval`` method, this function's interface is identical for all 
-retrieval methods, the only input is a ``RetrievalInput`` object::
+retrieval methods, the only required input is a ``RetrievalInput`` object::
 
     results = ret.run_retrieval(inp)
 

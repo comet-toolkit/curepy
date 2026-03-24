@@ -32,7 +32,7 @@ The associated likelihood is defined as:
 
 .. math::
 
-    P(y|x) = 2\pi^{\frac{n}{2}}|C_{y}^{\frac{-1}{2}}|\exp{\chi^{2}}
+    P(y|x) = 2\pi^{\frac{n}{2}}|C_{y}^{-\frac{1}{2}}|e^{\chi^{2}}
 
 
 Optimal Estimation (OE)
