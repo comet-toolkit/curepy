@@ -36,7 +36,13 @@ where:
 
 * :math:`C_{a}` is the a priori covariance matrix, expressing uncertainty in the prior knowledge of the state vector.
 
-Covariances are used in order to propagate correlation information through the retrieval along with the uncertainty information.
+Correlation matrices contain information about how two measurements are related. 
+This matrix can be combined with the vector of uncertainties to calculate the covariance matrix, 
+which holds all uncertainty and correlation information. The cost function uses covariances 
+to propagate correlation information through the retrieval along with the uncertainty information. 
+This is vital because, if we neglected the correlation information, it would result in a different :math:`\chi^{2}` distribution 
+leading to a bias in our retrieved uncertainties. We also would not have any correlation information on our retrieved values. 
+More information about covariance and rigorous metrological practices can be found at [1]_.
 
 The prior distribution encodes what we know (or assume) about the state vector before considering the measurements.
 Priors are essential because multiple states can produce nearly identical measurements,
@@ -51,10 +57,12 @@ The associated likelihood is defined as:
 
 where :math:`n` is the dimensionality of the measurement vector. 
 
+.. [1] https://qa4eo.org/training/
+
 Optimal Estimation (OE)
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The Optimal Estimation method is described thoroughly in [1]_. It involves minimising the cost function to find the optimal values of the state vector, 
+The Optimal Estimation method is described thoroughly in [2]_. It involves minimising the cost function to find the optimal values of the state vector, 
 then the associated uncertainties and correlations are calculated from the posterior covariance, :math:`C_{x}` which itself is calculated using the Jacobian of the measurement function with respect to :math:`x`, :math:`J`,
 
 .. math::
@@ -71,7 +79,7 @@ where:
 * :math:`C_{b}` is the ancillary vector covariance matrix.
 
 
-.. [1] https://www.sciencedirect.com/science/article/pii/S0034425718303304
+.. [2] https://www.sciencedirect.com/science/article/pii/S0034425718303304
 
 Markov Chain Monte Carlo (MCMC)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -80,7 +88,7 @@ The Markov Chain Monte Carlo method approximates the posterior distribution  by 
 Unlike optimization-based retrievals that return a single “best-fit” solution, MCMC retrievals provide the full posterior distribution,
 allowing non-Gaussian uncertainties, multimodal solutions, and parameter correlations to be characterized naturally.
 
-*curepy* implements MCMC using the `emcee` package which involves a modified Metropolis-Hastings algorithm described in [2]_,
+*curepy* implements MCMC using the `emcee` package which involves a modified Metropolis-Hastings algorithm described in [3]_,
 broadly, the algorithm's steps are as follows:
 
 * An initial guess :math:`x_{0}` is chosen.
@@ -96,4 +104,4 @@ The samples from all the chains are then used to approximate the posterior distr
 Corner plots and trace plots can be used to assess the extent to which the posterior distribution has been reached. Trace plots show the evolution of each parameter through the chain,
 a well-mixed chain has no long-term drift. Corner plots display parameter posterior distributions and correlation between parameters.
 
-.. [2] https://iopscience.iop.org/article/10.1086/670067
+.. [3] https://iopscience.iop.org/article/10.1086/670067
