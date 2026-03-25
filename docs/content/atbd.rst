@@ -36,6 +36,8 @@ where:
 
 * :math:`C_{a}` is the a priori covariance matrix, expressing uncertainty in the prior knowledge of the state vector.
 
+Covariances are used in order to propagate correlation information through the retrieval along with the uncertainty information.
+
 The prior distribution encodes what we know (or assume) about the state vector before considering the measurements.
 Priors are essential because multiple states can produce nearly identical measurements,
 the measurements may be noisy, and the forward model may have limited sensitivity to certain components of the state vector.
@@ -53,13 +55,14 @@ Optimal Estimation (OE)
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 The Optimal Estimation method is described thoroughly in [1]_. It involves minimising the cost function to find the optimal values of the state vector, 
-then the associated uncertainties and correlations are calculated from the posterior covariance, :math:`C_{x}` which itself is calculated using the Jacobian of the measurement function with respect to :math:`x, :math:`J`,
+then the associated uncertainties and correlations are calculated from the posterior covariance, :math:`C_{x}` which itself is calculated using the Jacobian of the measurement function with respect to :math:`x`, :math:`J`,
 
 .. math::
 
-    C_{x} = (J^{T}C_{\eta}J + C_{a}^{-1})^{-1}
+    C_{x} = (J^{T}C_{\epsilon}J + C_{a}^{-1})^{-1}
 
-    C_{\eta} = C_{y} + J_{b}C_{b}J_{b}^{T}
+
+    C_{\epsilon} = C_{y} + J_{b}C_{b}J_{b}^{T}
 
 where:
 
@@ -77,7 +80,8 @@ The Markov Chain Monte Carlo method approximates the posterior distribution  by 
 Unlike optimization-based retrievals that return a single “best-fit” solution, MCMC retrievals provide the full posterior distribution,
 allowing non-Gaussian uncertainties, multimodal solutions, and parameter correlations to be characterized naturally.
 
-*curepy* implements MCMC using the Metropolis-Hastings algorithm:
+*curepy* implements MCMC using the `emcee` package which involves a modified Metropolis-Hastings algorithm described in [2]_,
+broadly, the algorithm's steps are as follows:
 
 * An initial guess :math:`x_{0}` is chosen.
 * A move is proposed to :math:`x_{i}` using MC sampling.
@@ -85,8 +89,11 @@ allowing non-Gaussian uncertainties, multimodal solutions, and parameter correla
 * The move is then accepted or rejected depending on this likelihood.
 * This is repeated for N steps.
 * The initial samples are discarded so the chain 'forgets' its initial position.
-* The remaining samples then approximate the posterior distribution.
 
+These steps are repeated for n walkers which each make their own chain. This avoids the whole sample set getting stuck in a local minima.
+The samples from all the chains are then used to approximate the posterior distribution.
 
 Corner plots and trace plots can be used to assess the extent to which the posterior distribution has been reached. Trace plots show the evolution of each parameter through the chain,
 a well-mixed chain has no long-term drift. Corner plots display parameter posterior distributions and correlation between parameters.
+
+.. [2] https://iopscience.iop.org/article/10.1086/670067

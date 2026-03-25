@@ -51,6 +51,11 @@ if True, the initial guess input is made up of multiple valid inputs to the meas
                                 initial_guess = [np.array(5)],
                                 )
 
+.. note::
+    If the measurement function contains multiple :math:`x` to retrieve, the initial guess should be a list where each entry
+    is a guess of the state variable, :math:`x_{i}`. These :math:`x_{i}` can be arrays or floats/ints, the only requirement being
+    the shape must be the same as the expected input to the measurement function.
+
 Prior
 ^^^^^
 
