@@ -70,7 +70,10 @@ class BaseRetrieval(ABC):
 
         if hasattr(ig, "__len__"):
             if hasattr(ig[0], "__len__"):
-                theta_0 = np.concatenate(ig).flatten()
+                try:
+                    theta_0 = np.concatenate(ig).flatten()
+                except:
+                    theta_0 = np.concatenate([x.flatten() for x in ig])
             else:
                 theta_0 = np.array(ig).flatten()
         else:
