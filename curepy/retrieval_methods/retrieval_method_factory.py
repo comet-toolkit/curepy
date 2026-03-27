@@ -1,25 +1,31 @@
 """Factory design to generate retrieval objects"""
 
 from curepy.retrieval_methods.base import BaseRetrieval
-from curepy.retrieval_methods.MCMC import MCMC
-from curepy.retrieval_methods.LPU import LPU
+from curepy.retrieval_methods.mcmc import MCMC
+from curepy.retrieval_methods.optimal_estimation import OE
 
 from typing import Union
 
-RETRIEVAL_HANDLERS = {"mcmc": MCMC, "lpu": LPU}
+RETRIEVAL_HANDLERS = {"mcmc": MCMC, "oe": OE}
 
 
 class RetrievalFactory:
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Initialise the factory with the default set of retrieval handlers.
+        """
         self.retrieval_objects = RETRIEVAL_HANDLERS
 
     def make_retrieval_object(
         self, name: Union[str, BaseRetrieval], *args, **kwargs
     ) -> BaseRetrieval:
-        """Return specified retrieval object
+        """
+        Return the specified retrieval object.
 
-        :param name: Selected retrieval method (eg. "mcmc")
-        :return: Retrieval method object
+        :param name: Retrieval method identifier.  May be a string key
+            (e.g. ``"mcmc"``, ``"oe"``) or a
+            :class:`~curepy.retrieval_methods.base.BaseRetrieval` subclass.
+        :returns: Instantiated retrieval method object.
         """
 
         if name in self.retrieval_objects.values():

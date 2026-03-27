@@ -2,7 +2,7 @@
 
 import numpy as np
 from curepy.utilities.distributions import *
-from typing import List
+from typing import List, Optional
 import warnings
 import curepy.utilities.utilities as util
 import comet_maths as cm
@@ -22,8 +22,21 @@ class Prior:
         self,
         prior_shape: List[str] = None,
         prior_params: List[dict] = [{}],
-        prior_correlation=None,
-    ):
+        prior_correlation: Optional[np.ndarray] = None,
+    ) -> None:
+        """
+        Container for prior probability distribution information.
+
+        :param prior_shape: List of prior distribution shape names, one per
+            retrieval parameter.  Supported values: ``"uniform"``,
+            ``"normal"``.
+        :param prior_params: List of parameter dictionaries, one per
+            retrieval parameter.  Required keys depend on ``prior_shape``:
+            ``"uniform"`` requires ``"minimum"`` and ``"maximum"``;
+            ``"normal"`` requires ``"mu"`` and ``"sigma"``.
+        :param prior_correlation: Correlation matrix between retrieval
+            parameters, or ``None`` to assume no correlation.
+        """
 
         self._check_inputs(prior_shape, prior_params, prior_correlation)
         self.function_list = [
@@ -40,9 +53,23 @@ class Prior:
             self.lnprior = self.combine_dist_functions
 
     @staticmethod
-    def _check_inputs(shape, params, corr):
+    def _check_inputs(
+        shape: List[str],
+        params: List[dict],
+        corr: Optional[np.ndarray],
+    ) -> None:
+        """
+        Validate the prior shape, parameter, and correlation inputs.
+
+        :param shape: List of prior distribution shape names.
+        :param params: List of parameter dictionaries for each distribution.
+        :param corr: Correlation matrix between retrieval parameters, or
+            ``None``.
+        """
+        if shape is None:
+            raise ValueError("Cannot instantiate empty Prior object")
         # check shape
-        if all([shape.lower() not in implemented_prior_shapes for shape in shape]):
+        if any([shape.lower() not in implemented_prior_shapes for shape in shape]):
             raise ValueError(
                 f"A provided prior shape ({shape}) is not an implemented prior distribution shape {implemented_prior_shapes.keys()}"
             )
@@ -64,12 +91,30 @@ class Prior:
                     "No correlation between priors set, assuming random correlation"
                 )
 
-    def combine_dist_functions(self, xs):
+    def combine_dist_functions(self, xs: np.ndarray):
+        """
+        Evaluate each individual prior distribution at the corresponding value.
+
+        :param xs: Sequence of parameter values, one per retrieval parameter.
+        :returns: Callable that, when invoked, returns a list of log-prior
+            values from each individual distribution.
+        """
         return lambda: [
             f(x, **kws) for f, x, kws in zip(self.function_list, xs, self.prior_params)
         ]
 
-    def return_Sa_inv(self):
+    def return_Sa_inv(self) -> Optional[np.ndarray]:
+        """
+        Compute the inverse of the prior covariance matrix.
+
+        Constructs the prior covariance from the ``"sigma"`` entries in
+        ``prior_params`` and the (optionally formatted) correlation matrix,
+        then returns its inverse.  Returns ``None`` if no correlation
+        matrix is available.
+
+        :returns: Inverse of the prior covariance matrix, or ``None`` if
+            the correlation matrix is undefined.
+        """
         corr = util.format_correlation(self.prior_params, self.prior_correlation)
         if corr is None:
             return None
