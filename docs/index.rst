@@ -1,7 +1,11 @@
 Welcome to curepy's documentation!
 =========================================================
 
-*curepy* is a Python package for propagating uncertainties through inverse problems.
+The **curepy** module is a Python software package to propagate uncertainties through inverse problems. 
+
+**curepy** can be used to solve inverse problems with input measurements and uncertainties inputted manually, or using an **obsarray** dataset.
+It can also be used to analyse the outputs of these inverse problems to quantify uncertainties and compare results.
+This documentation provides general information on how to use the module (with some examples), as well as a detailed API of the included classes and function.
 
 .. grid:: 2
     :gutter: 2
