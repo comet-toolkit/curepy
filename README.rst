@@ -3,6 +3,13 @@ curepy
 
 Retrievall UNcertainties in PYthon
 
+============
+Beta Version
+============
+
+WARNING: This software is a beta version, results should be used with caution.
+Please share any feedback you have after using the tool.
+
 Usage
 =====
 

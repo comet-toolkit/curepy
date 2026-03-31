@@ -21,19 +21,20 @@ import curepy
 import os
 import sys
 
-#sys.path.insert(0, os.path.abspath(".."))
+# sys.path.insert(0, os.path.abspath(".."))
 
 # SH added to run apidoc on build
 this_directory = os.path.dirname(__file__)
 
 module_path = os.path.abspath(os.path.join(this_directory, "..", "..", "curepy"))
 
+
 def run_apidoc(_):
     ignore_paths = [
-    "./../../*/tests/",
-    "setup.py",
-    "versioneer.py",
-]
+        "./../../*/tests/",
+        "setup.py",
+        "versioneer.py",
+    ]
 
     argv = [
         "-f",
@@ -150,7 +151,9 @@ html_theme = "sphinx_book_theme"
 # theme further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    "announcement": "<strong>Beta Version:</strong> This software is a beta version, results should be used with caution. Please share any feedback you have after using the tool.",
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
