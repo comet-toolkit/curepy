@@ -33,8 +33,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(project_root, "..")))
 import curepy
 
 # SH added to run apidoc on build
-module_path = project_root
-
+module_path = os.path.abspath(os.path.join(this_directory, "..", "curepy"))
 
 
 def run_apidoc(_):
