@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: latest
+    rev: stable
     hooks:
       - id: black
         args: [--target-version, py311]
