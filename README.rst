@@ -1,5 +1,5 @@
 curepy
-=====
+======
 
 Comet Uncertainties for REtrievals in PYthon
 
