@@ -7,13 +7,6 @@ The **curepy** module is a Python software package to propagate uncertainties th
 It can also be used to analyse the outputs of these inverse problems to quantify uncertainties and compare results.
 This documentation provides general information on how to use the module (with some examples), as well as a detailed API of the included classes and function.
 
-============
-Beta Version
-============
-
-WARNING: This software is a beta version, results should be used with caution.
-Please share any feedback you have after using the tool.
-
 .. grid:: 2
     :gutter: 2
 
