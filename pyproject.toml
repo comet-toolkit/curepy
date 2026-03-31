@@ -48,3 +48,6 @@ versionfile_source = "curepy/_version.py"
 versionfile_build = "curepy/_version.py"
 tag_prefix = "v"
 parentdir_prefix_version = "curepy-"
+
+[tool.black]
+target-version = ['py311']
