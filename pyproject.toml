@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "curepy"
-version = "0.0.0" # versioneer will manage this
+dynamic = ["version"]
 description = "Comet Uncertainties for Retrievals in PYthon"
 authors = [
     { name = "Joe Riordan", email = "joe.riordan@npl.co.uk" },
