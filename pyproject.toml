@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "versioneer"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "curepy"
+version = "0.0.0" # versioneer will manage this
+description = "Comet Uncertainties for Retrievals in PYthon"
+authors = [
+    { name = "Pieter De Vis", email = "pieter.de.vis@npl.co.uk" }
+]
+license = { text = "None" }
+readme = "README.rst"
+requires-python = ">=3.6"
+dependencies = [
+    "emcee",
+    "comet_maths",
+    "punpy",
+    "tqdm"
+]
+
+[project.urls]
+Homepage = "https://gitlab.npl.co.uk/eco/tools/curepy"
+
+[project.optional-dependencies]
+dev = [
+        "pre-commit",
+        "tox",
+        "sphinx",
+        "sphinx_design",
+        "sphinx_book_theme",
+        "sphinx-rtd-theme",
+        "ipython",
+        "sphinx_autosummary_accessors",
+        "pytest-html",
+        "pytest-cov",
+        "pytest"
+        ]
+
+[tool.setuptools.packages.find]
+include = ["curepy*"]
+exclude = ["tests"]
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "curepy/_version.py"
+versionfile_build = "curepy/_version.py"
+tag_prefix = "v"
+parentdir_prefix_version = "curepy-"

@@ -21,14 +21,19 @@ import curepy
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(".."))
+#sys.path.insert(0, os.path.abspath(".."))
 
 # SH added to run apidoc on build
 this_directory = os.path.dirname(__file__)
 
+module_path = os.path.abspath(os.path.join(this_directory, "..", "..", "curepy"))
 
 def run_apidoc(_):
-    ignore_paths = ["./../../*/tests/"]
+    ignore_paths = [
+    "./../../*/tests/",
+    "setup.py",
+    "versioneer.py",
+]
 
     argv = [
         "-f",
@@ -37,7 +42,7 @@ def run_apidoc(_):
         "-M",
         "-o",
         os.path.join(this_directory, "content", "api"),
-        curepy.__path__[0],
+        module_path,
     ] + ignore_paths
 
     try:
@@ -73,9 +78,14 @@ default_role = "code"
 # CFAB added napolean to support google-style docstrings
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
+    "sphinx_design",
 ]
+
+autosummary_generate = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -108,7 +118,7 @@ release = curepy.__version__
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -117,6 +127,13 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
+
+
+rst_prolog = """
+.. role:: python(code)
+    :language: python
+    :class: highlight
+"""
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
@@ -127,7 +144,7 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
+html_theme = "sphinx_book_theme"
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
@@ -140,12 +157,8 @@ html_theme = "sphinx_rtd_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-# SH added to override wide tables in RTD theme
-html_context = {
-    "css_files": [
-        "_static/theme_overrides.css",
-    ],
-}
+html_logo = "curepy_logo.png"
+html_title = "curepy"
 
 # -- Options for HTMLHelp output ---------------------------------------
 
@@ -203,7 +216,7 @@ texinfo_documents = [
         "curepy Documentation",
         author,
         "curepy",
-        "Retrievall UNcertainties in PYthon",
+        "Comet Uncertainties for Retrievals in PYthon",
         "Miscellaneous",
     ),
 ]

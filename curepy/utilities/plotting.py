@@ -14,133 +14,83 @@ try:
 except ImportError:
     gaussian_filter = None
 
-__all__ = ["corner", "hist2d", "quantile"]
+__all__ = ["plot_corner", "hist2d", "quantile"]
 
 
-def corner(
+def plot_corner(
     xs,
-    bins=20,
+    bins: int = 20,
     range=None,
     weights=None,
-    color="k",
+    color: str = "k",
     smooth=None,
     smooth1d=None,
     ticks=None,
     ticklabels=None,
     labels=None,
-    label_kwargs=None,
-    show_titles=False,
-    title_fmt=".2f",
-    title_kwargs=None,
+    label_kwargs: dict = None,
+    show_titles: bool = False,
+    title_fmt: str = ".2f",
+    title_kwargs: dict = None,
     truths=None,
-    truth_color="#4682b4",
-    scale_hist=False,
+    truth_color: str = "#4682b4",
+    scale_hist: bool = False,
     quantiles=None,
-    verbose=False,
+    verbose: bool = False,
     fig=None,
-    max_n_ticks=5,
-    top_ticks=False,
-    use_math_text=False,
-    hist_kwargs=None,
-    **hist2d_kwargs
+    max_n_ticks: int = 5,
+    top_ticks: bool = False,
+    use_math_text: bool = False,
+    hist_kwargs: dict = None,
+    **hist2d_kwargs,
 ):
     """
-    Make a *sick* corner plot showing the projections of a data set in a
-    multi-dimensional space. kwargs are passed to hist2d() or used for
-    `matplotlib` styling.
+    Make a corner plot showing the projections of a data set in a
+    multi-dimensional space.  Remaining keyword arguments are forwarded to
+    :func:`hist2d` or used for ``matplotlib`` styling.
 
-    Parameters
-    ----------
-    xs : array_like[nsamples, ndim]
-        The samples. This should be a 1- or 2-dimensional array. For a 1-D
-        array this results in a simple histogram. For a 2-D array, the zeroth
+    :param xs: The samples.  Must be a 1-D or 2-D array where the zeroth
         axis is the list of samples and the next axis are the dimensions of
         the space.
-
-    bins : int or array_like[ndim,]
-        The number of bins to use in histograms, either as a fixed value for
-        all dimensions, or as a list of integers for each dimension.
-
-    weights : array_like[nsamples,]
-        The weight of each sample. If `None` (default), samples are given
-        equal weight.
-
-    color : str
-        A ``matplotlib`` style color for all histograms.
-
-    smooth, smooth1d : float
-       The standard deviation for Gaussian kernel passed to
-       `scipy.ndimage.gaussian_filter` to smooth the 2-D and 1-D histograms
-       respectively. If `None` (default), no smoothing is applied.
-
-    labels : iterable (ndim,)
-        A list of names for the dimensions. If a ``xs`` is a
-        ``pandas.DataFrame``, labels will default to column names.
-
-    label_kwargs : dict
-        Any extra keyword arguments to send to the `set_xlabel` and
-        `set_ylabel` methods.
-
-    show_titles : bool
-        Displays a title above each 1-D histogram showing the 0.5 quantile
-        with the upper and lower errors supplied by the quantiles argument.
-
-    title_fmt : string
-        The format string for the quantiles given in titles. If you explicitly
-        set ``show_titles=True`` and ``title_fmt=None``, the labels will be
-        shown as the titles. (default: ``.2f``)
-
-    title_kwargs : dict
-        Any extra keyword arguments to send to the `set_title` command.
-
-    range : iterable (ndim,)
-        A list where each element is either a length 2 tuple containing
-        lower and upper bounds or a float in range (0., 1.)
-        giving the fraction of samples to include in bounds, e.g.,
-        [(0.,10.), (1.,5), 0.999, etc.].
-        If a fraction, the bounds are chosen to be equal-tailed.
-
-    truths : iterable (ndim,)
-        A list of reference values to indicate on the plots.  Individual
-        values can be omitted by using ``None``.
-
-    truth_color : str
-        A ``matplotlib`` style color for the ``truths`` makers.
-
-    scale_hist : bool
-        Should the 1-D histograms be scaled in such a way that the zero line
-        is visible?
-
-    quantiles : iterable
-        A list of fractional quantiles to show on the 1-D histograms as
-        vertical dashed lines.
-
-    verbose : bool
-        If true, print the values of the computed quantiles.
-
-    plot_contours : bool
-        Draw contours for dense regions of the plot.
-
-    use_math_text : bool
-        If true, then axis tick labels for very large or small exponents will
-        be displayed as powers of 10 rather than using `e`.
-
-    max_n_ticks: int
-        Maximum number of ticks to try to use
-
-    top_ticks : bool
-        If true, label the top ticks of each axis
-
-    fig : matplotlib.Figure
-        Overplot onto the provided figure object.
-
-    hist_kwargs : dict
-        Any extra keyword arguments to send to the 1-D histogram plots.
-
-    **hist2d_kwargs
-        Any remaining keyword arguments are sent to `corner.hist2d` to generate
-        the 2-D histogram plots.
-
+    :param bins: Number of bins to use in histograms, either as a fixed
+        value for all dimensions or as a list of integers for each
+        dimension.
+    :param range: A list where each element is either a length-2 tuple
+        containing lower and upper bounds, or a float in ``(0, 1)`` giving
+        the fraction of samples to include in the bounds.
+    :param weights: The weight of each sample.  If ``None`` (default),
+        samples are given equal weight.
+    :param color: A ``matplotlib`` colour for all histograms.
+    :param smooth: Standard deviation for Gaussian kernel smoothing of the
+        2-D histograms.  ``None`` disables smoothing.
+    :param smooth1d: Standard deviation for Gaussian kernel smoothing of
+        the 1-D histograms.  ``None`` disables smoothing.
+    :param ticks: Custom tick positions for each dimension.
+    :param ticklabels: Custom tick labels for each dimension.
+    :param labels: A list of names for the dimensions.  Defaults to
+        ``DataFrame`` column names when ``xs`` is a ``pandas.DataFrame``.
+    :param label_kwargs: Extra keyword arguments passed to
+        ``set_xlabel`` / ``set_ylabel``.
+    :param show_titles: If ``True``, display the 0.5 quantile with
+        1-sigma errors as a title above each 1-D histogram.
+    :param title_fmt: Format string for quantile values in titles.
+    :param title_kwargs: Extra keyword arguments passed to ``set_title``.
+    :param truths: Reference values to indicate on the plots.  Individual
+        values may be ``None``.
+    :param truth_color: ``matplotlib`` colour for the truth markers.
+    :param scale_hist: If ``True``, scale 1-D histograms so the zero line
+        is visible.
+    :param quantiles: Fractional quantiles to show as vertical dashed
+        lines on 1-D histograms.
+    :param verbose: If ``True``, print the computed quantile values.
+    :param fig: Existing ``matplotlib.Figure`` to overplot onto.
+    :param max_n_ticks: Maximum number of axis ticks per axis.
+    :param top_ticks: If ``True``, label ticks at the top of each axis.
+    :param use_math_text: If ``True``, render very large or small axis
+        tick exponents as powers of 10.
+    :param hist_kwargs: Extra keyword arguments forwarded to the 1-D
+        histogram plots.
+    :returns: The ``matplotlib.Figure`` containing the corner plot.
     """
     if quantiles is None:
         quantiles = []
@@ -362,7 +312,7 @@ def corner(
                 color=color,
                 smooth=smooth,
                 bins=[bins[j], bins[i]],
-                **hist2d_kwargs
+                **hist2d_kwargs,
             )
 
             if truths is not None:
@@ -399,38 +349,25 @@ def corner(
     return fig
 
 
-def quantile(x, q, weights=None):
+def quantile(
+    x,
+    q,
+    weights=None,
+):
     """
     Compute sample quantiles with support for weighted samples.
 
-    Note
-    ----
-    When ``weights`` is ``None``, this method simply calls numpy's percentile
-    function with the values of ``q`` multiplied by 100.
+    .. note::
+        When ``weights`` is ``None``, this method simply calls
+        :func:`numpy.percentile` with the values of ``q`` multiplied by 100.
 
-    Parameters
-    ----------
-    x : array_like[nsamples,]
-       The samples.
-
-    q : array_like[nquantiles,]
-       The list of quantiles to compute. These should all be in the range
-       ``[0, 1]``.
-
-    weights : Optional[array_like[nsamples,]]
-        An optional weight corresponding to each sample. These
-
-    Returns
-    -------
-    quantiles : array_like[nquantiles,]
-        The sample quantiles computed at ``q``.
-
-    Raises
-    ------
-    ValueError
-        For invalid quantiles; ``q`` not in ``[0, 1]`` or dimension mismatch
-        between ``x`` and ``weights``.
-
+    :param x: The samples.
+    :param q: The list of quantiles to compute.  All values must be in
+        the range ``[0, 1]``.
+    :param weights: An optional weight corresponding to each sample.
+    :returns: The sample quantiles computed at ``q``.
+    :raises ValueError: If any value in ``q`` is outside ``[0, 1]``, or
+        if the lengths of ``x`` and ``weights`` do not match.
     """
     x = np.atleast_1d(x)
     q = np.atleast_1d(q)
@@ -456,67 +393,49 @@ def hist2d(
     x,
     y,
     fig,
-    bins=20,
+    bins: int = 20,
     range=None,
     weights=None,
     levels=None,
     smooth=None,
     ax=None,
-    color=None,
-    plot_datapoints=True,
-    plot_density=True,
-    plot_contours=True,
-    no_fill_contours=False,
-    fill_contours=False,
-    contour_kwargs=None,
-    contourf_kwargs=None,
-    data_kwargs=None,
-    **kwargs
+    color: str = None,
+    plot_datapoints: bool = True,
+    plot_density: bool = True,
+    plot_contours: bool = True,
+    no_fill_contours: bool = False,
+    fill_contours: bool = False,
+    contour_kwargs: dict = None,
+    contourf_kwargs: dict = None,
+    data_kwargs: dict = None,
+    **kwargs,
 ):
     """
     Plot a 2-D histogram of samples.
 
-    Parameters
-    ----------
-    x : array_like[nsamples,]
-       The samples.
-
-    y : array_like[nsamples,]
-       The samples.
-
-    levels : array_like
-        The contour levels to draw.
-
-    ax : matplotlib.Axes
-        A axes instance on which to add the 2-D histogram.
-
-    plot_datapoints : bool
-        Draw the individual data points.
-
-    plot_density : bool
-        Draw the density colormap.
-
-    plot_contours : bool
-        Draw the contours.
-
-    no_fill_contours : bool
-        Add no filling at all to the contours (unlike setting
-        ``fill_contours=False``, which still adds a white fill at the densest
-        points).
-
-    fill_contours : bool
-        Fill the contours.
-
-    contour_kwargs : dict
-        Any additional keyword arguments to pass to the `contour` method.
-
-    contourf_kwargs : dict
-        Any additional keyword arguments to pass to the `contourf` method.
-
-    data_kwargs : dict
-        Any additional keyword arguments to pass to the `plot` method when
-        adding the individual data points.
-
+    :param x: Samples for the horizontal axis.
+    :param y: Samples for the vertical axis.
+    :param fig: ``matplotlib.Figure`` to which the colour-bar axes are added.
+    :param bins: Number of bins for the 2-D histogram.
+    :param range: Axis ranges ``[[x_min, x_max], [y_min, y_max]]``.
+    :param weights: Per-sample weights.
+    :param levels: Contour levels to draw.
+    :param smooth: Standard deviation for Gaussian kernel smoothing.
+    :param ax: ``matplotlib.Axes`` instance on which to draw.  Defaults
+        to the current active axes.
+    :param color: ``matplotlib`` colour for the plot elements.
+    :param plot_datapoints: If ``True``, draw the individual data points.
+    :param plot_density: If ``True``, render the density colour map.
+    :param plot_contours: If ``True``, draw the contour lines.
+    :param no_fill_contours: If ``True``, suppress the white fill beneath
+        contours.
+    :param fill_contours: If ``True``, fill the contours.
+    :param contour_kwargs: Extra keyword arguments forwarded to
+        ``axes.contour``.
+    :param contourf_kwargs: Extra keyword arguments forwarded to
+        ``axes.contourf``.
+    :param data_kwargs: Extra keyword arguments forwarded to ``axes.plot``
+        when drawing the individual data points.
     """
     if ax is None:
         ax = pl.gca()
