@@ -21,19 +21,20 @@ import os
 import sys
 
 
-# Add project root to sys.path for RTD building
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+# Add project root to sys.path for RTD building (docs is under <repo>/docs)
+this_directory = os.path.dirname(__file__)
+project_root = os.path.abspath(os.path.join(this_directory, ".."))
+sys.path.insert(0, project_root)
 
-# If using package source in root:
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+# second path ensures package import works when source layout is nested
+sys.path.insert(0, os.path.abspath(os.path.join(project_root, "..")))
 
 # Now import curepy
 import curepy
 
 # SH added to run apidoc on build
-this_directory = os.path.dirname(__file__)
+module_path = project_root
 
-module_path = os.path.abspath(os.path.join(this_directory, "..", "..", "curepy"))
 
 
 def run_apidoc(_):
