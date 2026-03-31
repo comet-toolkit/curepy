@@ -11,7 +11,7 @@ authors = [
     { name = "Pieter De Vis", email = "pieter.de.vis@npl.co.uk" }
 ]
 license = { text = "None" }
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.6"
 dependencies = [
     "emcee",

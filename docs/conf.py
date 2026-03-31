@@ -17,16 +17,23 @@
 # relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.
 #
-import curepy
 import os
 import sys
 
-# sys.path.insert(0, os.path.abspath(".."))
+
+# Add project root to sys.path for RTD building (docs is under <repo>/docs)
+this_directory = os.path.dirname(__file__)
+project_root = os.path.abspath(os.path.join(this_directory, ".."))
+sys.path.insert(0, project_root)
+
+# second path ensures package import works when source layout is nested
+sys.path.insert(0, os.path.abspath(os.path.join(project_root, "..")))
+
+# Now import curepy
+import curepy
 
 # SH added to run apidoc on build
-this_directory = os.path.dirname(__file__)
-
-module_path = os.path.abspath(os.path.join(this_directory, "..", "..", "curepy"))
+module_path = os.path.abspath(os.path.join(this_directory, "..", "curepy"))
 
 
 def run_apidoc(_):

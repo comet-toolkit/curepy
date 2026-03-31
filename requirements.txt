@@ -4,6 +4,7 @@ tqdm
 punpy >= 1.1.0
 
 # for docs
+curepy
 sphinx
 sphinx_design
 ipython
