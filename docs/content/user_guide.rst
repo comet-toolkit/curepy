@@ -2,6 +2,13 @@
 User Guide
 ==========
 
+Overview
+----------
+This user guide provides a step-by-step walkthrough of how to use `curepy` to perform retrievals. It covers the process of instantiating a `RetrievalInput`, setting up the necessary components such as measurements, priors, and ancillary parameters, and then running a retrieval using a chosen retrieval method. Finally, it explains how to access and interpret the results of the retrieval.
+A full example of a retrieval can be found in the `curepy` example notebook, which is available `here`_ and in the `examples` directory of the CoMet website.
+
+.. _here: https://colab.research.google.com/github/comet-toolkit/comet_training/blob/main/curepy_example.ipynb
+
 Instantiating a Retrieval Input
 -------------------------------
 
@@ -159,6 +166,10 @@ The table of optional parameters for each retrieval method can be found below.
 The output of ``run_retrieval`` is a ``RetrievalResult`` object, this stores the retrieved values of ``x`` with associated uncertainties, and any other requested information
 such as correlation and samples.
 
+
+Retrieval results 
+-------------------
+
 Output data can be accessed from the `RetrievalResult` object using the following accessors::
 
     x = results.values
@@ -166,3 +177,6 @@ Output data can be accessed from the `RetrievalResult` object using the followin
     corr_x = results.correlation
     samples = results.samples
     b_samples = results.b_samples
+
+There are also some helper functions within the `RetrievalResult` object, such as `build_obsarray()`, which builds an `obsarray.ObsArray` object containing the retrieved values and uncertainties of `x`.
+There is also a function `get_chisq()`, which returns the chi-squared value of the retrieved values.

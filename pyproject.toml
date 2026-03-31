@@ -7,6 +7,7 @@ name = "curepy"
 version = "0.0.0" # versioneer will manage this
 description = "Comet Uncertainties for Retrievals in PYthon"
 authors = [
+    { name = "Joe Riordan", email = "joe.riordan@npl.co.uk" },
     { name = "Pieter De Vis", email = "pieter.de.vis@npl.co.uk" }
 ]
 license = { text = "None" }

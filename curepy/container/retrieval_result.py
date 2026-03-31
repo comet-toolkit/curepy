@@ -5,6 +5,8 @@ import obsarray
 from typing import Optional
 import numpy as np
 
+from curepy.retrieval_methods.base import BaseRetrieval
+
 
 class RetrievalResult:
     def __init__(
@@ -15,6 +17,7 @@ class RetrievalResult:
         samples: Optional[np.ndarray] = None,
         b_samples: Optional[np.ndarray] = None,
         x_names: Optional[list] = None,
+        retrieval_object: Optional[BaseRetrieval] = None,
     ) -> None:
         """
         Container for retrieval output quantities.
@@ -33,6 +36,7 @@ class RetrievalResult:
         self.samples = samples
         self.b_samples = b_samples
         self.x_names = x_names
+        self._retrieval_object = retrieval_object
 
     def build_obsarray(self) -> None:
         """
@@ -42,3 +46,12 @@ class RetrievalResult:
             Not yet implemented.
         """
         raise NotImplementedError
+
+    def get_chisq(self) -> float:
+        """
+        Get the chi-squared value of the retrieval.
+
+        .. note::
+            Not yet implemented.
+        """
+        return self._retrieval_object.find_chisum(self.values)

@@ -236,6 +236,7 @@ class MCMC(BaseRetrieval):
             samples=samples if return_samples else None,
             b_samples=b_samples if return_b_samples else None,
             x_names=self.retrieval_input.measurement_function_obj._input_quantities_names,
+            retrieval_object=self,
         )
 
         return outs

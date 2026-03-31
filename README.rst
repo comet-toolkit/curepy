@@ -1,7 +1,7 @@
 curepy
 =====
 
-Retrievall UNcertainties in PYthon
+Comet Uncertainties for REtrievals in PYthon
 
 ============
 Beta Version
@@ -55,4 +55,4 @@ Licence
 Authors
 -------
 
-`curepy` was written by `Pieter De Vis <pieter.de.vis@npl.co.uk>`_.
+`curepy` was written by `Joe Riordan <joe.riordan@npl.co.uk>`_ and `Pieter De Vis <pieter.de.vis@npl.co.uk>`_.

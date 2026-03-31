@@ -74,6 +74,7 @@ class OE(BaseRetrieval):
             u_x=u_func,
             corr_x=corr_x if return_corr else None,
             x_names=self.retrieval_input.measurement_function_obj._input_quantities_names,
+            retrieval_object=self,
         )
 
     def process_inverse_jacobian(
