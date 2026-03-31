@@ -1,0 +1,11 @@
+# required modules
+emcee 
+tqdm
+punpy >= 1.1.0
+
+# for docs
+sphinx
+sphinx_design
+ipython
+sphinx_autosummary_accessors
+sphinx_book_theme
