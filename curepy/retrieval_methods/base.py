@@ -129,7 +129,7 @@ class BaseRetrieval(ABC):
         diff = modelled_data - self.retrieval_input.measurement_obj.y_flat
         if np.isfinite(np.sum(diff)):
             if self.retrieval_input.measurement_obj.invcov is None:
-                return np.sum((diff) ** 2 / self.retrieval_input.measurement_obj.u_y**2)
+                return np.sum((diff) ** 2 / self.retrieval_input.measurement_obj.u_y_flat**2)
             else:
                 if len(repeat_dims) == 0:
                     return np.dot(
