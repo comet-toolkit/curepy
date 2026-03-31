@@ -26,7 +26,7 @@ def make_mock_retrieval_input_for_chisum(
     retrieval_input.measurement_obj = MagicMock()
     retrieval_input.measurement_obj.y_flat = np.array(y_flat)
     retrieval_input.measurement_obj.invcov = invcov
-    retrieval_input.measurement_obj.u_y = u_y
+    retrieval_input.measurement_obj.u_y_flat = u_y
     # ancillary
     retrieval_input.ancillary_obj = MagicMock()
     retrieval_input.ancillary_obj.b = b
