@@ -17,11 +17,18 @@
 # relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.
 #
-import curepy
 import os
 import sys
 
-# sys.path.insert(0, os.path.abspath(".."))
+
+# Add project root to sys.path for RTD building
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+# If using package source in root:
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+
+# Now import curepy
+import curepy
 
 # SH added to run apidoc on build
 this_directory = os.path.dirname(__file__)
