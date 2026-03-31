@@ -15,12 +15,6 @@ build:
 sphinx:
   configuration: docs/conf.py
 
-# Install the package in development mode so sphinx can import it
-python:
-  install:
-    - method: pip
-      path: .
-
 # Optionally build your docs in additional formats such as PDF
 formats:
   - pdf
