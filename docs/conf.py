@@ -20,7 +20,6 @@
 import os
 import sys
 
-
 # Add project root to sys.path for RTD building (docs is under <repo>/docs)
 this_directory = os.path.dirname(__file__)
 project_root = os.path.abspath(os.path.join(this_directory, ".."))
