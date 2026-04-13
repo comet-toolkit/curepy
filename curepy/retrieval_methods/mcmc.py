@@ -224,6 +224,8 @@ class MCMC(BaseRetrieval):
         unc_avg = (unc_up + unc_down) / 2.0
 
         if return_corr:
+            if corr_dims != -99:
+                samples.reshape((samples.shape[0],) + self.retrieval_input.measurement_function_obj.initial_guess.shape)
             corr = cm.calculate_corr(samples, corr_dims)
 
         if reshape_results:
