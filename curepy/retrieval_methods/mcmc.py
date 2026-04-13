@@ -49,6 +49,7 @@ class MCMC(BaseRetrieval):
         return_corr: bool = False,
         return_b_samples: bool = False,
         reshape_results: bool = True,
+        corr_dims: Optional[Union[int, Sequence[int]]] = -99,
     ) -> RetrievalResult:
         """
         Run the MCMC retrieval and return the results.
@@ -124,6 +125,7 @@ class MCMC(BaseRetrieval):
             return_corr,
             return_b_samples,
             reshape_results,
+            corr_dims=corr_dims,
         )
 
     def run_MCMC(
