@@ -59,6 +59,7 @@ def ln_multi_normal(
     diff = theta - mu
     return -0.5 * diff.T @ Sa_inv @ diff
 
+
 def ln_trunc_normal(
     theta: Union[float, np.ndarray],
     mu: Union[float, np.ndarray],
