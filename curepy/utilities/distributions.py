@@ -58,3 +58,25 @@ def ln_multi_normal(
     """
     diff = theta - mu
     return -0.5 * diff.T @ Sa_inv @ diff
+
+def ln_trunc_normal(
+    theta: Union[float, np.ndarray],
+    mu: Union[float, np.ndarray],
+    sigma: Union[float, np.ndarray],
+    minimum: Union[float, np.ndarray],
+    maximum: Union[float, np.ndarray],
+) -> Union[float, np.ndarray]:
+    """
+    Evaluate the log of a truncated normal prior distribution.
+
+    :param theta: Current parameter value(s) to evaluate.
+    :param mu: Mean of the normal distribution.
+    :param sigma: Standard deviation of the normal distribution.
+    :param minimum: Lower bound of the truncation.
+    :param maximum: Upper bound of the truncation.
+    :returns: Log probability proportional to the truncated normal log-density.
+    """
+    if np.all(minimum < theta) and np.all(maximum > theta):
+        return -0.5 * ((theta - mu) ** 2) / (2 * sigma**2)
+    else:
+        return -np.inf

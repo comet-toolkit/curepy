@@ -14,6 +14,11 @@ implemented_prior_shapes = {
         "correlation": False,
     },
     "normal": {"function": ln_normal, "params": ["mu", "sigma"], "correlation": True},
+    "trunc_normal": {
+        "function": ln_trunc_normal,
+        "params": ["mu", "sigma", "minimum", "maximum"],
+        "correlation": False,
+    }
 }
 
 
