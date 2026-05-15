@@ -56,7 +56,7 @@ class OE(BaseRetrieval):
             self.retrieval_input.measurement_function_obj.initial_guess
         )
 
-        res = minimize(-self.lnprob, theta_0)
+        res = minimize(lambda theta: -self.lnprob(theta), theta_0)
 
         if self.Jx is None:
             Jx = self.calculate_Jx(res.x)

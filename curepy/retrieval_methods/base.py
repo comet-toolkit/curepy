@@ -127,35 +127,44 @@ class BaseRetrieval(ABC):
             ).flatten()
         )
         diff = modelled_data - self.retrieval_input.measurement_obj.y_flat
+
+        # Only normalize by u_y_flat if it's available
+        if self.retrieval_input.measurement_obj.u_y_flat is not None:
+            diff_norm = diff / self.retrieval_input.measurement_obj.u_y_flat
+        else:
+            diff_norm = diff
+
         if np.isfinite(np.sum(diff)):
-            if self.retrieval_input.measurement_obj.invcov is None:
-                return np.sum(
-                    (diff) ** 2 / self.retrieval_input.measurement_obj.u_y_flat**2
-                )
+            if self.retrieval_input.measurement_obj.cholesky is None:
+                chisq = np.sum(
+                    (diff_norm) ** 2
+                )  # this is equivalent to using an identity matrix for the inverse covariance, which is appropriate when only uncorrelated uncertainties are available
+
             else:
                 if len(repeat_dims) == 0:
-                    return np.dot(
-                        np.dot(diff.T, self.retrieval_input.measurement_obj.invcov),
-                        diff,
-                    )
+                    y = self.retrieval_input.measurement_obj.W @ diff_norm
+                    chisq = y.T @ y
                 elif len(repeat_dims) == 1:
                     sum = 0
                     for i in range(diff.shape[repeat_dims[0]]):
-                        diffi = np.take(diff, i, repeat_dims[0])
-                        sum += np.dot(
-                            np.dot(
-                                diffi.T, self.retrieval_input.measurement_obj.invcov
-                            ),
-                            diffi,
-                        )
-                    return sum
+                        diff_norm_i = np.take(diff_norm, i, repeat_dims[0])
+                        y = self.retrieval_input.measurement_obj.W @ diff_norm_i
+                        sum += y.T @ y
+                    chisq = sum
                 else:
                     raise ValueError(
                         "Methods for multiple repeat dimensions are not yet implemented,"
                     )
         else:
             print("The difference between model and observations is infinite")
-        return np.inf
+            chisq = np.inf
+
+        if chisq < 0:
+            raise ValueError(
+                "The chi-squared cost is negative, which should not be possible. Check the inputs and the measurement function for errors."
+            )
+
+        return chisq
 
     def lnprob(self, theta: np.ndarray) -> float:
         """

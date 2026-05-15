@@ -14,6 +14,7 @@ class Measurement:
         u_y_rand: Optional[np.ndarray] = None,
         u_y_syst: Optional[np.ndarray] = None,
         corr_y: Optional[Union[str, np.ndarray]] = None,
+        skip_invcov: bool = False,
     ) -> None:
         """
         Container class for measurement variable data.
@@ -29,6 +30,7 @@ class Measurement:
             Accepted values: ``None``, ``"rand"`` (random), ``"syst"``
             (systematic), or a square matrix whose side length equals the
             length of ``y``.
+        :param skip_invcov: If ``True``, skip the computation of the inverse covariance matrix (which is only needed for certain retrieval methods like optimal estimation).
         """
 
         u_y_total, corr_y = self._format_uncertainty(
@@ -43,9 +45,13 @@ class Measurement:
 
         self.corr_y = util.format_correlation(self.y_flat, corr_y)
 
+        self.corr_y, self.cholesky, self.W = self.return_corr_cholesky_whitening(
+            self.corr_y
+        )
+
         self._check_shapes(self.y_flat, self.u_y_flat, self.corr_y)
 
-        if corr_y is not None:
+        if corr_y is not None and not skip_invcov:
             self.invcov = self.calculate_inv_cov(self.u_y_flat, self.corr_y)
         else:
             self.invcov = None
@@ -137,6 +143,30 @@ class Measurement:
             return tot, tot_corr
 
     @staticmethod
+    def return_corr_cholesky_whitening(corr: Optional[np.ndarray]) -> tuple:
+        """
+        Return the correlation matrix, its Cholesky decomposition, and the whitening matrix.
+
+        :param corr: Correlation matrix, or ``None``.
+        :returns: Tuple of ``(corr, cholesky, W)`` where ``cholesky`` is
+            the Cholesky decomposition of the correlation matrix, or
+            ``None`` if ``corr`` is ``None``, and ``W`` is the whitening matrix.
+        """
+        if corr is not None:
+            try:
+                cholesky = np.linalg.cholesky(corr)
+                W = np.linalg.solve(cholesky, np.eye(cholesky.shape[0]))
+                return corr, cholesky, W
+            except np.linalg.LinAlgError:
+                # If the correlation matrix is not positive definite, use the nearest positive definite matrix
+                corr_pd = cm.nearestPD_cholesky(corr, return_cholesky=False, corr=True)
+                cholesky = np.linalg.cholesky(corr_pd)
+                W = np.linalg.solve(cholesky, np.eye(cholesky.shape[0]))
+                return corr_pd, cholesky, W
+        else:
+            return None, None, None
+
+    @staticmethod
     def calculate_inv_cov(unc: np.ndarray, corr: np.ndarray) -> np.ndarray:
         """
         Calculate the inverse covariance matrix.
@@ -151,5 +181,4 @@ class Measurement:
         if np.array_equal(cov, np.diag(np.diag(cov))):
             return np.diag(1 / np.diag(cov))
         else:
-            # might need a check for PD here
             return np.linalg.inv(cov)

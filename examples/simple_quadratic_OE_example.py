@@ -2,7 +2,7 @@ from curepy import (
     MeasurementFunction,
     Measurement,
     AncillaryParameter,
-    LPU,
+    OE,
     RetrievalInput,
     Prior,
 )
@@ -26,7 +26,7 @@ noise = np.random.normal(0, 1, data.shape)
 y = data + noise
 
 meas_func = MeasurementFunction(quadratic, [0.5, 0.2, -10])
-meas = Measurement(y, noise, np.eye(len(x)))
+meas = Measurement(y, noise, corr_y=np.eye(len(x)))
 ancill = AncillaryParameter([x, d], [None, 0.05], [None, None])
 prior = Prior(
     ["normal"] * 3,
@@ -36,7 +36,7 @@ prior = Prior(
 
 inputs = RetrievalInput(meas_func, meas, ancill, prior)
 
-ret = LPU()
+ret = OE()
 
 results = ret.run_retrieval(inputs)
 
@@ -44,4 +44,4 @@ print(results.values)
 print(results.uncertainties)
 plt.plot(x, quadratic(*results.values, x, d))
 plt.scatter(x, y, alpha=0.5, c="orange")
-plt.savefig(os.path.join(example_dir, "LPU_test.png"))
+plt.savefig(os.path.join(example_dir, "OE_test.png"))
