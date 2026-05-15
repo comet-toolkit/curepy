@@ -40,6 +40,8 @@ class TestMeasurement(unittest.TestCase):
     def test_init_format_correlation_called(
         self, mock_format, mock_check, mock_convert
     ):
+        # Configure mock to return a valid correlation matrix
+        mock_format.return_value = np.eye(len(y))
 
         meas = Measurement(y, u_y, corr_y="rand")
 

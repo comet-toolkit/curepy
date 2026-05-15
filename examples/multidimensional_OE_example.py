@@ -2,7 +2,7 @@ from curepy import (
     MeasurementFunction,
     Measurement,
     AncillaryParameter,
-    LPU,
+    OE,
     RetrievalInput,
 )
 
@@ -24,7 +24,7 @@ noise = np.random.normal(0, 1, data.shape)
 y = data + noise
 
 meas_func = MeasurementFunction(quadratic, [0.5, 0.2, -10])
-meas = Measurement(y, noise, "rand")
+meas = Measurement(y, noise, corr_y="rand")
 ancill = AncillaryParameter(
     [x, d],
     [0.01 * np.ones_like(x), 1],
@@ -41,7 +41,7 @@ ancill = AncillaryParameter(
 
 inputs = RetrievalInput(meas_func, meas, ancill)
 
-ret = LPU()
+ret = OE()
 
 results = ret.run_retrieval(inputs)
 

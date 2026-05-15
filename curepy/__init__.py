@@ -35,7 +35,12 @@ from curepy.container.retrieval_result import RetrievalResult
 # Utilities
 from curepy.utilities.plotting import plot_corner
 from curepy.utilities.maths import lnlike
-from curepy.utilities.distributions import ln_uniform, ln_normal, ln_multi_normal, ln_trunc_normal
+from curepy.utilities.distributions import (
+    ln_uniform,
+    ln_normal,
+    ln_multi_normal,
+    ln_trunc_normal,
+)
 from curepy.utilities.utilities import flatten_array, reshape_array, format_correlation
 
 from ._version import get_versions

@@ -14,6 +14,8 @@ def make_mock_retrieval_input_for_chisum(
     invcov=None,
     u_y=None,
     b=None,
+    L=None,
+    W=None,
 ):
     retrieval_input = RetrievalInput()
     # measurement function object
@@ -27,6 +29,9 @@ def make_mock_retrieval_input_for_chisum(
     retrieval_input.measurement_obj.y_flat = np.array(y_flat)
     retrieval_input.measurement_obj.invcov = invcov
     retrieval_input.measurement_obj.u_y_flat = u_y
+    retrieval_input.measurement_obj.cholesky = L
+    retrieval_input.measurement_obj.W = W
+
     # ancillary
     retrieval_input.ancillary_obj = MagicMock()
     retrieval_input.ancillary_obj.b = b
@@ -137,7 +142,7 @@ class TestBaseRetrieval(unittest.TestCase):
         retrieval_input = make_mock_retrieval_input_for_chisum(
             measurement_function_output=np.array([1.0, 2.0]),
             y_flat=np.array([1.0, 1.0]),
-            invcov=np.eye(2),
+            L=np.eye(2),
             u_y=None,
             b=None,
         )
@@ -181,6 +186,8 @@ class TestBaseRetrieval(unittest.TestCase):
             invcov=invcov,
             u_y=None,
             b=None,
+            L=np.eye(2),
+            W=np.eye(2),
         )
 
         dr = DummyRetrieval()
