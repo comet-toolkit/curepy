@@ -28,7 +28,7 @@ noise = np.random.normal(0, 1, data.shape)
 y = data + noise
 
 meas_func = MeasurementFunction(quadratic, [0.5, 0.2, -10])
-meas = Measurement(y, noise, corr_y=np.eye(len(x)))
+meas = Measurement(y, noise, corr_y= 0.9*np.eye(len(x)) + 0.1 * np.ones((len(x), len(x))))
 ancill = AncillaryParameter([x, d], [None, 1], [np.eye(len(x)), None], b_MC_steps=3)
 prior = Prior(
     ["normal"] * 3,
@@ -38,9 +38,9 @@ prior = Prior(
 
 inputs = RetrievalInput(meas_func, meas, ancill, prior)
 
-ret = MCMC(100, 1000, 100)
+ret = MCMC(100, 1000, 40000)
 
-results = ret.run_retrieval(inputs, return_samples=True)
+results = ret.run_retrieval(inputs, return_samples=True, iterative_mismatch_covariance=True)
 
 print(results.values)
 print(results.uncertainties)
