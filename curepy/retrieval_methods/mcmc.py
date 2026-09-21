@@ -50,6 +50,7 @@ class MCMC(BaseRetrieval):
         return_b_samples: bool = False,
         reshape_results: bool = True,
         corr_dims: Optional[Union[int, Sequence[int]]] = -99,
+        iterative_mismatch_covariance: bool = False,
     ) -> RetrievalResult:
         """
         Run the MCMC retrieval and return the results.
@@ -83,7 +84,8 @@ class MCMC(BaseRetrieval):
 
         # generate samples with MCMC
         if b_samples is None or self.retrieval_input.ancillary_obj.b_MC_steps == 1:
-            samples = self.run_MCMC(theta_0, self.nwalkers, self.steps, self.burn_in)
+            samples = self.run_MCMC(theta_0, self.nwalkers, self.steps, self.burn_in,
+                                    iterative_mismatch_covariance)
         else:
             samples = np.zeros(
                 (
@@ -114,7 +116,8 @@ class MCMC(BaseRetrieval):
                     * (self.nwalkers * self.steps - self.burn_in) : (i + 1)
                     * (self.nwalkers * self.steps - self.burn_in),
                     :,
-                ] = self.run_MCMC(theta_0, self.nwalkers, self.steps, self.burn_in)
+                ] = self.run_MCMC(theta_0, self.nwalkers, self.steps, self.burn_in,
+                                  iterative_mismatch_covariance)
 
             self.retrieval_input.ancillary_obj.b = b[:]
 
@@ -134,6 +137,7 @@ class MCMC(BaseRetrieval):
         nwalkers: int,
         steps: int,
         burn_in: int,
+        iterative_mismatch_covariance: bool = False,
     ) -> np.ndarray:
         """
         Run :class:`emcee.EnsembleSampler` and return the post-burn-in chain.
@@ -143,6 +147,7 @@ class MCMC(BaseRetrieval):
         :param nwalkers: Number of ensemble walkers.
         :param steps: Total number of sampling steps.
         :param burn_in: Number of initial samples to discard.
+        :param iterative_mismatch_covariance: If ``True``, the mismatch covariance method is used.
         :returns: Array of post-burn-in samples with shape
             ``(nwalkers * steps - burn_in, ndim)``.
         """
@@ -154,7 +159,31 @@ class MCMC(BaseRetrieval):
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob, pool=p)
         else:
             sampler = emcee.EnsembleSampler(nwalkers, ndimw, self.lnprob)
-        sampler.run_mcmc(pos, steps, progress=self.progress)
+        if not iterative_mismatch_covariance:
+            sampler.run_mcmc(pos, steps, progress=self.progress)
+        else:
+            #set random correlation for inital retrieval
+            store_corr, store_cholesky, store_W = self.retrieval_input.measurement_obj.corr_y, self.retrieval_input.measurement_obj.cholesky, self.retrieval_input.measurement_obj.W 
+            self.retrieval_input.measurement_obj.corr_y, self.retrieval_input.measurement_obj.cholesky, self.retrieval_input.measurement_obj.W = self.retrieval_input.measurement_obj.return_corr_cholesky_whitening(
+                        np.diag(np.diag(self.retrieval_input.measurement_obj.corr_y))
+                    )
+            #run MCMC with random correlation
+            sampler.run_mcmc(pos, steps, progress=self.progress)
+            #calculate the mismatch covariance matrix
+            C_model = self.retrieval_input.return_mismatch_covariance(sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::])
+            C_meas = cm.convert_corr_to_cov(store_corr,
+                                            self.retrieval_input.measurement_obj.u_y_flat
+                                            )
+            C_total = C_model + C_meas
+            #rebuild the measurement object with the updated covariance matrix
+            self.retrieval_input.build_measurement(
+                self.retrieval_input.measurement_obj.y_flat,
+                cm.uncertainty_from_covariance(C_total),
+                corr_y = cm.correlation_from_covariance(C_total),
+                )
+            #run MCMC with updated covariance matrix
+            sampler.reset()
+            sampler.run_mcmc(pos, steps, progress=self.progress)
 
         samples = sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::]
         return samples
