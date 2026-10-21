@@ -162,27 +162,38 @@ class MCMC(BaseRetrieval):
         if not iterative_mismatch_covariance:
             sampler.run_mcmc(pos, steps, progress=self.progress)
         else:
+            keep_running = True
             #set random correlation for inital retrieval
             store_corr, store_cholesky, store_W = self.retrieval_input.measurement_obj.corr_y, self.retrieval_input.measurement_obj.cholesky, self.retrieval_input.measurement_obj.W 
             self.retrieval_input.measurement_obj.corr_y, self.retrieval_input.measurement_obj.cholesky, self.retrieval_input.measurement_obj.W = self.retrieval_input.measurement_obj.return_corr_cholesky_whitening(
                         np.diag(np.diag(self.retrieval_input.measurement_obj.corr_y))
                     )
-            #run MCMC with random correlation
-            sampler.run_mcmc(pos, steps, progress=self.progress)
-            #calculate the mismatch covariance matrix
-            C_model = self.retrieval_input.return_mismatch_covariance(sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::])
-            C_meas = cm.convert_corr_to_cov(store_corr,
-                                            self.retrieval_input.measurement_obj.u_y_flat
-                                            )
-            C_total = C_model + C_meas
-            #rebuild the measurement object with the updated covariance matrix
-            self.retrieval_input.build_measurement(
-                self.retrieval_input.measurement_obj.y_flat,
-                cm.uncertainty_from_covariance(C_total),
-                corr_y = cm.correlation_from_covariance(C_total),
-                )
-            #run MCMC with updated covariance matrix
-            sampler.reset()
+            while keep_running:
+                #run MCMC with random correlation
+                sampler.run_mcmc(pos, steps, progress=self.progress)
+                #calculate the mismatch covariance matrix
+                C_model = self.retrieval_input.return_mismatch_covariance(sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::], np.max(sampler.get_autocorr_time(quiet=True)))
+                if not np.allclose(np.zeros_like(C_model), C_model, rtol=0.01):
+                    C_meas = cm.convert_corr_to_cov(store_corr,
+                                                    self.retrieval_input.measurement_obj.u_y_flat
+                                                    )
+                    C_total = C_model + C_meas
+                    #rebuild the measurement object with the updated covariance matrix
+                    self.retrieval_input.build_measurement(
+                        self.retrieval_input.measurement_obj.y_flat,
+                        cm.uncertainty_from_covariance(C_total),
+                        corr_y = cm.correlation_from_covariance(C_total),
+                        )
+                    sampler.reset()
+                else:
+                    theta_0 = self.generate_theta_0(
+                                    list(np.mean(sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::], axis = 0))
+                                    )
+                    sampler.reset()
+                    keep_running = False
+            
+            
+            pos = [self.generate_theta_i(theta_0) for i in range(nwalkers)]
             sampler.run_mcmc(pos, steps, progress=self.progress)
 
         samples = sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::]

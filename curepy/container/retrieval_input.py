@@ -1,5 +1,7 @@
 """Container for all retrieval inputs"""
 
+from matplotlib.pylab import gamma
+
 from curepy.container.measurement_function import MeasurementFunction
 from curepy.container.ancillary_parameter import AncillaryParameter
 from curepy.container.prior import Prior
@@ -263,7 +265,7 @@ class RetrievalInput:
         )
         self.prior_obj = Prior(prior_shape, prior_params, prior_correlation)
         
-    def return_mismatch_covariance(self, samples: np.ndarray) -> np.ndarray:
+    def return_mismatch_covariance(self, samples: np.ndarray, autocorrelation_time) -> np.ndarray:
         """
         Return the mismatch covariance matrix.
 
@@ -276,12 +278,16 @@ class RetrievalInput:
         r_w = scipy.linalg.sqrtm(np.linalg.inv(C_fit)) @ r.T
         R = (r_w @ r_w.T)/len(r_w.T)
         evals, evecs = np.linalg.eigh(R)
-        evecs_dominant = evecs[:, evals > 1]
-        evals_dominant = evals[evals > 1]
+        
+        N_eff = len(samples)/autocorrelation_time
+        gamma = len(r_w) / N_eff
+        lambda_mp = (1 + np.sqrt(gamma))**2
+        
+        evecs_dominant = evecs[:, evals > lambda_mp]
+        evals_dominant = evals[evals > lambda_mp]
+        
         C_fit_half = scipy.linalg.sqrtm(C_fit)
-
-        Delta = np.diag(evals_dominant - 1.0)
-
+        Delta = np.diag(evals_dominant - lambda_mp)
         C_model = C_fit_half @ evecs_dominant @ Delta @ evecs_dominant.T @ C_fit_half
 
         C_model = 0.5 * (C_model + C_model.T)
