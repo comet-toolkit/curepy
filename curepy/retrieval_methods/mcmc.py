@@ -172,7 +172,7 @@ class MCMC(BaseRetrieval):
                 #run MCMC with random correlation
                 sampler.run_mcmc(pos, steps, progress=self.progress)
                 #calculate the mismatch covariance matrix
-                C_model = self.retrieval_input.return_mismatch_covariance(sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::], np.max(sampler.get_autocorr_time(quiet=True)))
+                C_model, N_eff = self.retrieval_input.return_mismatch_covariance(sampler.get_chain()[:, :, :].reshape((-1, ndimw))[burn_in::], np.max(sampler.get_autocorr_time(quiet=True)))
                 if not np.allclose(np.zeros_like(C_model), C_model, rtol=0.01):
                     C_meas = cm.convert_corr_to_cov(store_corr,
                                                     self.retrieval_input.measurement_obj.u_y_flat
@@ -192,7 +192,7 @@ class MCMC(BaseRetrieval):
                     sampler.reset()
                     keep_running = False
             
-            
+            self.retrieval_input.measurement_obj.N_eff = N_eff
             pos = [self.generate_theta_i(theta_0) for i in range(nwalkers)]
             sampler.run_mcmc(pos, steps, progress=self.progress)
 
@@ -288,6 +288,7 @@ class MCMC(BaseRetrieval):
             b_samples=b_samples if return_b_samples else None,
             x_names=self.retrieval_input.measurement_function_obj._input_quantities_names,
             retrieval_object=self,
+            N_eff=(self.retrieval_input.measurement_obj.N_eff + len(medians))
         )
 
         return outs

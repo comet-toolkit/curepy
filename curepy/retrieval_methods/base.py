@@ -105,6 +105,8 @@ class BaseRetrieval(ABC):
         self,
         theta: np.ndarray,
         repeat_dims: List[int] = [],
+        reduced: bool = False,
+        N_eff: int = None,
     ) -> float:
         """
         Compute the chi-squared cost between the forward model and observations.
@@ -172,6 +174,10 @@ class BaseRetrieval(ABC):
             raise ValueError(
                 "The chi-squared cost is negative, which should not be possible. Check the inputs and the measurement function for errors."
             )
+            
+        if reduced and N_eff:
+            return chisq/N_eff
+        
         return chisq
 
     def lnprob(self, theta: np.ndarray) -> float:

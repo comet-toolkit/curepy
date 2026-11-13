@@ -292,4 +292,4 @@ class RetrievalInput:
 
         C_model = 0.5 * (C_model + C_model.T)
         
-        return C_model
+        return C_model, N_eff

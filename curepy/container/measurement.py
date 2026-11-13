@@ -41,6 +41,7 @@ class Measurement:
         )
 
         self.y = y
+        self.N_eff = len(y)
         self.u_y = u_y_total
         self.y_flat, self.u_y_flat, self.y_shape = self._flatten_inputs(
             self.y, self.u_y
