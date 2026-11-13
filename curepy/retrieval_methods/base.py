@@ -105,6 +105,8 @@ class BaseRetrieval(ABC):
         self,
         theta: np.ndarray,
         repeat_dims: List[int] = [],
+        reduced: bool = False,
+        N_eff: int = None,
     ) -> float:
         """
         Compute the chi-squared cost between the forward model and observations.
@@ -127,8 +129,15 @@ class BaseRetrieval(ABC):
             ).flatten()
         )
         diff = modelled_data - self.retrieval_input.measurement_obj.y_flat
-
-        # Only normalize by u_y_flat if it's available
+        
+        #import comet_maths as cm
+        #u_syst_rel = self.retrieval_input.measurement_obj.u_y_syst/self.retrieval_input.measurement_obj.y_flat
+        #u_syst = modelled_data * u_syst_rel
+        #u_rand = self.retrieval_input.measurement_obj.u_y_rand
+        #C_tot = cm.convert_corr_to_cov(np.eye(len(u_rand)), u_rand) + cm.convert_corr_to_cov(np.ones((len(u_syst), len(u_syst))), u_syst)
+        #s, d = np.linalg.slogdet(C_tot)
+        #return diff.T @ np.linalg.inv(C_tot) @ diff - (s * d)    
+         #Only normalize by u_y_flat if it's available
         if self.retrieval_input.measurement_obj.u_y_flat is not None:
             diff_norm = diff / self.retrieval_input.measurement_obj.u_y_flat
         else:
@@ -142,8 +151,10 @@ class BaseRetrieval(ABC):
 
             else:
                 if len(repeat_dims) == 0:
-                    y = self.retrieval_input.measurement_obj.W @ diff_norm
+                    W = self.retrieval_input.measurement_obj.W
+                    y = W @ diff_norm
                     chisq = y.T @ y
+                    
                 elif len(repeat_dims) == 1:
                     sum = 0
                     for i in range(diff.shape[repeat_dims[0]]):
@@ -163,7 +174,10 @@ class BaseRetrieval(ABC):
             raise ValueError(
                 "The chi-squared cost is negative, which should not be possible. Check the inputs and the measurement function for errors."
             )
-
+            
+        if reduced and N_eff:
+            return chisq/N_eff
+        
         return chisq
 
     def lnprob(self, theta: np.ndarray) -> float:

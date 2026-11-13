@@ -32,12 +32,16 @@ class Measurement:
             length of ``y``.
         :param skip_invcov: If ``True``, skip the computation of the inverse covariance matrix (which is only needed for certain retrieval methods like optimal estimation).
         """
-
+        self.u_y_syst = u_y_syst
+        self.u_y_rand = u_y_rand
+        u_y_syst = None
+        u_y_rand = None
         u_y_total, corr_y = self._format_uncertainty(
             u_y_total, u_y_rand, u_y_syst, corr_y
         )
 
         self.y = y
+        self.N_eff = len(y)
         self.u_y = u_y_total
         self.y_flat, self.u_y_flat, self.y_shape = self._flatten_inputs(
             self.y, self.u_y

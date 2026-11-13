@@ -18,6 +18,7 @@ class RetrievalResult:
         b_samples: Optional[np.ndarray] = None,
         x_names: Optional[list] = None,
         retrieval_object: Optional[BaseRetrieval] = None,
+        N_eff: int = None,
     ) -> None:
         """
         Container for retrieval output quantities.
@@ -37,6 +38,7 @@ class RetrievalResult:
         self.b_samples = b_samples
         self.x_names = x_names
         self._retrieval_object = retrieval_object
+        self.N_eff = N_eff
 
     def build_obsarray(self) -> None:
         """
@@ -47,11 +49,13 @@ class RetrievalResult:
         """
         raise NotImplementedError
 
-    def get_chisq(self) -> float:
+    def get_chisq(self,
+                  reduced: bool = False,
+                  ) -> float:
         """
         Get the chi-squared value of the retrieval.
 
         .. note::
             Not yet implemented.
         """
-        return self._retrieval_object.find_chisum(self.values)
+        return self._retrieval_object.find_chisum(self.values, reduced=reduced, N_eff=self.N_eff)

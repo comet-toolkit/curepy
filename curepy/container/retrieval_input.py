@@ -1,5 +1,7 @@
 """Container for all retrieval inputs"""
 
+from matplotlib.pylab import gamma
+
 from curepy.container.measurement_function import MeasurementFunction
 from curepy.container.ancillary_parameter import AncillaryParameter
 from curepy.container.prior import Prior
@@ -7,6 +9,9 @@ from curepy.container.measurement import Measurement
 
 from typing import Union, List, Optional, Callable, Any
 
+import scipy.linalg
+import numpy as np
+import comet_maths as cm
 
 class RetrievalInput:
 
@@ -259,3 +264,32 @@ class RetrievalInput:
             b, u_b, corr_b, corr_between_b, b_samples, b_MC_steps
         )
         self.prior_obj = Prior(prior_shape, prior_params, prior_correlation)
+        
+    def return_mismatch_covariance(self, samples: np.ndarray, autocorrelation_time) -> np.ndarray:
+        """
+        Return the mismatch covariance matrix.
+
+        :param samples: Retrieval samples.
+        :returns: Mismatch covariance matrix.
+        """
+        samples_sim = np.vstack([self.measurement_function_obj.measurement_function_x(samples[i], self.ancillary_obj.b) for i in range(len(samples))])
+        r = samples_sim - self.measurement_obj.y_flat
+        C_fit = cm.convert_corr_to_cov(self.measurement_obj.corr_y, self.measurement_obj.u_y_flat)
+        r_w = scipy.linalg.sqrtm(np.linalg.inv(C_fit)) @ r.T
+        R = (r_w @ r_w.T)/len(r_w.T)
+        evals, evecs = np.linalg.eigh(R)
+        
+        N_eff = len(samples)/autocorrelation_time
+        gamma = len(r_w) / N_eff
+        lambda_mp = (1 + np.sqrt(gamma))**2
+        
+        evecs_dominant = evecs[:, evals > lambda_mp]
+        evals_dominant = evals[evals > lambda_mp]
+        
+        C_fit_half = scipy.linalg.sqrtm(C_fit)
+        Delta = np.diag(evals_dominant - lambda_mp)
+        C_model = C_fit_half @ evecs_dominant @ Delta @ evecs_dominant.T @ C_fit_half
+
+        C_model = 0.5 * (C_model + C_model.T)
+        
+        return C_model, N_eff
